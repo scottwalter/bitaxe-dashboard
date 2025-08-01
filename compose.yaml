@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  bitaxe-dashboard:
+    build: .
+    ports:
+      - "3000:3000"
+    # Optional: If your host needs to resolve 192.168.7.200, ensure network allows it
+    # For Docker Desktop, this usually works without extra config if host can reach it
+    # For Linux hosts, you might need network_mode: "host" or an explicit --add-host
