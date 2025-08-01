@@ -6,8 +6,9 @@ const fetch = require('node-fetch');
 const apiUrlBitAxe1 = 'http://192.168.7.220/api/system/info';
 const apiUrlBitAxe2 = 'http://192.168.7.122/api/system/info';
 
-async function display (req,res){
+async function display (req,res,config){
 try {
+  console.log(`Config: ${config.bitaxe_instances}`);
       //Pull Data from BitAxe1
       const response1 = await fetch(apiUrlBitAxe1);
       const data1 = await response1.json();

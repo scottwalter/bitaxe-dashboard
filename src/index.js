@@ -24,7 +24,7 @@ fs.readFile(path.join(__dirname,'./config/config.json'), 'utf8', (err, data) => 
 
   const server = http.createServer(async (req, res) => {
     // Lets find some page to present to the website!
-    await(d.dispatch(req,res));
+    await(d.dispatch(req,res,config));
   });
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
