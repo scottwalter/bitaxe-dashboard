@@ -1,0 +1,7 @@
+{
+    "web_server_port": 3000,
+    "bitaxe_instances": [
+        {"bitaxe1":"http://192.168.7.220"},
+        {"bitaxe2":"http://192.168.7.120"}
+    ]
+}
