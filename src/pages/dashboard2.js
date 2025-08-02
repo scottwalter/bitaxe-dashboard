@@ -15,12 +15,19 @@ function generateCollapsibleHtml(data, fieldsToDisplay){
   let contentHtml = '';
   for (const key in filteredData) {
     if (Object.hasOwnProperty.call(filteredData, key)) {
+      let k = key;
+      let v = filteredData[k];
+      if(k === 'hashRate' || k === 'power' || k === 'voltage'){
+       console.log(`Found a match: ${k} ${v}`);
+        v=v.toFixed(2);
+      }
+      
       contentHtml += `
-            <p><strong>${key}:</strong> ${filteredData[key]}</p>`;
+            <p><strong>${k}:</strong> ${v}</p>`;
     }
   }
   const html =`<div class="collapsible-container">
-        <button class="collapsible-button">View ${data.hostname}</button>
+        <button class="collapsible-button">${data.hostname} - HR:${data.hashRate.toFixed(2)} - SD:${data.bestSessionDiff} - SA:${data.sharesAccepted} - SR:${data.sharesRejected} - T:${data.temp} - VT:${data.vrTemp}</button>
         <div class="collapsible-content">
             ${contentHtml}
         </div>
