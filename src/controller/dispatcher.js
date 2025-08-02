@@ -1,5 +1,5 @@
 const http = require('http');
-const d = require('../pages/dashboard');
+const d = require('../pages/dashboard2');
 const fav = require('../pages/favicon');
 const i = require('../pages/images');
 

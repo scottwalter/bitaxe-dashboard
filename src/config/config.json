@@ -3,5 +3,28 @@
     "bitaxe_instances": [
         {"bitaxe1":"http://192.168.7.220"},
         {"bitaxe2":"http://192.168.7.122"}
+    ],
+    "display_fields":[
+        "power",
+        "voltage",
+        "current",
+        "temp",
+        "vrTemp",
+        "hashRate",
+        "expectedHashrate",
+        "bestDiff",
+        "bestSessionDiff",
+        "poolDifficulty",
+        "coreVoltageActual",
+        "frequency",
+        "hostname",
+        "wifiRSSI",
+        "sharesAccepted",
+        "sharesRejected",
+        "uptimeSeconds",
+        "overheat_mode",
+        "fanspeed",
+        "temptarget",
+        "fanrpm"
     ]
 }
