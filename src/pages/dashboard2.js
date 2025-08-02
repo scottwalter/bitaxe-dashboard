@@ -18,8 +18,7 @@ function generateCollapsibleHtml(data, fieldsToDisplay){
       let k = key;
       let v = filteredData[k];
       if(k === 'hashRate' || k === 'power' || k === 'voltage'){
-       console.log(`Found a match: ${k} ${v}`);
-        v=v.toFixed(2);
+       v=v.toFixed(2);
       }
       
       contentHtml += `
@@ -55,12 +54,14 @@ try {
   });
   console.log(`Config: ${config.bitaxe_instances}`);
   // Display master table on web page
-  fs.readFile(path.join(__dirname, 'dashboard.html'), 'utf8', (err, htmlContent) => {
+  fs.readFile(path.join(__dirname, './html/dashboard.html'), 'utf8', (err, htmlContent) => {
     if (err) {
       res.writeHead(500, { 'Content-Type': 'text/plain' });
       res.end('Error loading index.html');
     } else {
-      const finalHtml = htmlContent.replace('<!-- DATA_TABLE -->', tables);
+      let finalHtml = htmlContent.replace('<!-- DATA_TABLE -->', tables);
+      finalHtml = finalHtml.replace('<!-- TITLE -->',config.title);
+      finalHtml = finalHtml.replace('<!-- TIMESTAMP -->',new Date().toISOString());
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.end(finalHtml);
     }
