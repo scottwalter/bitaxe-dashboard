@@ -11,8 +11,8 @@ Docker Install (Recommended!): All commands assumed as root or with sudo pre-fix
 1. Create a local folder for the config.json file (i.e. /data/bitaxe-dashboard/config)
 2. Copy the config.json into a file in that directory, naming it config.json
 3. Configure the config.json to your environment (See below)
-4. Run the following Docker command: 
-'''bash
+4. Run the following Docker command:
+```bash
 docker run -d --name bitaxe-dashboard -p 3000:3000/tcp -v {/your/local/config_path}:/app/config scottwalter/bitaxe-dashboard:latest
 ```
 5. You are done! Go to http://{IP_ADDRESS}:3000 and see your information! Enjoy!
