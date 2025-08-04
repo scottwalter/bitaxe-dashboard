@@ -2,10 +2,13 @@ Bitaxe-Dashboard is designed in NodeJS 22. The primary goal was to build a light
 The application can be configured using the config.json file. Ideally, this dashboard should be run from Docker, see instructions below.
 The application is mobile friendly, so you can see it on an iPhone for example, or full screen on a trandional web browser such as Chrome.
 
+> [!CAUTION]
+> I am not responsible for anything you do with this code, or anything this code does to you! You are using this at your own risk!
+ 
 Quick Start:
 Assumptions:
 1. You have Docker installed and configured
-2. You are on either a Mac Apple Silicon or Linux AMD64 device (for Docker, only supports Linux/ARM64 and Linux/AMD64)
+2. You are on either a Mac Apple Silicon or Linux AMD64 device (for Docker, only supports Linux/arm4 and Linux/amd64)
 
 Docker Install (Recommended!): All commands assumed as root or with sudo pre-fixed
 1. Create a local folder for the config.json file (i.e. /data/bitaxe-dashboard/config)
@@ -90,12 +93,16 @@ Here is the basic config.json
 }
 ```
 What can you do with the config.json?
-1. First, make sure you set demo_mode to false for your local config.json or it will just use dummy data!
-2. You can turn on Mining Core information or off if you don't use Mining Core but still want to monitor you Bitaxe device(s), set mining_core_enabled to either true or false.
-3. You can add any additional Bitaxe /api/system/info keys you want, or remove any keys you don't want. (TIP: go to http://{your_bitaxe_ip_address}/api/system/info to see the possible keys)
-4. You can reorder sections or individual key:value pairs to the way you want to see the data, the application will dynamically read them and follow what you set. (Note: sharesRejectedReasons only shows an Object message right now, it is on the TODO list).
-5. The rest should be fairly self-explanitory (title, ports, bitaxe_instances - Name them whatever you want, just make sure the URL is correct!)
+> [!IMPORTANT]
+> First, make sure you set demo_mode to false in your local config.json or it will just use dummy data!
+- You can turn on Mining Core information or off if you don't use Mining Core but still want to monitor you Bitaxe device(s), set mining_core_enabled to either true or false.
+- You can add any additional Bitaxe /api/system/info keys you want, or remove any keys you don't want.
+> [!TIP]
+> Go to http://{your_bitaxe_ip_address}/api/system/info to see the possible keys.
+- You can reorder sections or individual key:value pairs to the way you want to see the data, the application will dynamically read them and follow what you set. (Note: sharesRejectedReasons only shows an Object message right now, it is on the TODO list).
+- The rest should be fairly self-explanitory (title, ports, bitaxe_instances - Name them whatever you want, just make sure the URL is correct!)
 
 Recommended:
-1. You can run this on the public internet and see your Bitaxe information since the application will make the internal calls to your Bitaxe device API.
-2. ***WARNING** Placing anything on the internet is risky. I highly recommend you fron this application with a proxy like Nginx, under SSL, using a username / password.
+- You can run this on the public internet and see your Bitaxe information since the application will make the internal calls to your Bitaxe device API.
+> [!WARNING]
+> Placing anything on the internet is risky. I **highly recommend** you front this application with a proxy like Nginx, under SSL, using a username / password.
