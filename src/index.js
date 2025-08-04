@@ -20,8 +20,18 @@ async function loadConfig() {
         console.log(`Attempting to load configuration from: ${CONFIG_PATH}`);
         const data = await fs.readFile(CONFIG_PATH, 'utf8');
         const config = JSON.parse(data);
+        if(config.demo_mode === true){
+            //Change the URL's to 127.0.0.1:{PORT_NUMBER} to call locally
+            config.mining_core_url = `http://127.0.0.1:${config.web_server_port}`;
+            //Append DEMO MODE to the Title
+            config.title += ' - DEMO MODE';
+            //Update the Bitaxe Nodes for Demo
+            const newEntry1 =  {"DemoAxe1":"http://127.0.0.1:"+config.web_server_port};
+            const newEntry2 =  {"DemoAxe2":"http://127.0.0.1:"+config.web_server_port};
+            config.bitaxe_instances = [newEntry1, newEntry2];
+        }
         console.log(`Configuration loaded successfully.`);
-        // console.log(`Loaded Configuration: ${JSON.stringify(config, null, 2)}`); // Uncomment for detailed config log
+        console.log(`Loaded Configuration: ${JSON.stringify(config, null, 2)}`); // Uncomment for detailed config log
         return config;
     } catch (error) {
         if (error.code === 'ENOENT') {

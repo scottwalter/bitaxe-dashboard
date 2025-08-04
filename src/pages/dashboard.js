@@ -1,118 +1,116 @@
-const http = require('http');
-const fs = require('fs').promises; // Use the promise-based fs module
+// File Path: /Users/scottwalter/VSC-Projects/bitaxe-dashboard/src/pages/dashboard.js
+
+const fs = require('fs').promises; // Use promise-based fs for async/await
 const path = require('path');
-const fetch = require('node-fetch'); // Assuming node-fetch is installed (npm install node-fetch@2)
+const MINING_CORE_API_PATH = '/api/pools'; // Endpoint for mining core stats
+const fetch = require('node-fetch'); // Make sure node-fetch is installed (npm install node-fetch@2)
 
-const apiPath = '/api/system/info';
 
-/**
- * Generates collapsible HTML for a single device's data.
- * @param {object} data - The device data object.
- * @param {string[]} fieldsToDisplay - An array of fields to display in the collapsible content.
- * @returns {string} The HTML string for the collapsible section.
- */
-function generateCollapsibleHtml(data, fieldsToDisplay) {
-    // Ensure data properties are numbers before calling toFixed, or handle N/A
-    const safeToFixed = (value) => typeof value === 'number' ? value.toFixed(2) : 'N/A';
 
-    let contentHtml = '';
-    fieldsToDisplay.forEach(field => {
-        let displayValue = data[field] !== undefined ? data[field] : 'N/A';
-
-        // Apply toFixed only to specific numeric fields
-        if (['hashRate', 'power', 'voltage'].includes(field) && typeof data[field] === 'number') {
-            displayValue = safeToFixed(data[field]);
-        }
-
-        contentHtml += `
-            <p><strong>${field}:</strong> ${displayValue}</p>`;
-    });
-
-    // Safely get header values, providing default/N/A if not available or not numeric
-    const hostname = data.hostname || 'Unknown Host';
-    const hashRateHeader = safeToFixed(data.hashRate);
-    const bestSessionDiff = data.bestSessionDiff || 'N/A';
-    const sharesAccepted = data.sharesAccepted || 'N/A';
-    const sharesRejected = data.sharesRejected || 'N/A';
-    const temp = data.temp || 'N/A';
-    const vrTemp = data.vrTemp || 'N/A';
-
-    const html = `
-    <div class="collapsible-container">
-        <button class="collapsible-button">
-            ${hostname} - HR:${hashRateHeader} - SD:${bestSessionDiff} - SA:${sharesAccepted} - SR:${sharesRejected} - T:${temp} - VT:${vrTemp}
-        </button>
-        <div class="collapsible-content">
-            ${contentHtml}
-        </div>
-    </div>`;
-    return html;
-}
+const API_SYSTEM_INFO_PATH = '/api/system/info'; // Endpoint for miner info
 
 /**
- * Main display function to serve the dashboard.
- * @param {http.IncomingMessage} req - The HTTP request object.
- * @param {http.ServerResponse} res - The HTTP response object.
- * @param {object} config - Configuration object containing bitaxe instances and display fields.
+ * Handles the dashboard display, fetching data and serving HTML with embedded data.
+ * This is the server-side component.
+ * @param {http.IncomingMessage} req The HTTP request object.
+ * @param {http.ServerResponse} res The HTTP response object.
+ * @param {object} config The application configuration object.
  */
 async function display(req, res, config) {
-    let tablesHtml = ''; // Initialize outside the try block for broader scope if needed
+    let allMinerData = []; // Array to store fetched data from all instances
 
     try {
-        const filterFields = config.display_fields;
+        // Ensure bitaxe_instances is an array and filter out any non-object entries
+        const bitaxeInstances = Array.isArray(config.bitaxe_instances) ? config.bitaxe_instances : [];
 
         // Use Promise.all to fetch all data concurrently
-        const instancePromises = config.bitaxe_instances.map(async (instance) => {
+        const instancePromises = bitaxeInstances.map(async (instance) => {
             // Assuming instance structure like { "miner1": "http://192.168.1.100" }
             const instanceName = Object.keys(instance)[0];
             const instanceUrl = instance[instanceName];
 
             try {
-                const response = await fetch(instanceUrl + apiPath);
+                const response = await fetch(instanceUrl + API_SYSTEM_INFO_PATH);
                 if (!response.ok) {
-                    // Handle non-2xx responses from the API gracefully
                     console.error(`Error fetching data from ${instanceUrl}: ${response.status} ${response.statusText}`);
-                    // Return a placeholder HTML for failed instances
-                    return `<div class="collapsible-container"><button class="collapsible-button error">${instanceName} - Error: ${response.status} ${response.statusText}</button><div class="collapsible-content"><p>Failed to fetch data.</p></div></div>`;
+                    // Return a basic error object for this instance
+                    return {
+                        id: instanceName, // Use instanceName as a unique ID for client-side lookup
+                        hostname: instanceName, // Display instance name for errors
+                        status: 'Error',
+                        message: `${response.status} ${response.statusText}` // Error message
+                    };
                 }
                 const data = await response.json();
-                return generateCollapsibleHtml(data, filterFields);
+                // Add a unique ID for client-side use (e.g., from config name)
+                data.id = instanceName;
+                return data;
             } catch (fetchError) {
-                // Handle network errors or JSON parsing errors for a specific instance
-                console.error(`Network or JSON error for ${instanceName} (${instanceUrl}):`, fetchError);
-                return `<div class="collapsible-container"><button class="collapsible-button error">${instanceName} - Connection Error</button><div class="collapsible-content"><p>Could not connect or parse data: ${fetchError.message}</p></div></div>`;
+                console.error(`Network or JSON parsing error for ${instanceName} (${instanceUrl}):`, fetchError);
+                return {
+                    id: instanceName, // Use instanceName as a unique ID
+                    hostname: instanceName, // Display instance name for errors
+                    status: 'Error',
+                    message: fetchError.message // Full error message
+                };
             }
         });
 
-        const instanceHtmls = await Promise.all(instancePromises);
-        tablesHtml = instanceHtmls.join(''); // Join all the generated HTML strings
+        // Wait for all promises to resolve
+        allMinerData = await Promise.all(instancePromises);
 
-        console.log(`Config: ${JSON.stringify(config.bitaxe_instances)}`);
+        // Prepare the combined data object to be embedded
+        const embeddedData = {
+            minerData: allMinerData,
+            displayFields: config.display_fields || [],
+            miningCoreData: null, // Initialize miningCoreData to null
+            miningCoreDisplayFields: config.mining_core_display_fields || []
+        };
 
-        // Read the dashboard HTML template using fs.promises.readFile
-        const dashboardHtmlPath = path.join(__dirname, './html/dashboard.html');
+        // Conditionally fetch mining core data
+        if (config.mining_core_enabled && config.mining_core_url) {
+            try {
+                const miningCoreResponse = await fetch(config.mining_core_url + MINING_CORE_API_PATH);
+                if (!miningCoreResponse.ok) {
+                    console.error(`Error fetching mining core data from ${config.mining_core_url}: ${miningCoreResponse.status} ${miningCoreResponse.statusText}`);
+                } else {
+                    const miningCoreJson = await miningCoreResponse.json();
+                    embeddedData.miningCoreData = miningCoreJson;
+                }
+            } catch (miningCoreError) {
+                console.error(`Network or JSON parsing error for mining core (${config.mining_core_url}):`, miningCoreError);
+            }
+        }
+
+        // Read the dashboard HTML template
+        const dashboardHtmlPath = path.join(__dirname, '../pages/html/dashboard.html');
         let htmlContent = await fs.readFile(dashboardHtmlPath, 'utf8');
 
-        // Replace placeholders in the HTML template
-        let finalHtml = htmlContent.replace('<!-- DATA_TABLE -->', tablesHtml);
-        finalHtml = finalHtml.replace('<!-- TITLE -->', config.title || 'Bitaxe Dashboard'); // Provide a default title
-        finalHtml = finalHtml.replace('<!-- TIMESTAMP -->', new Date().toISOString());
+        // Embed the fetched data as a JSON string within a script tag
+        const embeddedDataHtml = `
+${JSON.stringify(embeddedData, null, 2)}
+`;
+        htmlContent = htmlContent.replace('<!-- EMBEDDED_DATA -->', embeddedDataHtml);
+
+        // Replace other placeholders (title, timestamp, current year)
+        const currentYear = new Date().getFullYear().toString();
+        htmlContent = htmlContent.replace(/<!-- TITLE -->/g, config.title || 'Bitaxe Dashboard');
+        htmlContent = htmlContent.replace('<!-- TIMESTAMP -->', new Date().toLocaleString());
+        htmlContent = htmlContent.replace('<!-- CURRENT_YEAR -->', currentYear);
 
         // Send the final HTML response
         res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(finalHtml);
+        res.end(htmlContent);
 
     } catch (error) {
-        console.error('Overall Error in display function:', error);
-        // Only attempt to send an error response if headers haven't already been sent
+        console.error('Server-side Error in dashboard display:', error);
         if (!res.headersSent) {
             res.writeHead(500, { 'Content-Type': 'text/html' });
-            res.end(`<h1>Error</h1><p>An internal server error occurred.</p><p>Details: ${error.message}</p>`);
+            res.end(`<h1>Error</h1><p>An internal server error occurred while preparing the dashboard.</p><p>Details: ${error.message}</p>`);
         } else {
-            console.error('Headers already sent, cannot send 500 error response. Original error:', error);
+            console.error('Headers already sent, unable to send 500 error response. Original error:', error);
         }
     }
-    // Removed `return '1';` as it serves no purpose in an HTTP handler.
 }
 
 module.exports = {

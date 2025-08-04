@@ -1,8 +1,15 @@
 const http = require('http'); // Not directly used in dispatch, but good for context
+const fs = require('fs').promises; // Make sure you have fs.promises here
+const path = require('path');
+
 const dashboardPage = require('../pages/dashboard.js');
 const faviconPage = require('../pages/favicon');
 const imageServer = require('../pages/images');
 const demoApiEndpoint = require('../pages/demo-api.js');
+
+
+// Define a constant for the public directory where client-side assets are stored
+const PUBLIC_DIR = path.join(__dirname, '../public'); // Adjust if your public directory is elsewhere
 
 // Define your routes as an array of objects for better organization
 const routes = [
@@ -10,13 +17,13 @@ const routes = [
         path: '/',
         method: 'GET',
         handler: dashboardPage.display,
-        exactMatch: true, // Indicates an exact URL match is required
+        exactMatch: true // Indicates an exact URL match is required
     },
     {
         path: '/index.html',
         method: 'GET',
         handler: dashboardPage.display,
-        exactMatch: true,
+        exactMatch: true
     },
     {
         path: '/favicon.ico',
@@ -34,7 +41,32 @@ const routes = [
         path: '/api/system/info',
         method: 'GET',
         handler: demoApiEndpoint.display,
-        exactMatch: true,
+        exactMatch: true
+    },
+    {
+        path:'/api/pools',
+        method: 'GET',
+        handler: demoApiEndpoint.display,
+        exactMatch: true
+    },
+    {
+        path: '/public/js/client-dashboard.js',
+        method: 'GET',
+        handler: async (req, res) => {
+            try {
+                const jsFilePath = path.join(PUBLIC_DIR, 'js', 'client-dashboard.js'); // Construct full path
+                const jsContent = await fs.readFile(jsFilePath, 'utf8');
+                res.writeHead(200, { 'Content-Type': 'application/javascript' });
+                res.end(jsContent);
+            } catch (err) {
+                console.error('Error serving client-dashboard.js:', err);
+                if (!res.headersSent) {
+                    res.writeHead(500, { 'Content-Type': 'text/plain' });
+                    res.end('Error loading client script.');
+                }
+            }
+        },
+        exactMatch: true
     }
     // Add more routes here as your application grows
 ];

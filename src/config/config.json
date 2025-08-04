@@ -1,32 +1,67 @@
 {
     "web_server_port": 3000,
+    "demo_mode":false,
     "title":"Bitaxe Dashboard",
     "bitaxe_instances": [
-        {"bitaxe1":"http://192.168.7.220"},
-        {"bitaxe2":"http://192.168.7.122"},
-        {"bitaxeDemo":"http://127.0.0.1:3000"}
+        {"Bitaxe1":"http://192.168.7.220"},
+        {"Bitaxe2":"http://192.168.7.122"}
     ],
     "display_fields":[
-        "hostname",
-        "hashRate",
-        "expectedHashrate",
-        "bestDiff",
-        "bestSessionDiff",
-        "poolDifficulty",
-        "sharesAccepted",
-        "sharesRejected",
-        "power",
-        "voltage",
-        "current",
-        "temp",
-        "vrTemp",
-        "coreVoltageActual",
-        "frequency",
-        "wifiRSSI",
-        "uptimeSeconds",
-        "overheat_mode",
-        "fanspeed",
-        "temptarget",
-        "fanrpm"
+        {"Mining Metrics":[
+            {"hashRate":"HashRate"},
+            {"expectedHashrate":"Expect HashRate"},
+            {"bestDiff":"Best Difficulty"},
+            {"bestSessionDiff":"Best Session Difficulty"},
+            {"poolDifficulty":"Pool Difficulty"},
+            {"sharesAccepted":"Shares Accepted"},
+            {"sharesRejected":"Shares Rejected"},
+            {"responseTime":"Response Time"}
+        ]},
+        {"General Information":[
+            {"hostname":"Hostname"},
+            {"power":"Power"},
+             {"voltage":"Voltage"},
+             {"current":"Current"},
+             {"temp":"Temperatue"},
+             {"vrTemp":"Voltage Regulator Temperature"},
+             {"coreVoltageActual":"Core Voltage Actual"},
+             {"frequency":"frequency"},
+             {"wifiRSSI":"Wifi RSSI"},
+             {"uptimeSeconds":"Uptime Seconds"},
+             {"overheat_mode":"Over Heat Mode"},
+             {"fanspeed":"Fan Speed"},
+             {"temptarget":"Target Temperature"},
+             {"fanrpm":"Fan RPM"},
+             {"stratumURL":"Stratum URL"},
+             {"stratumUser":"Stratum User"},
+             {"stratumPort":"Stratum Port"},
+             {"idfVersion":"IDF Version"},
+             {"axeOSVersion":"AxeOS Version"}
+        ]}
+        
+    ],
+    "mining_core_enabled":true,
+    "mining_core_url":"http://192.168.7.149:4000",
+    "mining_core_display_fields": [
+        {"Network Status":[
+            {"networkHashrate":"Network HashRate"},
+            {"networkDifficulty":"Network Difficulty"},
+            {"lasNetworkBlockTime":"Last Block Time"},
+            {"blockHeight":"Block Height"},
+            {"connectedPeers":"Connected Peers"},
+            {"nodeVersion":"Node Version"}
+        ]},
+        {"Miner(s) Status":[
+            {"connectedMiners":"Connected Miners"},
+            {"poolHashrate":"Pool Hashrate"}
+        ]},
+        {"Rewards Status": [
+            {"totalPaid":"Total Paid"},
+            {"totalBlocks":"Total Blocks"},
+            {"totalConfirmedBlocks":"Total Confirmed Blocks"},
+            {"totalPendingBlocks":"Totoal Pending Blocks"},
+            {"lastPoolBlockTime":"Last Pool Block Time"},
+            {"blockReward":"Block Reward"}
+        ]}
     ]
 }

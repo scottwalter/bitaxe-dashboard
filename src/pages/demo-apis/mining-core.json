@@ -1,0 +1,101 @@
+{
+  "pools": [
+    {
+      "id": "dgb-solo",
+      "coin": {
+        "type": "DGB",
+        "name": "Digibyte Sha256",
+        "symbol": "DGB",
+        "website": "https://digibyte.org/",
+        "market": "https://coinmarketcap.com/currencies/digibyte/",
+        "family": "bitcoin",
+        "algorithm": "Sha256D",
+        "twitter": "https://x.com/digibytecoin",
+        "discord": "",
+        "telegram": "https://t.me/DigiByteCoin",
+        "canonicalName": "Digibyte",
+        "marketSlug": "digibyte",
+        "marketProvider": "coingecko"
+      },
+      "ports": {
+        "5001": {
+          "listenAddress": "0.0.0.0",
+          "name": "General ASIC",
+          "difficulty": 4096,
+          "varDiff": {
+            "minDiff": 1,
+            "targetTime": 15,
+            "retargetTime": 3600,
+            "variancePercent": 30
+          },
+          "tls": false,
+          "tlsAuto": false
+        },
+        "5101": {
+          "listenAddress": "0.0.0.0",
+          "name": "NerdMiner",
+          "difficulty": 0.001,
+          "varDiff": {
+            "minDiff": 0.0001,
+            "targetTime": 15,
+            "retargetTime": 90,
+            "variancePercent": 30
+          },
+          "tls": false,
+          "tlsAuto": false
+        }
+      },
+      "paymentProcessing": {
+        "enabled": true,
+        "minimumPayment": 1,
+        "payoutScheme": "SOLO",
+        "payoutSchemeConfig": [
+          [
+            []
+          ]
+        ],
+        "autoExchangingFromEnabled": false,
+        "autoExchangingToEnabled": false,
+        "autoExchangingFee": 0,
+        "extra": {}
+      },
+      "clientConnectionTimeout": 600,
+      "jobRebroadcastTimeout": 0,
+      "blockRefreshInterval": 0,
+      "poolFeePercent": 1,
+      "address": "DTQTDEjbdfUvDZvU1Kp7bKLuqVQTF2qqJ7",
+      "addressInfoLink": "https://chainz.cryptoid.info/dgb/address.dws?DTQTDEjbdfUvDZvU1Kp7bKLuqVQTF2qqJ7.htm",
+      "poolStats": {
+        "connectedMiners": 1,
+        "poolHashrate": 2997831598080,
+        "sharesPerSecond": 0
+      },
+      "networkStats": {
+        "networkType": "Main",
+        "networkHashrate": 50286468741372980,
+        "networkDifficulty": 996663332.5780329,
+        "nextNetworkTarget": "00000000000000044f2d00000000000000000000000000000000000000000000",
+        "nextNetworkBits": "19044f2d",
+        "lastNetworkBlockTime": "2025-08-04T17:17:53.9054192Z",
+        "blockHeight": 21857513,
+        "connectedPeers": 10,
+        "nodeVersion": "82202",
+        "rewardType": "POW"
+      },
+      "topMiners": [
+        {
+          "miner": "D8HCqTxncZkSvejbhx7ByLXAPSrEpaBzZ5",
+          "hashrate": 4312629079120,
+          "sharesPerSecond": 0.1
+        }
+      ],
+      "totalPaid": 874.633988517300,
+      "totalBlocks": 4,
+      "totalConfirmedBlocks": 3,
+      "totalPendingBlocks": 0,
+      "blockReward": 293.385845640000,
+      "lastPoolBlockTime": "2025-08-03T15:16:45.774615Z",
+      "poolEffort": 0.07740431750844688
+    }
+  ]
+}

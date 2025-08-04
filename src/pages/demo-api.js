@@ -5,7 +5,14 @@ const path = require('path');
 async function display(req, res){
     try{
         const apiDirectory = path.join(__dirname, '/demo-apis');
-        const jsonName = 'bitaxe-info1.json';
+        //const jsonName = 'bitaxe-info1.json';
+        let jsonName='';
+        if( req.url === '/api/pools'){
+            jsonName = 'mining-core.json';
+        }
+        if( req.url === '/api/system/info'){
+            jsonName = "bitaxe-info.json";
+        }
         const jsonPath = path.join(apiDirectory, jsonName);
         console.log(`API PATH: ${jsonPath}`);
 

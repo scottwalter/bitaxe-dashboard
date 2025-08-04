@@ -19,7 +19,7 @@
 	"frequency":	800,
 	"ssid":	"XXXX",
 	"macAddr":	"XX:XX:XX:XX:XX:XX",
-	"hostname":	"demoAxe1",
+	"hostname":	"demoAxe",
 	"wifiStatus":	"Connected!",
 	"wifiRSSI":	-32,
 	"apEnabled":	0,
