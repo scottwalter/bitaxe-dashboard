@@ -3,7 +3,8 @@
     "title":"Bitaxe Dashboard",
     "bitaxe_instances": [
         {"bitaxe1":"http://192.168.7.220"},
-        {"bitaxe2":"http://192.168.7.122"}
+        {"bitaxe2":"http://192.168.7.122"},
+        {"bitaxeDemo":"http://127.0.0.1:3000"}
     ],
     "display_fields":[
         "hostname",

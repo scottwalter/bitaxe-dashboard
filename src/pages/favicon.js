@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const fetch = require('node-fetch');
 
-async function display(req, res){
+async function display(req, res, config){
     try {
       const imagePath = path.join(__dirname, '../images/favicon.ico');
       fs.readFile(imagePath, (err, data) => {
