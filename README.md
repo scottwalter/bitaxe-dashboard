@@ -1,4 +1,4 @@
-Bitaxe-Dashboard is designed in NodeJS 22. The primary goal was to build a lightweight web client that shows the status of a Bitaxe 60x Gamma crypto miner and the status of a Mining Core Stratum proxy.
+Bitaxe-Dashboard is designed in NodeJS 22. The primary goal was to build a lightweight web client that shows the status of one or more Bitaxe 60x Gamma crypto miner(s) and the status of a Mining Core Stratum proxy.
 The application can be configured using the config.json file. Ideally, this dashboard should be run from Docker, see instructions below.
 
 Quick Start:
@@ -9,7 +9,7 @@ Assumptions:
 Docker Install (Recommended!): All commands assumed as root or with sudo pre-fixed
 1. Create a local folder for the config.json file (i.e. /data/bitaxe-dashboard/config)
 2. Copy the config.json into a file in that directory, naming it config.json
-3. Configure the config.json to your environment
+3. Configure the config.json to your environment (See below)
 4. Run the following Docker command: docker run -d --name bitaxe-dashboard -p 3000:3000/tcp -v {/your/local/config_path}:/app/config scottwalter/bitaxe-dashboard:latest
 5. You are done! Go to http://{IP_ADDRESS}:3000 and see your information! Enjoy!
 
@@ -85,4 +85,13 @@ Here is the basic config.json
     ]
 }
 ```
+What can you do with the config.json?
+1. First, make sure you set demo_mode to false for your local config.json or it will just use dummy data!
+2. You can turn on Mining Core information or off if you don't use Mining Core but still want to monitor you Bitaxe device(s), set mining_core_enabled to either true or false.
+3. You can add any additional Bitaxe /api/system/info keys you want, or remove any keys you don't want. (TIP: go to http://{your_bitaxe_ip_address}/api/system/info to see the possible keys)
+4. You can reorder sections or individual key:value pairs to the way you want to see the data, the application will dynamically read them and follow what you set. (Note: sharesRejectedReasons only shows an Object message right now, it is on the TODO list).
+5. The rest should be fairly self-explanitory (title, ports, bitaxe_instances - Name them whatever you want, just make sure the URL is correct!)
 
+Recommended:
+1. You can run this on the public internet and see your Bitaxe information since the application will make the internal calls to your Bitaxe device API.
+2. ***WARNING** Placing anything on the internet is risky. I highly recommend you fron this application with a proxy like Nginx, under SSL, using a username / password.
