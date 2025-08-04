@@ -1,5 +1,6 @@
 Bitaxe-Dashboard is designed in NodeJS 22. The primary goal was to build a lightweight web client that shows the status of one or more Bitaxe 60x Gamma crypto miner(s) and the status of a Mining Core Stratum proxy.
 The application can be configured using the config.json file. Ideally, this dashboard should be run from Docker, see instructions below.
+The application is mobile friendly, so you can see it on an iPhone for example, or full screen on a trandional web browser such as Chrome.
 
 Quick Start:
 Assumptions:
