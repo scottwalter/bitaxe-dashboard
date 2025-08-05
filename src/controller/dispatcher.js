@@ -67,6 +67,26 @@ const routes = [
             }
         },
         exactMatch: true
+    },
+    //Style Guide path
+    {
+        path: '/public/css/bitaxe-dashboard.css',
+        method: 'GET',
+        handler: async (req, res) => {
+            try {
+                const jsFilePath = path.join(PUBLIC_DIR, 'css', 'bitaxe-dashboard.css'); // Construct full path
+                const jsContent = await fs.readFile(jsFilePath, 'utf8');
+                res.writeHead(200, { 'Content-Type': 'text/css' });
+                res.end(jsContent);
+            } catch (err) {
+                console.error('Error serving bitaxe-dashboard.css:', err);
+                if (!res.headersSent) {
+                    res.writeHead(500, { 'Content-Type': 'text/plain' });
+                    res.end('Error loading client script.');
+                }
+            }
+        },
+        exactMatch: true
     }
     // Add more routes here as your application grows
 ];

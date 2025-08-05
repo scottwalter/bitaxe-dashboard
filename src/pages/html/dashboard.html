@@ -4,215 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><!-- TITLE --></title>
-    <style>
-        /* Basic CSS for the new layout */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh; /* Ensure full viewport height */
-            background-color: #f4f7f6;
-            color: #333;
-        }
-
-        header {
-            background-color: #282c34;
-            color: white;
-            padding: 1.2rem 1rem;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-
-        .main-container {
-            display: flex;
-            flex: 1; /* Allows container to take remaining height */
-            margin: 1.5rem;
-            border-radius: 10px;
-            overflow: hidden; /* For rounded corners on children */
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            background-color: white;
-        }
-
-        .menu-pane {
-            flex: 0 0 280px; /* Fixed width for the menu */
-            background-color: #eef2f5;
-            padding: 1.5rem;
-            overflow-y: auto; /* Scroll for many menu items */
-            border-right: 1px solid #e0e0e0;
-        }
-
-        .menu-pane h2 {
-            margin-top: 0;
-            color: #555;
-            border-bottom: 1px solid #dcdcdc;
-            padding-bottom: 0.8rem;
-            margin-bottom: 1.2rem;
-            font-size: 1.2em;
-        }
-
-        .menu-pane ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .menu-pane li {
-            padding: 1rem 0.8rem;
-            cursor: pointer;
-            border-bottom: 1px solid #e0e0e0;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-size: 0.95em;
-        }
-
-        .menu-pane li:last-child {
-            border-bottom: none;
-        }
-
-        .menu-pane li:hover {
-            background-color: #e0e6eb;
-            transform: translateX(3px);
-        }
-
-        .menu-pane li.active {
-            background-color: #cdd4da;
-            font-weight: bold;
-            color: #282c34;
-            border-left: 4px solid #007bff; /* Highlight active item */
-            padding-left: calc(0.8rem - 4px);
-        }
-
-        .details-pane {
-            flex: 1; /* Takes remaining space */
-            padding: 2rem;
-            overflow-y: auto; /* Scroll for content details */
-            line-height: 1.6;
-        }
-
-        .details-pane h2 {
-            color: #282c34;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 0.5rem;
-            margin-bottom: 1.5rem;
-            font-size: 1.8em;
-        }
-
-        .details-pane h3 {
-            color: #444;
-            margin-top: 2rem;
-            margin-bottom: 1rem;
-            font-size: 1.4em;
-            border-left: 4px solid #007bff;
-            padding-left: 10px;
-        }
-
-        .details-grid {
-            display: grid;
-            grid-template-columns: auto 1fr; /* Key then Value */
-            gap: 0.8rem 1.5rem;
-            background-color: #f9fbfd;
-            padding: 1.2rem;
-            border-radius: 8px;
-            border: 1px solid #eef2f5;
-        }
-
-        .details-grid strong {
-            color: #0056b3; /* A nice blue for keys */
-            font-weight: 600;
-        }
-
-        /* Temperature color scaling for bar */
-        .temp-bar-green {
-            background-color: #4CAF50; /* Green */
-        }
-        .temp-bar-yellow {
-            background-color: #FFEB3B; /* Yellow */
-        }
-        .temp-bar-red {
-            background-color: #F44336; /* Red */
-        }
-
-        footer {
-            background-color: #333;
-            color: white;
-            padding: 0.8rem;
-            text-align: center;
-            font-size: 0.85rem;
-            margin-top: auto; /* Pushes footer to the bottom */
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            body {
-                font-size: 0.85rem; /* Smaller base font size for mobile */
-            }
-            header h1 {
-                font-size: 1.2em;
-            }
-            .main-container {
-                flex-direction: column;
-                margin: 1rem;
-            }
-            .menu-pane {
-                flex: none; /* No fixed width */
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid #e0e0e0;
-                padding-bottom: 1rem;
-            }
-            .menu-pane h2 {
-                font-size: 1.1em;
-            }
-            .menu-pane ul {
-                display: flex; /* Make menu items horizontal on small screens */
-                overflow-x: auto;
-                white-space: nowrap;
-                padding-bottom: 10px; /* For scrollbar */
-            }
-            .menu-pane li {
-                flex: 0 0 auto;
-                margin-right: 10px;
-                border: 1px solid #e0e0e0;
-                border-radius: 5px;
-                padding: 0.6rem 0.8rem; /* Adjusted padding */
-                font-size: 0.8rem; /* Smaller font for menu items */
-            }
-            .menu-pane li.active {
-                border-left: none; /* Remove left border highlight */
-                border: 2px solid #007bff; /* Use full border for highlight */
-                padding: calc(0.6rem - 2px) calc(0.8rem - 2px);
-            }
-            .details-pane h2 {
-                font-size: 1.4em;
-            }
-            .details-pane h3 {
-                font-size: 1.1em;
-            }
-            .details-grid {
-                gap: 0.6rem 1rem; /* Smaller gap */
-                padding: 1rem;
-            }
-            .details-grid strong,
-            .details-grid span {
-                font-size: 0.9em; /* Smaller font for grid content */
-            }
-            footer p {
-                font-size: 0.75rem; /* Smaller font for footer */
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/public/css/bitaxe-dashboard.css">
 </head>
 <body>
     <header>
         <h1><!-- TITLE --></h1>
+        <p >Version: <!-- VERSION --></p>
     </header>
-
+   
     <div class="main-container">
         <nav class="menu-pane">
             <h2>Devices</h2>
@@ -233,7 +32,7 @@
     </div>
 
     <footer>
-        <p>&copy; <!-- CURRENT_YEAR --> <!-- TITLE -->. Last updated: <span id="timestamp"><!-- TIMESTAMP --></span>, Ver. <!-- VERSION --></p>
+        <p>&copy; <!-- CURRENT_YEAR --> Scott Walter. Last updated: <span id="timestamp"><!-- TIMESTAMP --></span>, Ver. <!-- VERSION --></p>
     </footer>
 
     <!-- This script tag will be replaced by the server-side JS with the actual data -->

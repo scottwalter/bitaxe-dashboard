@@ -382,9 +382,31 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateMenu() {
         deviceMenu.innerHTML = ''; // Clear existing menu items
 
-        // Add Summary menu item at the top
+        let maxMenuWidth = 0; // To store the maximum calculated width
+
+        // Helper to measure text width
+        function measureTextWidth(text, font) {
+            const canvas = measureTextWidth.canvas || (measureTextWidth.canvas = document.createElement("canvas"));
+            const context = canvas.getContext("2d");
+            context.font = font || '0.95em \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif'; // Match .menu-pane li font
+            return context.measureText(text).width;
+        }
+
+        // Get current computed style for menu items to ensure accurate measurement
+        const tempListItem = document.createElement('li');
+        tempListItem.style.visibility = 'hidden';
+        tempListItem.style.position = 'absolute';
+        tempListItem.style.whiteSpace = 'nowrap';
+        document.body.appendChild(tempListItem);
+        const computedStyle = window.getComputedStyle(tempListItem);
+        const listItemFont = computedStyle.font;
+        const listItemPaddingHorizontal = parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
+        document.body.removeChild(tempListItem);
+
+        // Measure Summary item
         if (summaryMenuItem) {
-            summaryMenuItem.textContent = 'Summary';
+            const summaryText = summaryMenuItem.textContent;
+            maxMenuWidth = Math.max(maxMenuWidth, measureTextWidth(summaryText, listItemFont) + listItemPaddingHorizontal);
             deviceMenu.appendChild(summaryMenuItem);
             summaryMenuItem.addEventListener('click', () => {
                 // Remove 'active' class from all list items
@@ -405,6 +427,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 deviceMenu.innerHTML = '<li>No devices configured or found.</li>';
             }
             // If summary is present, it will already be there
+            // Apply initial width if only summary is present or no devices
+            const menuPane = document.querySelector('.menu-pane');
+            if (menuPane && window.innerWidth > 768) { // Apply only on larger screens
+                menuPane.style.flexBasis = `${maxMenuWidth + 40}px`; // Add buffer for padding/margin
+                menuPane.style.width = `${maxMenuWidth + 40}px`;
+            }
             return;
         }
 
@@ -412,8 +440,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const listItem = document.createElement('li');
             listItem.dataset.deviceId = data.id; // Store unique ID for lookup
             // Display hostname, fallback to ID if hostname is missing
-            listItem.textContent = data.id || 'Unnamed Device';
+            const deviceName = data.id || 'Unnamed Device';
+            listItem.textContent = deviceName;
             deviceMenu.appendChild(listItem);
+
+            // Measure this device name
+            maxMenuWidth = Math.max(maxMenuWidth, measureTextWidth(deviceName, listItemFont) + listItemPaddingHorizontal);
 
             listItem.addEventListener('click', () => {
                 // Remove 'active' class from all list items
@@ -437,6 +469,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
+        // Apply the calculated max width to the menu pane after all items are measured
+        const menuPane = document.querySelector('.menu-pane');
+        if (menuPane && window.innerWidth > 768) { // Apply only on larger screens
+            menuPane.style.flexBasis = `${maxMenuWidth + 40}px`; // Add buffer for padding/margin and active border
+            menuPane.style.width = `${maxMenuWidth + 40}px`;
+        }
+
         // Automatically select and display details for the first device or summary on page load
         if (summaryMenuItem && miningCoreData) {
             summaryMenuItem.click(); // Simulate a click on the Summary item if data is available
@@ -455,3 +494,5 @@ document.addEventListener('DOMContentLoaded', () => {
     populateMenu();
 
 });
+
+

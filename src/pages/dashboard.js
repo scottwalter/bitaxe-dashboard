@@ -104,7 +104,7 @@ ${JSON.stringify(embeddedData, null, 2)}
         htmlContent = htmlContent.replace(/<!-- TITLE -->/g, config.title || 'Bitaxe Dashboard');
         htmlContent = htmlContent.replace('<!-- TIMESTAMP -->', new Date().toLocaleString());
         htmlContent = htmlContent.replace('<!-- CURRENT_YEAR -->', currentYear);
-        htmlContent = htmlContent.replace('<!-- VERSION -->', safeToFixed(config.bitaxe_dashboard_version));
+        htmlContent = htmlContent.replace(/<!-- VERSION -->/g, safeToFixed(config.bitaxe_dashboard_version));
 
         // Send the final HTML response
         res.writeHead(200, { 'Content-Type': 'text/html' });

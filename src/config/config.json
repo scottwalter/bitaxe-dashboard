@@ -1,11 +1,13 @@
 {
     "bitaxe_dashboard_version":1.0,
     "web_server_port": 3000,
-    "demo_mode":true,
+    "demo_mode":false,
     "title":"Bitaxe Dashboard",
     "bitaxe_instances": [
         {"Bitaxe1":"http://127.0.0.1:3000"},
-        {"Bitaxe2":"http://127.0.0.1:3000"}
+        {"Bitaxe2":"http://127.0.0.1:3000"},
+        {"Bitaxe3":"http://127.0.0.1:3000"},
+        {"Bitaxe4":"http://127.0.0.1:3000"}
     ],
     "display_fields":[
         {"Mining Metrics":[
