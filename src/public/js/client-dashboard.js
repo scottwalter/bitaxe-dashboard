@@ -135,22 +135,92 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'current':
             case 'temptarget':
             case 'poolDifficulty':
-            case 'responseTime':
-                return safeToFixed(Number(value));
+                return typeof value === 'number' && !isNaN(value) ? Math.round(value).toString() : 'N/A';
             case 'power':
-                return generateProgressBarHtml(value, 40, 'red');
+                if (typeof value !== 'number' || isNaN(value)) {
+                    return 'N/A';
+                }
+                const powerPercentage = Math.min(100, Math.max(0, (value / 40) * 100));
+                return `
+                    <div style="width: 100px; height: 10px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;">
+                        <div style="width: ${powerPercentage}%; height: 100%; background-color: red;"></div>
+                    </div>
+                    <span style="margin-left: 5px;">${value.toFixed(3)} / 40</span>
+                `;
             case 'voltage':
-                return generateProgressBarHtml(value, 6000, 'red');
+                const voltageInVolts = value / 1000; // Convert millivolts to volts
+                if (typeof voltageInVolts !== 'number' || isNaN(voltageInVolts)) {
+                    return 'N/A';
+                }
+                const voltagePercentage = Math.min(100, Math.max(0, (voltageInVolts / 6) * 100));
+                return `
+                    <div style="width: 100px; height: 10px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;">
+                        <div style="width: ${voltagePercentage}%; height: 100%; background-color: red;"></div>
+                    </div>
+                    <span style="margin-left: 5px;">${voltageInVolts.toFixed(3)} / 6</span>
+                `;
             case 'fanspeed':
-                return generateProgressBarHtml(value, 100, 'red');
+                let fanSpeedFillColor;
+                if (value <= 80) {
+                    fanSpeedFillColor = 'green';
+                } else if (value >= 81 && value <= 95) {
+                    fanSpeedFillColor = 'yellow';
+                } else { // 96 to 100
+                    fanSpeedFillColor = 'red';
+                }
+                if (typeof value !== 'number' || isNaN(value)) {
+                    return 'N/A';
+                }
+                const fanSpeedPercentage = Math.min(100, Math.max(0, (value / 100) * 100));
+                return `
+                    <div style="width: 100px; height: 10px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;">
+                        <div style="width: ${fanSpeedPercentage}%; height: 100%; background-color: ${fanSpeedFillColor};"></div>
+                    </div>
+                    <span style="margin-left: 5px;">${Math.round(value)} / 100</span>
+                `;
             case 'coreVoltageActual':
-                return generateProgressBarHtml(value, 1275, 'red');
+                const coreVoltageActualInVolts = value / 1000; // Convert millivolts to volts
+                if (typeof coreVoltageActualInVolts !== 'number' || isNaN(coreVoltageActualInVolts)) {
+                    return 'N/A';
+                }
+                const coreVoltageActualPercentage = Math.min(100, Math.max(0, (coreVoltageActualInVolts / 1.5) * 100));
+                return `
+                    <div style="width: 100px; height: 10px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;">
+                        <div style="width: ${coreVoltageActualPercentage}%; height: 100%; background-color: red;"></div>
+                    </div>
+                    <span style="margin-left: 5px;">${coreVoltageActualInVolts.toFixed(3)} / 1.5</span>
+                `;
             case 'frequency':
-                return generateProgressBarHtml(value, 1000, 'red');
+                if (typeof value !== 'number' || isNaN(value)) {
+                    return 'N/A';
+                }
+                const frequencyPercentage = Math.min(100, Math.max(0, (value / 1000) * 100));
+                return `
+                    <div style="width: 100px; height: 10px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;">
+                        <div style="width: ${frequencyPercentage}%; height: 100%; background-color: red;"></div>
+                    </div>
+                    <span style="margin-left: 5px;">${Math.round(value)} / 1000</span>
+                `;
             case 'temp':
-                return generateProgressBarHtml(value, 75, 'red');
+                let tempFillColor;
+                if (value <= 60) {
+                    tempFillColor = 'green';
+                } else if (value >= 61 && value <= 65) {
+                    tempFillColor = 'yellow';
+                } else { // 66 to 75
+                    tempFillColor = 'red';
+                }
+                return generateProgressBarHtml(value, 75, tempFillColor);
             case 'vrTemp':
-                return generateProgressBarHtml(value, 100, 'red');
+                let vrTempFillColor;
+                if (value <= 70) {
+                    vrTempFillColor = 'green';
+                } else if (value >= 71 && value <= 85) {
+                    vrTempFillColor = 'yellow';
+                } else { // 86 to 100
+                    vrTempFillColor = 'red';
+                }
+                return generateProgressBarHtml(value, 100, vrTempFillColor);
             case 'blockReward': // Keep blockReward here if it's a number needing fixed-point
                 return safeToFixed(Number(value));
             case 'networkHashrate':
@@ -173,7 +243,9 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'wifiRSSI':
                 return `${value} dBm`;
             case 'overheat_mode':
-                return value ? 'Enabled' : 'Disabled'; // Assuming boolean
+                const overheatStatus = value ? 'Enabled' : 'Disabled';
+                const overheatColor = value ? 'red' : 'green';
+                return `<span style="color: ${overheatColor}; font-weight: bold;">${overheatStatus}</span>`;
             case 'lastNetworkBlockTime':
             case 'lastPoolBlockTime':
                 // Directly parse ISO 8601 string, no need to multiply by 1000
