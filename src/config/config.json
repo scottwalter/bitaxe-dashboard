@@ -16,6 +16,7 @@
             {"poolDifficulty":"Pool Difficulty"},
             {"sharesAccepted":"Shares Accepted"},
             {"sharesRejected":"Shares Rejected"},
+            {"sharesRejectedReasons":"Shares Rejected Reasons"},
             {"responseTime":"Response Time"}
         ]},
         {"General Information":[

@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const powerPercentage = Math.min(100, Math.max(0, (value / 40) * 100));
                 return `
                     <div style="width: 100px; height: 10px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;">
-                        <div style="width: ${powerPercentage}%; height: 100%; background-color: red;"></div>
+                        <div style="width: ${powerPercentage}%; height: 100%; background-color: green;"></div>
                     </div>
                     <span style="margin-left: 5px;">${value.toFixed(3)} / 40</span>
                 `;
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const voltagePercentage = Math.min(100, Math.max(0, (voltageInVolts / 6) * 100));
                 return `
                     <div style="width: 100px; height: 10px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;">
-                        <div style="width: ${voltagePercentage}%; height: 100%; background-color: red;"></div>
+                        <div style="width: ${voltagePercentage}%; height: 100%; background-color: green;"></div>
                     </div>
                     <span style="margin-left: 5px;">${voltageInVolts.toFixed(3)} / 6</span>
                 `;
@@ -186,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const coreVoltageActualPercentage = Math.min(100, Math.max(0, (coreVoltageActualInVolts / 1.5) * 100));
                 return `
                     <div style="width: 100px; height: 10px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;">
-                        <div style="width: ${coreVoltageActualPercentage}%; height: 100%; background-color: red;"></div>
+                        <div style="width: ${coreVoltageActualPercentage}%; height: 100%; background-color: green;"></div>
                     </div>
                     <span style="margin-left: 5px;">${coreVoltageActualInVolts.toFixed(3)} / 1.5</span>
                 `;
@@ -197,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const frequencyPercentage = Math.min(100, Math.max(0, (value / 1000) * 100));
                 return `
                     <div style="width: 100px; height: 10px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;">
-                        <div style="width: ${frequencyPercentage}%; height: 100%; background-color: red;"></div>
+                        <div style="width: ${frequencyPercentage}%; height: 100%; background-color: green;"></div>
                     </div>
                     <span style="margin-left: 5px;">${Math.round(value)} / 1000</span>
                 `;
@@ -252,6 +252,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const date = new Date(value);
                 // Check if date is valid before calling toLocaleString
                 return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleString();
+            case 'sharesRejectedReasons':
+                if (Array.isArray(value) && value.length > 0) {
+                    return value.map(reason => `${reason.message}: ${reason.count}`).join(', ');
+                }
+                return 'N/A';
             default:
                 return String(value);
         }
