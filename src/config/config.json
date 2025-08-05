@@ -1,7 +1,7 @@
 {
     "bitaxe_dashboard_version":1.0,
     "web_server_port": 3000,
-    "demo_mode":false,
+    "demo_mode":true,
     "title":"Bitaxe Dashboard",
     "bitaxe_instances": [
         {"Bitaxe1":"http://127.0.0.1:3000"},
