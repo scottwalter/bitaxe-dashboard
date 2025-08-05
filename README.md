@@ -41,6 +41,7 @@ Here is the basic config.json
             {"poolDifficulty":"Pool Difficulty"},
             {"sharesAccepted":"Shares Accepted"},
             {"sharesRejected":"Shares Rejected"},
+            {"sharesRejectedReasons":"Shares Rejected Reasons"},
             {"responseTime":"Response Time"}
         ]},
         {"General Information":[
@@ -99,8 +100,14 @@ What can you do with the config.json?
 - You can add any additional Bitaxe /api/system/info keys you want, or remove any keys you don't want.
 > [!TIP]
 > Go to http://{your_bitaxe_ip_address}/api/system/info to see the possible keys.
-- You can reorder sections or individual key:value pairs to the way you want to see the data, the application will dynamically read them and follow what you set. (Note: sharesRejectedReasons only shows an Object message right now, it is on the TODO list).
+- You can reorder sections or individual key:value pairs to the way you want to see the data, the application will dynamically read them and follow what you set. 
 - The rest should be fairly self-explanitory (title, ports, bitaxe_instances - Name them whatever you want, just make sure the URL is correct!)
+
+Fun Facts
+- The bar scales for temp, vrTemp, and fanspeed will change from green to yellow to red based on value. The idea is to let you quickly spot an issue. 
+    - For temp, <=60 = Green, 61 - 65 = Yellow, >66 = Red
+    - For vrTemp, <=70 = Green, 71 - 85 = Yellow, >86 = Red
+    - For fanspeed, <=80 = Green, 81-95 = Yellow, >95 = Red
 
 Recommended:
 - You can run this on the public internet and see your Bitaxe information since the application will make the internal calls to your Bitaxe device API.
