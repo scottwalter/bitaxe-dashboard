@@ -97,6 +97,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
+     * Generates HTML for a horizontal progress bar.
+     * @param {number} value - The current value.
+     * @param {number} maxValue - The maximum value for the scale.
+     * @param {string} fillColor - The color of the filled part of the bar.
+     * @returns {string} The HTML string for the progress bar.
+     */
+    function generateProgressBarHtml(value, maxValue, fillColor) {
+        if (typeof value !== 'number' || isNaN(value)) {
+            return 'N/A';
+        }
+        const percentage = Math.min(100, Math.max(0, (value / maxValue) * 100));
+        return `
+            <div style="width: 100px; height: 10px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;">
+                <div style="width: ${percentage}%; height: 100%; background-color: ${fillColor};"></div>
+            </div>
+            <span style="margin-left: 5px;">${value.toFixed(1)} / ${maxValue}</span>
+        `;
+    }
+
+
+    /**
      * Applies specific formatting based on the field key.
      * @param {string} fieldKey - The key of the field (e.g., 'hashRate', 'uptimeSeconds').
      * @param {*} value - The raw value of the field.
@@ -111,19 +132,25 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'uptimeSeconds':
                 return formatUptime(value);
             case 'hashRate':
-            case 'power':
-            case 'voltage':
             case 'current':
-            case 'temp':
-            case 'vrTemp':
-            case 'coreVoltageActual':
-            case 'frequency':
-            case 'fanspeed':
-            case 'fanrpm':
             case 'temptarget':
             case 'poolDifficulty':
             case 'responseTime':
                 return safeToFixed(Number(value));
+            case 'power':
+                return generateProgressBarHtml(value, 40, 'red');
+            case 'voltage':
+                return generateProgressBarHtml(value, 6000, 'red');
+            case 'fanspeed':
+                return generateProgressBarHtml(value, 100, 'red');
+            case 'coreVoltageActual':
+                return generateProgressBarHtml(value, 1275, 'red');
+            case 'frequency':
+                return generateProgressBarHtml(value, 1000, 'red');
+            case 'temp':
+                return generateProgressBarHtml(value, 75, 'red');
+            case 'vrTemp':
+                return generateProgressBarHtml(value, 100, 'red');
             case 'blockReward': // Keep blockReward here if it's a number needing fixed-point
                 return safeToFixed(Number(value));
             case 'networkHashrate':

@@ -31,7 +31,7 @@ async function loadConfig() {
             config.bitaxe_instances = [newEntry1, newEntry2];
         }
         console.log(`Configuration loaded successfully.`);
-        console.log(`Loaded Configuration: ${JSON.stringify(config, null, 2)}`); // Uncomment for detailed config log
+        //console.log(`Loaded Configuration: ${JSON.stringify(config, null, 2)}`); // Uncomment for detailed config log
         return config;
     } catch (error) {
         if (error.code === 'ENOENT') {

@@ -8,7 +8,14 @@ const fetch = require('node-fetch'); // Make sure node-fetch is installed (npm i
 
 
 const API_SYSTEM_INFO_PATH = '/api/system/info'; // Endpoint for miner info
-
+/**
+     * Safely formats a number to two decimal places, or returns 'N/A'.
+     * @param {number|string} value
+     * @returns {string}
+     */
+    function safeToFixed(value) {
+        return typeof value === 'number' && !isNaN(value) ? value.toFixed(2) : 'N/A';
+    }
 /**
  * Handles the dashboard display, fetching data and serving HTML with embedded data.
  * This is the server-side component.
@@ -97,6 +104,7 @@ ${JSON.stringify(embeddedData, null, 2)}
         htmlContent = htmlContent.replace(/<!-- TITLE -->/g, config.title || 'Bitaxe Dashboard');
         htmlContent = htmlContent.replace('<!-- TIMESTAMP -->', new Date().toLocaleString());
         htmlContent = htmlContent.replace('<!-- CURRENT_YEAR -->', currentYear);
+        htmlContent = htmlContent.replace('<!-- VERSION -->', safeToFixed(config.bitaxe_dashboard_version));
 
         // Send the final HTML response
         res.writeHead(200, { 'Content-Type': 'text/html' });
