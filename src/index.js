@@ -63,7 +63,16 @@ async function startServer() {
     const port = process.env.PORT || config.web_server_port || DEFAULT_WEB_SERVER_PORT;
 
     const server = http.createServer(async (req, res) => {
-        console.log(`${new Date().toISOString()} Request made to: ${req.url}`);
+        //Find the callers real IP address
+        let clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
+        // If x-forwarded-for contains multiple IPs (e.g., "client_ip, proxy_ip, another_proxy_ip")
+         // The first one is typically the original client's IP.
+        if (clientIp && clientIp.includes(',')) {
+            clientIp = clientIp.split(',')[0].trim();
+        }
+        console.log(`${new Date().toISOString()} - ${clientIp} - Request made to: ${req.url}`);
+        
         // Ensure that d.dispatch is awaited. It handles sending the response.
         await d.dispatch(req, res, config);
     });
