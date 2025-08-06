@@ -1,0 +1,2 @@
+//This will be the controller to call Bitaxe APIs via a proxy since they are on internal IP addresses.
+//We will use the openai.yaml provided in the bitaxe.org github repo as the template to understand how to call the APIs

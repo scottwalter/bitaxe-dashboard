@@ -5,7 +5,7 @@
     "title":"Bitaxe Dashboard",
     "bitaxe_instances": [
         {"Bitaxe1":"http://127.0.0.1:3000"},
-        {"Bitaxe2":"http://127.0.0.1:3000"},
+        {"Bitaxe2":"http://192.168.7.122"},
         {"Bitaxe3":"http://127.0.0.1:3000"},
         {"Bitaxe4":"http://127.0.0.1:3000"}
     ],

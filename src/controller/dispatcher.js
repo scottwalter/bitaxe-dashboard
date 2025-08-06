@@ -2,10 +2,10 @@ const http = require('http'); // Not directly used in dispatch, but good for con
 const fs = require('fs').promises; // Make sure you have fs.promises here
 const path = require('path');
 
-const dashboardPage = require('../pages/dashboard.js');
-const faviconPage = require('../pages/favicon');
-const imageServer = require('../pages/images');
-const demoApiEndpoint = require('../pages/demo-api.js');
+const dashboardPage = require('../pages/dashboard');
+const faviconPage = require('./favicon.js');
+const imageServer = require('./images.js');
+const demoApiEndpoint = require('./demo-api');
 
 
 // Define a constant for the public directory where client-side assets are stored

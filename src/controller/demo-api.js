@@ -9,7 +9,7 @@ const API_ENDPOINT_MAP = {
 };
 
 // Define the directory where demo API JSON files are located
-const DEMO_API_DIRECTORY = path.join(__dirname, '/demo-apis');
+const DEMO_API_DIRECTORY = path.join(__dirname, '../demo-apis');
 
 async function display(req, res) {
     try {
