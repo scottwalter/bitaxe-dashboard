@@ -205,9 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 let tempFillColor;
                 if (value <= 60) {
                     tempFillColor = 'green';
-                } else if (value >= 61 && value <= 65) {
+                } else if (value > 60 && value <= 70) {
                     tempFillColor = 'yellow';
-                } else { // 66 to 75
+                } else { // 71 to 75
                     tempFillColor = 'red';
                 }
                 return generateProgressBarHtml(value, 75, tempFillColor);

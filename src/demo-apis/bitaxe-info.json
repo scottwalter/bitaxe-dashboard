@@ -55,7 +55,7 @@
 	"invertscreen":	0,
 	"displayTimeout":	-1,
 	"autofanspeed":	1,
-	"fanspeed":	81,
+	"fanspeed":	100,
 	"temptarget":	58,
 	"fanrpm":	7267,
 	"statsFrequency":	30
