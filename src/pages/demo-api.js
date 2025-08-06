@@ -1,45 +1,57 @@
-const http = require('http');
-const fs = require('fs').promises; // Import the promise-based fs module
+const fs = require('fs').promises;
 const path = require('path');
 
-async function display(req, res){
-    try{
-        const apiDirectory = path.join(__dirname, '/demo-apis');
-        //const jsonName = 'bitaxe-info1.json';
-        let jsonName='';
-        if( req.url === '/api/pools'){
-            jsonName = 'mining-core.json';
+// Define API endpoints and their corresponding JSON files
+const API_ENDPOINT_MAP = {
+    '/api/pools': 'mining-core.json',
+    '/api/system/info': 'bitaxe-info.json',
+    // Add more API mappings here
+};
+
+// Define the directory where demo API JSON files are located
+const DEMO_API_DIRECTORY = path.join(__dirname, '/demo-apis');
+
+async function display(req, res) {
+    try {
+        const requestedFile = API_ENDPOINT_MAP[req.url];
+
+        // If the requested URL is not in our defined API map
+        if (!requestedFile) {
+            console.warn(`Demo API: Unknown endpoint requested: ${req.url}`);
+            res.writeHead(404, { 'Content-Type': 'text/html' });
+            return res.end('<h1>404 Not Found</h1><p>The requested API endpoint does not exist.</p>');
         }
-        if( req.url === '/api/system/info'){
-            jsonName = "bitaxe-info.json";
+
+        const filePath = path.join(DEMO_API_DIRECTORY, requestedFile);
+        console.log(`Demo API: Attempting to serve: ${filePath}`);
+
+        const fileData = await fs.readFile(filePath);
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(fileData);
+
+    } catch (error) {
+        console.error('Demo API Error:', error);
+
+        // Check for specific error types, e.g., file not found
+        if (error.code === 'ENOENT') {
+            if (!res.headersSent) {
+                res.writeHead(404, { 'Content-Type': 'text/html' });
+                return res.end(`<h1>404 Not Found</h1><p>The data file for this API endpoint was not found: ${error.message}</p>`);
+            }
         }
-        const jsonPath = path.join(apiDirectory, jsonName);
-        console.log(`API PATH: ${jsonPath}`);
 
-        // Await the file read operation. Errors from readFile will now be caught by the outer try...catch.
-        const data = await fs.readFile(jsonPath);
-        //console.log(`Found Data; ${data}`);
-
-        let contentType = 'application/json';
-        res.writeHead(200, { 'Content-Type': contentType });
-        res.end(data); // data is a Buffer by default from fs.promises.readFile, which res.end can handle.
-
-    }catch(error){
-        console.error('Demo API: Error fetching or processing data:', error);
-        // Important: Check if headers have already been sent before attempting to write new ones.
-        // This prevents the "Cannot write headers after they are sent" error if an error
-        // occurred *after* headers were already sent (e.g., by res.writeHead(200) above).
+        // Generic internal server error
         if (!res.headersSent) {
             res.writeHead(500, { 'Content-Type': 'text/html' });
-            res.end(`<h1>Error</h1><p>Could not fetch data. Please check the server and network.</p><p>${error.message}</p>`);
+            res.end(`<h1>500 Internal Server Error</h1><p>An unexpected error occurred: ${error.message}</p>`);
         } else {
-            // If headers were already sent, we can't change the status code.
-            // Just log the error, and the connection might eventually close or time out.
-            console.error('Headers already sent, cannot send 500 error response. Original error:', error);
+            // If headers were already sent, just log the error
+            console.error('Demo API: Headers already sent, cannot send new error response. Original error:', error);
         }
     }
-    
 }
-module.exports={
+
+module.exports = {
     display
-}
+};
