@@ -29,18 +29,19 @@
              {"frequency":"Frequency"},
              {"temp":"ASIC Temp"},
              {"vrTemp":"VR Temp"},
+             {"fanspeed":"Fan Speed"},
+             {"fanrpm":"Fan RPM"},
+             {"temptarget":"Target Temp"},
+             {"overheat_mode":"Over Heat Mode"},
+             {"uptimeSeconds":"Uptime Seconds"},
              {"current":"Current"},
              {"wifiRSSI":"Wifi RSSI"},
-             {"uptimeSeconds":"Uptime Seconds"},
-             {"overheat_mode":"Over Heat Mode"},
-             {"fanspeed":"Fan Speed"},
-             {"temptarget":"Target Temp"},
-             {"fanrpm":"Fan RPM"},
              {"stratumURL":"Stratum URL"},
              {"stratumUser":"Stratum User"},
              {"stratumPort":"Stratum Port"},
-             {"idfVersion":"IDF Version"},
-             {"axeOSVersion":"AxeOS Version"}
+             {"axeOSVersion":"AxeOS Version"},
+             {"idfVersion":"IDF Version"}
+             
         ]}
         
     ],

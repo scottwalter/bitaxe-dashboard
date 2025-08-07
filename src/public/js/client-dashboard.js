@@ -44,12 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Helper Functions ---
 
     /**
-     * Safely formats a number to two decimal places, or returns 'N/A'.
+     * Safely formats a number to a specified number of decimal places, or returns 'N/A'.
      * @param {number|string} value
+     * @param {number} [digits=2] - The number of decimal places.
      * @returns {string}
      */
-    function safeToFixed(value) {
-        return typeof value === 'number' && !isNaN(value) ? value.toFixed(2) : 'N/A';
+    function safeToFixed(value, digits = 2) {
+        return typeof value === 'number' && !isNaN(value) ? value.toFixed(digits) : 'N/A';
     }
 
     /**
@@ -97,6 +98,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
+     * Converts a device hashrate (assumed to be in GH/s) into a human-readable format.
+     * @param {number} hashrate - The hashrate in GH/s.
+     * @returns {string} The formatted hashrate string (e.g., "500.00 MH/s", "1.63 TH/s").
+     */
+    function formatDeviceHashrate(hashrate) {
+        if (typeof hashrate !== 'number' || isNaN(hashrate) || hashrate < 0) {
+            return 'N/A';
+        }
+
+        if (hashrate < 1) { // Less than 1 GH/s, show as MH/s
+            return `${(hashrate * 1000).toFixed(2)} MH/s`;
+        }
+
+        const units = ['GH/s', 'TH/s', 'PH/s', 'EH/s', 'ZH/s'];
+        let i = 0;
+        while (hashrate >= 1000 && i < units.length - 1) {
+            hashrate /= 1000;
+            i++;
+        }
+        return `${hashrate.toFixed(2)} ${units[i]}`;
+    }
+
+    /**
+     * Converts a large number (like difficulty) into a human-readable format with metric prefixes.
+     * @param {number} value - The number to format.
+     * @returns {string} The formatted number string (e.g., "10.5 T").
+     */
+    function formatLargeNumber(value) {
+        if (typeof value !== 'number' || isNaN(value) || value < 0) {
+            return 'N/A';
+        }
+
+        const units = ['', 'K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y'];
+        let i = 0;
+        while (value >= 1000 && i < units.length - 1) {
+            value /= 1000;
+            i++;
+        }
+        return `${value.toFixed(2)} ${units[i]}`.trim();
+    }
+
+    /**
      * Generates HTML for a horizontal progress bar.
      * @param {number} value - The current value.
      * @param {number} maxValue - The maximum value for the scale.
@@ -132,6 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'uptimeSeconds':
                 return formatUptime(value);
             case 'hashRate':
+            case 'expectedHashrate':
+                return formatDeviceHashrate(value);
             case 'current':
             case 'temptarget':
             case 'poolDifficulty':
@@ -228,9 +273,9 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'poolHashrate':
                 return formatHashrate(Number(value));
             case 'networkDifficulty':
-                // Format with locale string for better readability of large numbers
-                return Number(value).toLocaleString(undefined, { maximumFractionDigits: 2 });
+                return formatLargeNumber(Number(value));
             case 'totalPaid':
+                return safeToFixed(Number(value), 3);
             case 'totalBlocks':
             case 'totalConfirmedBlocks':
             case 'totalPendingBlocks':
@@ -494,4 +539,3 @@ document.addEventListener('DOMContentLoaded', () => {
     populateMenu();
 
 });
-
