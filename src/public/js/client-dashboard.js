@@ -448,10 +448,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const listItemPaddingHorizontal = parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
         document.body.removeChild(tempListItem);
 
+        const indicatorWidth = 18; // 10px width + 8px margin-right
+
         // Measure Summary item
         if (summaryMenuItem) {
             const summaryText = summaryMenuItem.textContent;
-            maxMenuWidth = Math.max(maxMenuWidth, measureTextWidth(summaryText, listItemFont) + listItemPaddingHorizontal);
+            summaryMenuItem.innerHTML = ''; // Clear existing text to rebuild
+
+            const statusIndicator = document.createElement('span');
+            statusIndicator.classList.add('status-indicator', 'status-online');
+            statusIndicator.title = 'Summary';
+
+            const textNode = document.createTextNode(' ' + summaryText);
+
+            summaryMenuItem.appendChild(statusIndicator);
+            summaryMenuItem.appendChild(textNode);
+
+            maxMenuWidth = Math.max(maxMenuWidth, measureTextWidth(summaryText, listItemFont) + listItemPaddingHorizontal + indicatorWidth);
             deviceMenu.appendChild(summaryMenuItem);
             summaryMenuItem.addEventListener('click', () => {
                 // Remove 'active' class from all list items
@@ -484,13 +497,26 @@ document.addEventListener('DOMContentLoaded', () => {
         minerData.forEach(data => {
             const listItem = document.createElement('li');
             listItem.dataset.deviceId = data.id; // Store unique ID for lookup
+
+            // Create status indicator
+            const statusIndicator = document.createElement('span');
+            statusIndicator.classList.add('status-indicator');
+            if (data.status === 'Error') {
+                statusIndicator.classList.add('status-error');
+                listItem.title = `Error: ${data.message || 'Unknown error'}`; // Add a tooltip for the error
+            } else {
+                statusIndicator.classList.add('status-online');
+                listItem.title = 'Online';
+            }
+
             // Display hostname, fallback to ID if hostname is missing
             const deviceName = data.id || 'Unnamed Device';
-            listItem.textContent = deviceName;
+            listItem.appendChild(statusIndicator);
+            listItem.appendChild(document.createTextNode(' ' + deviceName));
             deviceMenu.appendChild(listItem);
 
             // Measure this device name
-            maxMenuWidth = Math.max(maxMenuWidth, measureTextWidth(deviceName, listItemFont) + listItemPaddingHorizontal);
+            maxMenuWidth = Math.max(maxMenuWidth, measureTextWidth(deviceName, listItemFont) + listItemPaddingHorizontal + indicatorWidth);
 
             listItem.addEventListener('click', () => {
                 // Remove 'active' class from all list items

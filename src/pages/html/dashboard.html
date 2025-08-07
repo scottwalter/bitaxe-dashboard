@@ -5,6 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><!-- TITLE --></title>
     <link rel="stylesheet" href="/public/css/bitaxe-dashboard.css">
+    <style>
+        /* --- Status Indicators --- */
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            flex-shrink: 0; /* Prevents the dot from shrinking if the container is flex */
+        }
+
+        .status-online {
+            background-color: #28a745; /* Green */
+            box-shadow: 0 0 4px #28a745;
+        }
+
+        .status-error {
+            background-color: #dc3545; /* Red */
+            box-shadow: 0 0 4px #dc3545;
+        }
+
+        /* Ensure menu items align the indicator and text */
+        .menu-pane ul li {
+            display: flex;
+            align-items: center;
+        }
+    </style>
 </head>
 <body>
     <header>
