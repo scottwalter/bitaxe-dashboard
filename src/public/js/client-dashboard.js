@@ -355,6 +355,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 html += `<strong>${fieldLabel}:</strong> <span>${formattedValue}</span>`;
             });
+
+            // If this is the "Miner(s) Status" category, add individual miner stats
+            if (categoryName === 'Miner(s) Status' && minerData && minerData.length > 0) {
+                // Use a grid separator that spans all columns to create a visual break.
+                //html += `<hr class="individual-miner-grid-separator">`;
+
+                minerData.forEach(miner => {
+                    if (miner.status === 'Error') {
+                        // Add a label for the miner and its error status
+                        html += `<strong>${miner.id}:</strong> <span style="color: #dc3545; font-weight: bold;">Error</span>`;
+                    } else {
+                        const formattedHashrate = formatDeviceHashrate(miner.hashRate);
+                        const bestDiff = miner.bestSessionDiff || 'N/A';
+                        // Create one row for each miner with the second column delimited with | for each value.
+                        html += `<strong>${miner.id} Hashrate:</strong> <span>${formattedHashrate} | ${bestDiff}</span>`;
+                    }
+                });
+            }
+
             html += `</div>`;
         });
         return html;

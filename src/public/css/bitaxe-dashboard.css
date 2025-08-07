@@ -142,6 +142,45 @@
             margin-top: auto; /* Pushes footer to the bottom */
             box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.15);
         }
+         /* --- Status Indicators --- */
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            flex-shrink: 0; /* Prevents the dot from shrinking if the container is flex */
+        }
+
+        .status-online {
+            background-color: #28a745; /* Green */
+            box-shadow: 0 0 4px #28a745;
+        }
+
+        .status-error {
+            background-color: #dc3545; /* Red */
+            box-shadow: 0 0 4px #dc3545;
+        }
+
+        /* Ensure menu items align the indicator and text */
+        .menu-pane ul li {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Separator for details grid */
+        .grid-separator {
+            grid-column: 1 / -1; /* Span all columns */
+            border: 0;
+            height: 1px;
+            background-color: #ddd;
+        }
+        .individual-miner-grid-separator {
+            grid-column: 1 / -1; /* Span all columns */
+            border: 0;
+            height: 1px;
+            background-color: #007bff
+        }
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -200,5 +239,38 @@
             }
             footer p {
                 font-size: 0.75rem; /* Smaller font for footer */
+            }
+             /* --- Status Indicators --- */
+            .status-indicator {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                margin-right: 8px;
+                flex-shrink: 0; /* Prevents the dot from shrinking if the container is flex */
+            }
+
+            .status-online {
+                background-color: #28a745; /* Green */
+                box-shadow: 0 0 4px #28a745;
+            }
+
+            .status-error {
+                background-color: #dc3545; /* Red */
+                box-shadow: 0 0 4px #dc3545;
+            }
+
+            /* Ensure menu items align the indicator and text */
+            .menu-pane ul li {
+                display: flex;
+                align-items: center;
+            }
+
+            /* Separator for details grid */
+            .grid-separator {
+                grid-column: 1 / -1; /* Span all columns */
+                border: 0;
+                height: 1px;
+                background-color: #ddd;
             }
         }
