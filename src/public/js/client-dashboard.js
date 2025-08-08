@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const timestampSpan = document.getElementById('timestamp');
     const summaryMenuItem = document.getElementById('summary-menu-item');
     const miningCoreDetailsDiv = document.getElementById('mining-core-details');
-    const deviceDetailsParagraph = detailsPane.querySelector('p'); // The initial "Select a device..." paragraph
 
     let minerData = [];
     let displayFieldsConfig = []; // To store the display_fields from config.json
