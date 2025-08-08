@@ -9,13 +9,60 @@ const fs = require('fs').promises;
 const path = require('path');
 
 const dashboardPage = require('../pages/dashboard');
-const faviconPage = require('./favicon.js');
-const imageServer = require('./images.js');
 const demoApiEndpoint = require('./demo-api');
 
 // Define a constant for the public directory where client-side assets are stored
 const PUBLIC_DIR = path.join(__dirname, '../public');
 
+// A map of file extensions to their corresponding MIME types for static assets.
+const MIME_TYPES = {
+    '.css': 'text/css',
+    '.js': 'application/javascript',
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.gif': 'image/gif',
+    '.svg': 'image/svg+xml',
+    '.ico': 'image/x-icon',
+    '.webp': 'image/webp'
+};
+
+/**
+ * Serves a static asset from the public directory.
+ * This function is a generic handler for any file inside `/public`.
+ * It includes security checks to prevent directory traversal attacks.
+ * @param {http.IncomingMessage} req The request object.
+ * @param {http.ServerResponse} res The response object.
+ */
+async function serveStaticAsset(req, res) {
+    try {
+        // Get the relative path from the URL, e.g., /public/css/style.css -> css/style.css
+        const relativePath = path.normalize(req.url.substring('/public/'.length));
+        const filePath = path.join(PUBLIC_DIR, relativePath);
+
+        // Security check: ensure the resolved path is still within the public directory.
+        if (!filePath.startsWith(PUBLIC_DIR)) {
+            res.writeHead(403, { 'Content-Type': 'text/plain' });
+            return res.end('Forbidden');
+        }
+
+        const fileContent = await fs.readFile(filePath);
+        const ext = path.extname(filePath).toLowerCase();
+        const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+
+        res.writeHead(200, { 'Content-Type': contentType });
+        res.end(fileContent);
+    } catch (error) {
+        if (error.code === 'ENOENT') {
+            res.writeHead(404, { 'Content-Type': 'text/plain' });
+            res.end('Not Found');
+        } else {
+            console.error(`Error serving static asset ${req.url}:`, error);
+            res.writeHead(500, { 'Content-Type': 'text/plain' });
+            res.end('Internal Server Error');
+        }
+    }
+}
 // Defines the application's routes. Each route object specifies a path,
 // an HTTP method, the handler function, and whether the path requires an exact match.
 const routes = [
@@ -32,18 +79,6 @@ const routes = [
         exactMatch: true
     },
     {
-        path: '/favicon.ico',
-        method: 'GET',
-        handler: faviconPage.display,
-        exactMatch: true
-    },
-    {
-        path: '/image/', // This will match any URL starting with /image/
-        method: 'GET',
-        handler: imageServer.display,
-        exactMatch: false // Allows for prefix matching (e.g., /image/logo.png).
-    },
-    {
         path: '/api/system/info',
         method: 'GET',
         handler: demoApiEndpoint.display,
@@ -55,45 +90,13 @@ const routes = [
         handler: demoApiEndpoint.display,
         exactMatch: true
     },
+    // Generic handler for all static assets in the /public/ directory.
     {
-        path: '/public/js/client-dashboard.js',
+        path: '/public/',
         method: 'GET',
-        handler: async (req, res) => {
-            try {
-                const jsFilePath = path.join(PUBLIC_DIR, 'js', 'client-dashboard.js');
-                const jsContent = await fs.readFile(jsFilePath, 'utf8');
-                res.writeHead(200, { 'Content-Type': 'application/javascript' });
-                res.end(jsContent);
-            } catch (err) {
-                console.error('Error serving client-dashboard.js:', err);
-                if (!res.headersSent) {
-                    res.writeHead(500, { 'Content-Type': 'text/plain' });
-                    res.end('Error loading client script.');
-                }
-            }
-        },
-        exactMatch: true
-    },
-    // Style Sheet path
-    {
-        path: '/public/css/bitaxe-dashboard.css',
-        method: 'GET',
-        handler: async (req, res) => {
-            try {
-                const jsFilePath = path.join(PUBLIC_DIR, 'css', 'bitaxe-dashboard.css');
-                const jsContent = await fs.readFile(jsFilePath, 'utf8');
-                res.writeHead(200, { 'Content-Type': 'text/css' });
-                res.end(jsContent);
-            } catch (err) {
-                console.error('Error serving bitaxe-dashboard.css:', err);
-                if (!res.headersSent) {
-                    res.writeHead(500, { 'Content-Type': 'text/plain' });
-                    res.end('Error loading client script.');
-                }
-            }
-        },
-        exactMatch: true
-    },
+        handler: serveStaticAsset,
+        exactMatch: false // Allows for prefix matching (e.g., /public/css/style.css).
+    }
     // Add more routes here as your application grows
 ];
 
