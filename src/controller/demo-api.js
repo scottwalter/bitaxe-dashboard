@@ -38,7 +38,7 @@ async function display(req, res, config) {
         }
 
         const filePath = path.join(DEMO_API_DIRECTORY, requestedFile);
-        console.log(`Demo API: Attempting to serve: ${filePath}`);
+       // console.log(`Demo API: Attempting to serve: ${filePath}`);
 
         // Read the corresponding JSON file from the filesystem.
         const fileData = await fs.readFile(filePath);

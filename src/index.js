@@ -37,7 +37,8 @@ async function loadConfig() {
             config.title += ' - DEMO MODE';
             // Replace the configured Bitaxe instances with mock demo instances.
             const newEntry1 =  {"DemoAxe1":"http://127.0.0.1:"+config.web_server_port};
-            const newEntry2 =  {"DemoAxe2":"http://127.0.0.1:"+config.web_server_port};
+            const newEntry2 =  {"DemoAxe2":"http://127.0.1.1:"+config.web_server_port};
+            //const newEntry2 =  {"DemoAxe2":"http://127.0.2.2"}; // Pointing to non-routable address to simulate offline device.
             config.bitaxe_instances = [newEntry1, newEntry2];
         }
         console.log(`Configuration loaded successfully.`);

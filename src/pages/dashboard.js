@@ -41,6 +41,7 @@ async function display(req, res, config) {
             const instanceUrl = instance[instanceName];
 
             try {
+                //console.log(`Fetching data for Bitaxe instance: ${instanceName} at ${instanceUrl}`);
                 const response = await fetch(instanceUrl + API_SYSTEM_INFO_PATH);
                 if (!response.ok) {
                     console.error(`Error fetching data from ${instanceUrl}: ${response.status} ${response.statusText}`); // Log the HTTP error.
