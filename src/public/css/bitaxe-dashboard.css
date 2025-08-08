@@ -122,17 +122,6 @@
             font-weight: 600;
         }
 
-        /* Temperature color scaling for bar */
-        .temp-bar-green {
-            background-color: #4CAF50; /* Green */
-        }
-        .temp-bar-yellow {
-            background-color: #FFEB3B; /* Yellow */
-        }
-        .temp-bar-red {
-            background-color: #F44336; /* Red */
-        }
-
         footer {
             background-color: #333;
             color: white;
