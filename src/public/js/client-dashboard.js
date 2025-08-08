@@ -369,7 +369,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         const formattedHashrate = formatDeviceHashrate(miner.hashRate);
                         const bestDiff = miner.bestSessionDiff || 'N/A';
                         // Create one row for each miner with the second column delimited with | for each value.
-                        html += `<strong>${miner.id} Hashrate:</strong> <span>${formattedHashrate} | ${bestDiff}</span>`;
+                        html += `<strong>${miner.id}</strong> <span>${formattedHashrate} | ${bestDiff}</span>`;
+                        html += `<strong>${miner.id}:</strong> <span>${miner.temp} | ${miner.vrTemp}</span>`;
                     }
                 });
             }
@@ -414,26 +415,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             html += `</div>`;
         });
-
-        // Hash Board Details Section (remains dynamic, not part of display_fields)
-        if (data.boards && Array.isArray(data.boards) && data.boards.length > 0) {
-            html += `<h3>Hash Board Details</h3>`;
-            data.boards.forEach((board, index) => {
-                html += `<h4>Board ${index + 1}</h4>`;
-                html += `<div class="details-grid">`;
-                for (const key in board) {
-                    if (Object.hasOwnProperty.call(board, key)) {
-                        let value = board[key];
-                        // Specific formatting for board temps
-                        if (['chipTemp', 'pcbTemp'].includes(key) && typeof value === 'number') {
-                            value = value.toFixed(1);
-                        }
-                        html += `<strong>${key}:</strong> <span>${value}</span>`;
-                    }
-                }
-                html += `</div>`;
-            });
-        }
 
         return html;
     }
