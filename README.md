@@ -108,7 +108,7 @@ Fun Facts
     - For temp, <=60 = Green, 61 - 65 = Yellow, >66 = Red
     - For vrTemp, <=70 = Green, 71 - 85 = Yellow, >86 = Red
     - For fanspeed, <=80 = Green, 81-95 = Yellow, >95 = Red
-- The Device List shows a status indicator for each Bitaxe Device, Green - Bitaxe Dashboard can reach the devices API, Red - The device is likely down or offline.
+- The Device List shows a status indicator for each Bitaxe Device, Green - Bitaxe Dashboard can reach the device's API, Red - The device is likely down or offline.
 Recommended:
 - You can run this on the public internet and see your Bitaxe information since the application will make the internal calls to your Bitaxe device API.
 > [!WARNING]
