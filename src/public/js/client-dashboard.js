@@ -368,8 +368,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         const formattedHashrate = formatDeviceHashrate(miner.hashRate);
                         const bestDiff = miner.bestSessionDiff || 'N/A';
                         // Create one row for each miner with the second column delimited with | for each value.
-                        html += `<strong>${miner.id}</strong> <span>${formattedHashrate} | ${bestDiff}</span>`;
-                        html += `<strong>${miner.id}:</strong> <span>${miner.temp} | ${miner.vrTemp}</span>`;
+                        html += `<strong>${miner.id}</strong> <span>HR: ${formattedHashrate} | SBD: ${bestDiff}</span>`;
+                        html += `<strong>&nbsp</strong> <span>T: ${safeToFixed(Number(miner.temp),2)} | VT: ${safeToFixed(Number(miner.vrTemp),2)}</span>`;
                     }
                 });
             }

@@ -183,7 +183,7 @@
         }
 
         /* Responsive adjustments */
-        @media (max-width: 768px) {
+        @media (max-width: 1924px) {
             body {
                 font-size: 0.85rem; /* Smaller base font size for mobile */
             }
