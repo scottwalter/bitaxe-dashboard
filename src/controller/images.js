@@ -1,50 +1,60 @@
+/**
+ * @file This module acts as a simple static file server for images.
+ * It handles requests for image assets by reading them from the filesystem
+ * and serving them with the correct MIME type.
+ */
+
 const http = require('http');
-const fs = require('fs').promises; // Import the promise-based fs module
+const fs = require('fs').promises;
 const path = require('path');
 
-async function display(req, res, config){
-    try{
+/**
+ * Handles requests for image files. It extracts the requested image name from the URL,
+ * reads the file from the `../images` directory, determines the correct Content-Type
+ * header, and sends the image data in the response.
+ *
+ * @param {import('http').IncomingMessage} req The HTTP request object.
+ * @param {import('http').ServerResponse} res The HTTP response object.
+ * @param {object} config The application configuration object (not used in this handler).
+ */
+async function display(req, res, config) {
+    try {
+        // Define the base directory where images are stored.
         const imagesDirectory = path.join(__dirname, '../images');
-        const imageName = path.basename(req.url); // Extract filename from URL
+        // Securely extract the filename from the request URL to prevent directory traversal.
+        const imageName = path.basename(req.url);
         const imagePath = path.join(imagesDirectory, imageName);
 
         console.log(`Attempting to serve image: ${imagePath}`);
 
-        // Await the file read operation. Errors from readFile will now be caught by the outer try...catch.
+        // Asynchronously read the image file from the disk.
         const data = await fs.readFile(imagePath);
 
+        // Determine the correct MIME type based on the file extension.
         const ext = path.extname(imageName).toLowerCase();
-        let contentType = 'application/octet-stream'; // Default
-
-        // Determine content type based on file extension
-        if (ext === '.jpg' || ext === '.jpeg') {
-            contentType = 'image/jpeg';
-        } else if (ext === '.png') {
-            contentType = 'image/png';
-        } else if (ext === '.gif') {
-            contentType = 'image/gif';
-        } else if (ext === '.svg') {
-            contentType = 'image/svg+xml';
-        } else if (ext === '.webp') {
-            contentType = 'image/webp';
-        }
-        // Add more image types as needed
+        const mimeTypes = {
+            '.jpg': 'image/jpeg',
+            '.jpeg': 'image/jpeg',
+            '.png': 'image/png',
+            '.gif': 'image/gif',
+            '.svg': 'image/svg+xml',
+            '.webp': 'image/webp',
+        };
+        const contentType = mimeTypes[ext] || 'application/octet-stream'; // Default to a generic binary stream.
 
         res.writeHead(200, { 'Content-Type': contentType });
         res.end(data);
 
-    }catch(error){
+    } catch (error) {
         console.error('Images: Error fetching or processing data:', error);
-        // Important: Check if headers have already been sent before attempting to write new ones.
-        // This prevents the "Cannot write headers after they are sent" error if an error
-        // occurred *after* headers were already sent (though less likely with await fs.readFile).
+        // Check if headers have been sent to prevent crashing the server by trying to send them again.
         if (!res.headersSent) {
-            // For file not found or other read errors
+            // If the file doesn't exist, send a 404 Not Found error.
             if (error.code === 'ENOENT') {
                 res.writeHead(404, { 'Content-Type': 'text/plain' });
                 res.end('Image not found');
             } else {
-                // For other server errors
+                // For any other type of error, send a 500 Internal Server Error.
                 res.writeHead(500, { 'Content-Type': 'text/html' });
                 res.end(`<h1>Error</h1><p>Could not fetch data. Please check the server and network.</p><p>${error.message}</p>`);
             }
@@ -56,6 +66,6 @@ async function display(req, res, config){
     }
 }
 
-module.exports={
+module.exports = {
     display
-}
+};

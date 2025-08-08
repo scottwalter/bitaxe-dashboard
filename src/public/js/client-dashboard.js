@@ -1,4 +1,15 @@
-// File Path: /Users/scottwalter/VSC-Projects/bitaxe-dashboard/src/public/js/client-dashboard.js
+/**
+ * @file This script provides the client-side logic for the Bitaxe Dashboard.
+ * It runs after the DOM is fully loaded, parses JSON data embedded in the HTML
+ * by the server, and dynamically generates the dashboard's content.
+ *
+ * Responsibilities include:
+ * - Populating the left-hand navigation menu with discovered devices and a summary view.
+ * - Handling clicks on menu items to display detailed information in the right-hand pane.
+ * - Formatting various data points (e.g., hashrate, uptime, temperature) for human-readable display.
+ * - Generating visual elements like progress bars with color-coded thresholds.
+ * - Dynamically adjusting the width of the navigation menu to fit device names.
+ */
 
 document.addEventListener('DOMContentLoaded', () => {
     const deviceMenu = document.getElementById('device-menu');
@@ -9,9 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const miningCoreDetailsDiv = document.getElementById('mining-core-details');
 
     let minerData = [];
-    let displayFieldsConfig = []; // To store the display_fields from config.json
-    let miningCoreData = null; // Declare miningCoreData at a higher scope
-    let miningCoreDisplayFields = []; // Declare miningCoreDisplayFields at a higher scope
+    let displayFieldsConfig = []; // Stores the display_fields from config.json for miners.
+    let miningCoreData = null; // Stores the data for the Mining Core instance.
+    let miningCoreDisplayFields = []; // Stores the display_fields from config.json for Mining Core.
 
     // --- Retrieve and Parse Embedded Data ---
     if (embeddedDataScript && embeddedDataScript.textContent.trim()) {
@@ -22,12 +33,12 @@ document.addEventListener('DOMContentLoaded', () => {
             miningCoreData = embedded.miningCoreData;
             miningCoreDisplayFields = embedded.miningCoreDisplayFields || [];
 
-            // Sort data by hostname for consistent menu order (optional)
+            // Sort data by hostname for a consistent and predictable menu order.
             minerData.sort((a, b) => (a.hostname || a.id).localeCompare(b.hostname || b.id));
         } catch (e) {
             console.error('Error parsing embedded miner data:', e);
             detailsPane.innerHTML = '<p style="color: red;">Error loading device data. Please refresh the page.</p>';
-            return; // Stop execution if data is unrecoverable
+            return; // Stop execution if data is unrecoverable.
         }
     } else {
         console.warn('No embedded miner data found.');
@@ -35,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Update the "Last updated" timestamp on the client side
+    // Update the "Last updated" timestamp on the client side to reflect when the script ran.
     if (timestampSpan) {
         timestampSpan.textContent = new Date().toLocaleString();
     }
@@ -44,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Safely formats a number to a specified number of decimal places, or returns 'N/A'.
-     * @param {number|string} value
-     * @param {number} [digits=2] - The number of decimal places.
+     * @param {number|string} value The value to format.
+     * @param {number} [digits=2] The number of decimal places.
      * @returns {string}
      */
     function safeToFixed(value, digits = 2) {
@@ -54,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Formats uptime from seconds to human-readable string.
-     * @param {number} seconds
+     * @param {number} seconds The total uptime in seconds.
      * @returns {string}
      */
     function formatUptime(seconds) {
@@ -72,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (days > 0) parts.push(`${days}d`);
         if (hours > 0) parts.push(`${hours}h`);
         if (minutes > 0) parts.push(`${minutes}m`);
-        if (secs > 0 || parts.length === 0) parts.push(`${secs}s`); // Ensure at least seconds are shown
+        if (secs > 0 || parts.length === 0) parts.push(`${secs}s`); // Ensure at least seconds are shown, even for 0s uptime.
 
         return parts.join(' ');
     }
@@ -184,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (typeof value !== 'number' || isNaN(value)) {
                     return 'N/A';
                 }
+                // Max power is assumed to be 40W for progress bar scaling.
                 const powerPercentage = Math.min(100, Math.max(0, (value / 40) * 100));
                 return `
                     <div style="width: 100px; height: 10px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;">
@@ -196,6 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (typeof voltageInVolts !== 'number' || isNaN(voltageInVolts)) {
                     return 'N/A';
                 }
+                // Max voltage is assumed to be 6V for progress bar scaling.
                 const voltagePercentage = Math.min(100, Math.max(0, (voltageInVolts / 6) * 100));
                 return `
                     <div style="width: 100px; height: 10px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;">
@@ -204,6 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span style="margin-left: 5px;">${voltageInVolts.toFixed(3)} / 6</span>
                 `;
             case 'fanspeed':
+                // Color-code the fan speed bar to indicate potential stress.
                 let fanSpeedFillColor;
                 if (value <= 80) {
                     fanSpeedFillColor = 'green';
@@ -227,6 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (typeof coreVoltageActualInVolts !== 'number' || isNaN(coreVoltageActualInVolts)) {
                     return 'N/A';
                 }
+                // Max core voltage is assumed to be 1.5V for progress bar scaling.
                 const coreVoltageActualPercentage = Math.min(100, Math.max(0, (coreVoltageActualInVolts / 1.5) * 100));
                 return `
                     <div style="width: 100px; height: 10px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;">
@@ -238,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (typeof value !== 'number' || isNaN(value)) {
                     return 'N/A';
                 }
+                // Max frequency is assumed to be 1000MHz for progress bar scaling.
                 const frequencyPercentage = Math.min(100, Math.max(0, (value / 1000) * 100));
                 return `
                     <div style="width: 100px; height: 10px; background-color: #e0e0e0; border: 1px solid #ccc; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle;">
@@ -246,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span style="margin-left: 5px;">${Math.round(value)} / 1000</span>
                 `;
             case 'temp':
+                // Color-code the temperature bar to indicate potential overheating.
                 let tempFillColor;
                 if (value <= 60) {
                     tempFillColor = 'green';
@@ -254,8 +271,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else { // 71 to 75
                     tempFillColor = 'red';
                 }
-                return generateProgressBarHtml(value, 75, tempFillColor);
+                return generateProgressBarHtml(value, 75, tempFillColor); // Max temp is assumed to be 75°C for scaling.
             case 'vrTemp':
+                // Color-code the VRM temperature bar to indicate potential overheating.
                 let vrTempFillColor;
                 if (value <= 70) {
                     vrTempFillColor = 'green';
@@ -264,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else { // 86 to 100
                     vrTempFillColor = 'red';
                 }
-                return generateProgressBarHtml(value, 100, vrTempFillColor);
+                return generateProgressBarHtml(value, 100, vrTempFillColor); // Max VRM temp is assumed to be 100°C for scaling.
             case 'blockReward': // Keep blockReward here if it's a number needing fixed-point
                 return safeToFixed(Number(value));
             case 'networkHashrate':
@@ -282,7 +300,7 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'blockHeight':
             case 'connectedPeers':
             case 'nodeVersion':
-                // For these, just return the value as a string to avoid precision issues with very large numbers
+                // Return as a string to avoid potential precision issues with very large numbers.
                 return String(value);
             case 'wifiRSSI':
                 return `${value} dBm`;
@@ -293,8 +311,8 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'lastNetworkBlockTime':
             case 'lastPoolBlockTime':
                 // Directly parse ISO 8601 string, no need to multiply by 1000
-                const date = new Date(value);
-                // Check if date is valid before calling toLocaleString
+                const date = new Date(value); // The server provides a standard ISO 8601 string.
+                // Check if the date is valid before attempting to format it.
                 return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleString();
             case 'sharesRejectedReasons':
                 if (Array.isArray(value) && value.length > 0) {
@@ -317,11 +335,17 @@ document.addEventListener('DOMContentLoaded', () => {
             return '<p>No mining core data available. Please check your config. Perhaps you have Mining Core Data disabled?</p>';
         }
 
-        const poolData = data.pools[0]; // Assuming only one pool for now
+        const poolData = data.pools[0]; // The dashboard currently visualizes the first pool's data.
 
         let html = '';
 
-        // Helper to get nested value
+        /**
+         * Safely retrieves a value from the nested structure of the mining core pool data.
+         * It checks networkStats, poolStats, and the top-level of the pool object.
+         * @param {string} fieldKey The key of the value to retrieve.
+         * @param {object} pool The pool data object.
+         * @returns {*} The found value, or undefined if not found.
+         */
         function getNestedMiningCoreValue(fieldKey, pool) {
             if (pool.networkStats && pool.networkStats.hasOwnProperty(fieldKey)) {
                 return pool.networkStats[fieldKey];
@@ -332,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (pool.hasOwnProperty(fieldKey)) {
                 return pool[fieldKey];
             }
-            return undefined; // Or null, to be handled by safeToFixed/formatFieldValue
+            return undefined; // Return undefined to be handled by the formatting function.
         }
 
         displayFields.forEach(categoryObj => {
@@ -344,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let fieldKey = Object.keys(fieldObj)[0];
                 const fieldLabel = fieldObj[fieldKey];
 
-                // Correcting the typo for lastNetworkBlockTime
+                // Correct the typo from the config file for 'lastNetworkBlockTime'.
                 if (fieldKey === 'lasNetworkBlockTime') {
                     fieldKey = 'lastNetworkBlockTime';
                 }
@@ -357,15 +381,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // If this is the "Miner(s) Status" category, add individual miner stats
             if (categoryName === 'Miner(s) Status' && minerData && minerData.length > 0) {
-                // Use a grid separator that spans all columns to create a visual break.
-                //html += `<hr class="individual-miner-grid-separator">`;
-
                 minerData.forEach(miner => {
                     if (miner.status === 'Error') {
-                        // Add a label for the miner and its error status
+                        // Display the miner's name and its error status.
                         html += `<strong>${miner.id}:</strong> <span style="color: #dc3545; font-weight: bold;">Error</span>`;
                     } else {
-                        const formattedHashrate = formatDeviceHashrate(miner.hashRate);
+                        const formattedHashrate = formatDeviceHashrate(miner.hashRate); // Use the specific device hashrate formatter.
                         const bestDiff = miner.bestSessionDiff || 'N/A';
                         // Create one row for each miner with the second column delimited with | for each value.
                         html += `<strong>${miner.id}</strong> <span>HR: ${formattedHashrate} | SBD: ${bestDiff}</span>`;
@@ -385,7 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * @returns {string} The HTML string for the device details.
      */
     function generateDeviceDetailsHtml(data) {
-        // If there was an error fetching data for this specific instance
+        // Display a detailed error message if data fetching failed for this instance.
         if (data.status === 'Error') {
             return `
                 <h2 style="color: #d8000c;">Device: ${data.hostname || 'Unknown Device'} - Error</h2>
@@ -418,25 +439,33 @@ document.addEventListener('DOMContentLoaded', () => {
         return html;
     }
 
-    // --- Main Logic to Populate Menu and Handle Clicks ---
+    // --- UI Population and Event Handling ---
 
     /**
-     * Populates the left-hand device menu.
+     * Populates the left-hand device menu, dynamically adjusting its width
+     * to fit the content, and attaches click handlers.
      */
     function populateMenu() {
         deviceMenu.innerHTML = ''; // Clear existing menu items
 
-        let maxMenuWidth = 0; // To store the maximum calculated width
+        let maxMenuWidth = 0; // To store the maximum calculated width for dynamic resizing.
 
-        // Helper to measure text width
+        /**
+         * Measures the pixel width of a given text string using a canvas.
+         * Caches the canvas element for performance.
+         * @param {string} text The text to measure.
+         * @param {string} font The CSS font string to use for measurement.
+         * @returns {number} The width of the text in pixels.
+         */
         function measureTextWidth(text, font) {
+            // Use a static canvas to avoid creating a new one on each call.
             const canvas = measureTextWidth.canvas || (measureTextWidth.canvas = document.createElement("canvas"));
             const context = canvas.getContext("2d");
-            context.font = font || '0.95em \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif'; // Match .menu-pane li font
+            context.font = font || '0.95em \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif'; // Match .menu-pane li font.
             return context.measureText(text).width;
         }
 
-        // Get current computed style for menu items to ensure accurate measurement
+        // Get current computed style for menu items to ensure accurate width measurement.
         const tempListItem = document.createElement('li');
         tempListItem.style.visibility = 'hidden';
         tempListItem.style.position = 'absolute';
@@ -447,9 +476,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const listItemPaddingHorizontal = parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
         document.body.removeChild(tempListItem);
 
-        const indicatorWidth = 18; // 10px width + 8px margin-right
+        const indicatorWidth = 18; // Approx. width of status indicator (10px) + margin (8px).
 
-        // Measure Summary item
+        // First, add and measure the "Summary" menu item if it exists.
         if (summaryMenuItem) {
             const summaryText = summaryMenuItem.textContent;
             summaryMenuItem.innerHTML = ''; // Clear existing text to rebuild
@@ -466,14 +495,14 @@ document.addEventListener('DOMContentLoaded', () => {
             maxMenuWidth = Math.max(maxMenuWidth, measureTextWidth(summaryText, listItemFont) + listItemPaddingHorizontal + indicatorWidth);
             deviceMenu.appendChild(summaryMenuItem);
             summaryMenuItem.addEventListener('click', () => {
-                // Remove 'active' class from all list items
+                // Deactivate all other menu items.
                 document.querySelectorAll('#device-menu li').forEach(item => {
                     item.classList.remove('active');
                 });
-                // Add 'active' class to the clicked item
+                // Activate the clicked item.
                 summaryMenuItem.classList.add('active');
 
-                // Show mining core details, hide device details
+                // Display the mining core summary in the details pane.
                 detailsPane.innerHTML = generateMiningCoreDetailsHtml(miningCoreData, miningCoreDisplayFields);
             });
         }
@@ -483,10 +512,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!summaryMenuItem) {
                 deviceMenu.innerHTML = '<li>No devices configured or found.</li>';
             }
-            // If summary is present, it will already be there
-            // Apply initial width if only summary is present or no devices
+            // If summary is present, it will already be there.
+            // Apply initial width if only summary is present or no devices are found.
             const menuPane = document.querySelector('.menu-pane');
-            if (menuPane && window.innerWidth > 768) { // Apply only on larger screens
+            if (menuPane && window.innerWidth > 768) { // Only apply on larger screens.
                 menuPane.style.flexBasis = `${maxMenuWidth + 40}px`; // Add buffer for padding/margin
                 menuPane.style.width = `${maxMenuWidth + 40}px`;
             }
@@ -497,32 +526,32 @@ document.addEventListener('DOMContentLoaded', () => {
             const listItem = document.createElement('li');
             listItem.dataset.deviceId = data.id; // Store unique ID for lookup
 
-            // Create status indicator
+            // Create a status indicator (green for online, red for error).
             const statusIndicator = document.createElement('span');
             statusIndicator.classList.add('status-indicator');
             if (data.status === 'Error') {
                 statusIndicator.classList.add('status-error');
-                listItem.title = `Error: ${data.message || 'Unknown error'}`; // Add a tooltip for the error
+                listItem.title = `Error: ${data.message || 'Unknown error'}`; // Add a tooltip for the error details.
             } else {
                 statusIndicator.classList.add('status-online');
                 listItem.title = 'Online';
             }
 
-            // Display hostname, fallback to ID if hostname is missing
+            // Display the device's name (ID from config) and attach the status indicator.
             const deviceName = data.id || 'Unnamed Device';
             listItem.appendChild(statusIndicator);
             listItem.appendChild(document.createTextNode(' ' + deviceName));
             deviceMenu.appendChild(listItem);
 
-            // Measure this device name
+            // Update the max width based on this item's content.
             maxMenuWidth = Math.max(maxMenuWidth, measureTextWidth(deviceName, listItemFont) + listItemPaddingHorizontal + indicatorWidth);
 
             listItem.addEventListener('click', () => {
-                // Remove 'active' class from all list items
+                // Deactivate all other menu items.
                 document.querySelectorAll('#device-menu li').forEach(item => {
                     item.classList.remove('active');
                 });
-                // Add 'active' class to the clicked item
+                // Activate the clicked item.
                 listItem.classList.add('active');
 
                 // Hide mining core details, show device details
@@ -530,7 +559,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 detailsPane.style.display = 'block';
 
                 // Find the corresponding data and display it in the details pane
-                const selectedData = minerData.find(m => m.id === data.id);
+                const selectedData = minerData.find(m => m.id === listItem.dataset.deviceId);
                 if (selectedData) {
                     detailsPane.innerHTML = generateDeviceDetailsHtml(selectedData);
                 } else {
@@ -539,16 +568,16 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Apply the calculated max width to the menu pane after all items are measured
+        // After all items are measured, apply the calculated max width to the menu pane.
         const menuPane = document.querySelector('.menu-pane');
-        if (menuPane && window.innerWidth > 768) { // Apply only on larger screens
-            menuPane.style.flexBasis = `${maxMenuWidth + 40}px`; // Add buffer for padding/margin and active border
+        if (menuPane && window.innerWidth > 768) { // Only apply on larger screens.
+            menuPane.style.flexBasis = `${maxMenuWidth + 40}px`; // Add buffer for padding, margin, and active border.
             menuPane.style.width = `${maxMenuWidth + 40}px`;
         }
 
-        // Automatically select and display details for the first device or summary on page load
+        // Automatically select and display details for the first item on page load.
         if (summaryMenuItem && miningCoreData) {
-            summaryMenuItem.click(); // Simulate a click on the Summary item if data is available
+            summaryMenuItem.click(); // Prioritize the summary view if it's available.
         } else if (minerData.length > 0) { // Check if minerData exists before trying to click first element
             // If there are devices, click the first one
             const firstDeviceListItem = deviceMenu.querySelector('li[data-device-id]');

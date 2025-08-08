@@ -1,31 +1,48 @@
-const http = require('http');
-const fs = require('fs');
+/**
+ * @file This module handles serving the website's favicon.
+ * It reads the favicon.ico file from the filesystem and sends it as a response.
+ */
+
+const fs = require('fs').promises; // Use promise-based fs for async/await
 const path = require('path');
-const fetch = require('node-fetch');
 
-async function display(req, res, config){
+/**
+ * Handles the request for the favicon.ico file.
+ *
+ * @param {import('http').IncomingMessage} req The HTTP request object.
+ * @param {import('http').ServerResponse} res The HTTP response object.
+ * @param {object} config The application configuration object (not used in this handler).
+ */
+async function display(req, res, config) {
     try {
-      const imagePath = path.join(__dirname, '../images/favicon.ico');
-      fs.readFile(imagePath, (err, data) => {
-            if (err) {
+        // Construct the full path to the favicon file.
+        const imagePath = path.join(__dirname, '../images/favicon.ico');
+
+        // Asynchronously read the favicon file from the disk.
+        const data = await fs.readFile(imagePath);
+
+        // Send the image data with the correct MIME type.
+        res.writeHead(200, { 'Content-Type': 'image/x-icon' });
+        res.end(data);
+
+    } catch (error) {
+        console.error('Favicon: Error serving favicon.ico:', error);
+
+        // Check if headers have been sent to prevent crashing the server.
+        if (!res.headersSent) {
+            // If the file doesn't exist, send a 404 Not Found error.
+            if (error.code === 'ENOENT') {
                 res.writeHead(404, { 'Content-Type': 'text/plain' });
-                res.end('Image not found');
-                return;
+                res.end('Favicon not found');
+            } else {
+                // For any other type of error, send a 500 Internal Server Error.
+                res.writeHead(500, { 'Content-Type': 'text/plain' });
+                res.end('Internal Server Error');
             }
-
-            res.writeHead(200, { 'Content-Type': 'image/x-icon' }); // Adjust MIME type as needed
-            res.end(data); // Send the image data as a buffer
-        });
-      
-    }catch (error){ 
-      console.error('Favicon: Error fetching or processing data:', error);
-      res.writeHead(500, { 'Content-Type': 'text/html' });
-      res.end(`<h1>Error</h1><p>Could not fetch data. Please check the server and network.</p><p>${error.message}</p>`);
-    };
-    return "1";
-
+        }
+    }
 }
 
-module.exports={
+module.exports = {
     display
 };
