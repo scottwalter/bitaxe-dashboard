@@ -34,6 +34,7 @@
              {"temptarget":"Target Temp"},
              {"overheat_mode":"Over Heat Mode"},
              {"uptimeSeconds":"Uptime Seconds"},
+             {"coreVoltage":"Core Voltage"},
              {"current":"Current"},
              {"wifiRSSI":"Wifi RSSI"},
              {"stratumURL":"Stratum URL"},
