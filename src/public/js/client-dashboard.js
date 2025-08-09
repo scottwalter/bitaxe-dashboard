@@ -364,6 +364,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let allPoolsHtml = '<h2>Mining Core Summary</h2>'; // Overall heading
+        //Show date / time of last update
+         allPoolsHtml += `<div class="mining-pool-summary-card">`; 
+        allPoolsHtml += '<h3>Status Timestamp</h3>';
+        allPoolsHtml += `<div class="details-grid">`; 
+        allPoolsHtml += `<strong>Last Updated:</strong> <span>${new Date().toLocaleString()}</span>`;
+        allPoolsHtml += `</div>`; // Close details-grid for timestamp  
+        allPoolsHtml += `</div>`; // Close mining-pool-summary-card for timestamp
+
+
         // Show each individual miner's status, regardless of whether they are part of a pool.
         allPoolsHtml += `<div class="mining-pool-summary-card">`; // Container for individual miner status
         allPoolsHtml += '<h3>Individual Miner Status</h3>';
