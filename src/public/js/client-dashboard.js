@@ -337,7 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const poolData = data.pools[0]; // The dashboard currently visualizes the first pool's data.
 
-        let html = '';
+        let html = '<h2>Mining Summary</h2>';
 
         /**
          * Safely retrieves a value from the nested structure of the mining core pool data.
@@ -418,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
 
-        let html = `<h2>Device: ${ data.id || 'Unknown Device'}</h2>`;
+        let html = `<h2>${ data.id || 'Unknown Device'}</h2>`;
 
         displayFieldsConfig.forEach(categoryObj => {
             const categoryName = Object.keys(categoryObj)[0];

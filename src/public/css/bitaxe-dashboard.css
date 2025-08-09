@@ -1,25 +1,25 @@
- /* Basic CSS for the new layout */
+ /* Basic CSS for the new layout 1*/
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
             min-height: 100vh; /* Ensure full viewport height */
-            background-color: #f4f7f6;
-            color: #333;
+            background-color: #121212; /* Dark background */
+            color: #e0e0e0; /* Light text */
         }
 
         header {
-            background-color: #282c34;
+            background-color: #1f1f1f; /* Darker header */
             color: white;
             padding: 0.4rem 1rem; /* Even further reduced padding for smaller height */
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
             font-size: 1.0em; /* Even further reduced font size for smaller height */
             font-weight: bold;
         }
         header p {
-            font-size: 0.75rem; /* Smaller font for footer */
+            font-size: 0.75rem;
         }
 
         .main-container {
@@ -27,23 +27,23 @@
             flex: 1; /* Allows container to take remaining height */
             margin: 1.5rem;
             border-radius: 10px;
-            overflow: hidden; /* For rounded corners on children */
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-            background-color: white;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            background-color: #1e1e1e; /* Dark container background */
         }
 
         .menu-pane {
-            flex: 0 0 280px; /* Fixed width for the menu */
-            background-color: #eef2f5;
+            flex: 0 0 280px;
+            background-color: #252525; /* Dark menu background */
             padding: 1.5rem;
-            overflow-y: auto; /* Scroll for many menu items */
-            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+            border-right: 1px solid #333; /* Darker border */
         }
 
         .menu-pane h2 {
             margin-top: 0;
-            color: #555;
-            border-bottom: 1px solid #dcdcdc;
+            color: #f5f5f5; /* Light heading text */
+            border-bottom: 1px solid #444; /* Darker border */
             padding-bottom: 0.8rem;
             margin-bottom: 1.2rem;
             font-size: 1.2em;
@@ -58,7 +58,7 @@
         .menu-pane li {
             padding: 1rem 0.8rem;
             cursor: pointer;
-            border-bottom: 1px solid #e0e0e0;
+            border-bottom: 1px solid #333; /* Darker border */
             transition: background-color 0.2s ease, transform 0.1s ease;
             white-space: nowrap;
             overflow: hidden;
@@ -71,65 +71,65 @@
         }
 
         .menu-pane li:hover {
-            background-color: #e0e6eb;
+            background-color: #3a3a3a; /* Dark hover effect */
             transform: translateX(3px);
         }
 
         .menu-pane li.active {
-            background-color: #cdd4da;
+            background-color: #990000; /* Red background for active item */
             font-weight: bold;
-            color: #282c34;
-            border-left: 4px solid #007bff; /* Highlight active item */
+            color: #ffffff; /* White text for active item */
+            border-left: 4px solid #ff1744; /* Brighter red highlight */
             padding-left: calc(0.8rem - 4px);
         }
 
         .details-pane {
-            flex: 1; /* Takes remaining space */
+            flex: 1;
             padding: 2rem;
-            overflow-y: auto; /* Scroll for content details */
+            overflow-y: auto;
             line-height: 1.6;
         }
 
         .details-pane h2 {
-            color: #282c34;
-            border-bottom: 2px solid #007bff;
+            color: #f5f5f5; /* Light heading text */
+            border-bottom: 2px solid #ff1744; /* Red accent border */
             padding-bottom: 0.5rem;
             margin-bottom: 1.5rem;
             font-size: 1.8em;
         }
 
         .details-pane h3 {
-            color: #444;
+            color: #f0f0f0; /* Light subheading text */
             margin-top: 2rem;
             margin-bottom: 1rem;
             font-size: 1.4em;
-            border-left: 4px solid #007bff;
+            border-left: 4px solid #ff1744; /* Red accent border */
             padding-left: 10px;
         }
 
         .details-grid {
             display: grid;
-            grid-template-columns: auto 1fr; /* Key then Value */
+            grid-template-columns: auto 1fr;
             gap: 0.8rem 1.5rem;
-            background-color: #f9fbfd;
+            background-color: #2c2c2c; /* Dark grid background */
             padding: 1.2rem;
             border-radius: 8px;
-            border: 1px solid #eef2f5;
+            border: 1px solid #333; /* Darker border */
         }
 
         .details-grid strong {
-            color: #0056b3; /* A nice blue for keys */
+            color: #f0f0f0; /* Light blue for keys */
             font-weight: 600;
         }
 
         footer {
-            background-color: #333;
+            background-color: #1f1f1f; /* Darker footer */
             color: white;
             padding: 0.8rem;
             text-align: center;
             font-size: 0.85rem;
-            margin-top: auto; /* Pushes footer to the bottom */
-            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.15);
+            margin-top: auto;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
         }
          /* --- Status Indicators --- */
         .status-indicator {
@@ -162,7 +162,7 @@
             grid-column: 1 / -1; /* Span all columns */
             border: 0;
             height: 1px;
-            background-color: #ddd;
+            background-color: #444;
         }
         .individual-miner-grid-separator {
             grid-column: 1 / -1; /* Span all columns */
@@ -187,7 +187,7 @@
                 flex: none; /* No fixed width */
                 width: 100%;
                 border-right: none;
-                border-bottom: 1px solid #e0e0e0;
+                border-bottom: 1px solid #333;
                 padding-bottom: 1rem;
             }
             .menu-pane h2 {
@@ -202,14 +202,14 @@
             .menu-pane li {
                 flex: 0 0 auto;
                 margin-right: 10px;
-                border: 1px solid #e0e0e0;
+                border: 1px solid #444;
                 border-radius: 5px;
                 padding: 0.6rem 0.8rem; /* Adjusted padding */
                 font-size: 0.8rem; /* Smaller font for menu items */
             }
             .menu-pane li.active {
                 border-left: none; /* Remove left border highlight */
-                border: 2px solid #007bff; /* Use full border for highlight */
+                border: 2px solid #ff1744; /* Use red border for highlight */
                 padding: calc(0.6rem - 2px) calc(0.8rem - 2px);
             }
             .details-pane h2 {
