@@ -18,11 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const timestampSpan = document.getElementById('timestamp');
     const summaryMenuItem = document.getElementById('summary-menu-item');
     const miningCoreDetailsDiv = document.getElementById('mining-core-details');
+    const refreshIcon = document.getElementById('refresh-icon');
 
     let minerData = [];
     let displayFieldsConfig = []; // Stores the display_fields from config.json for miners.
     let miningCoreData = null; // Stores the data for the Mining Core instance.
     let miningCoreDisplayFields = []; // Stores the display_fields from config.json for Mining Core.
+
+    if (refreshIcon) {
+        refreshIcon.addEventListener('click', () => {
+            location.reload();
+        });
+    }
 
     // --- Retrieve and Parse Embedded Data ---
     if (embeddedDataScript && embeddedDataScript.textContent.trim()) {

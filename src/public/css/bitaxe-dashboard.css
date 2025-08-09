@@ -40,12 +40,31 @@
             border-right: 1px solid #333; /* Darker border */
         }
 
-        .menu-pane h2 {
-            margin-top: 0;
-            color: #f5f5f5; /* Light heading text */
-            border-bottom: 1px solid #444; /* Darker border */
+        .menu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #444;
             padding-bottom: 0.8rem;
             margin-bottom: 1.2rem;
+        }
+
+        .refresh-icon {
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #f5f5f5;
+            transition: transform 0.5s ease, color 0.2s ease;
+        }
+
+        .refresh-icon:hover {
+            color: #ff1744; /* Red accent on hover */
+            transform: rotate(360deg);
+        }
+
+        .menu-pane h2 {
+            margin-top: 0;
+            margin-bottom: 0;
+            color: #f5f5f5; /* Light heading text */
             font-size: 1.2em;
         }
 
