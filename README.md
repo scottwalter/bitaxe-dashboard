@@ -119,3 +119,38 @@ Recommended:
 - You can run this on the public internet and see your Bitaxe information since the application will make the internal calls to your Bitaxe device API.
 > [!WARNING]
 > Placing anything on the internet is risky. I **highly recommend** you front this application with a proxy like Nginx, under SSL, using a username / password.
+
+- Here is a sample Nginx configuration for use as a reverse proxy for the bitaxe-dashboard
+```nginx
+server {
+    listen 443 ssl;
+    server_name status.xxx.com;
+    ssl_certificate /etc/nginx/ssl/status.xxx.com/certificate.crt; # or your_domain.crt/pem
+    ssl_certificate_key /etc/nginx/ssl/status.xxx.com/private.key;
+
+    # Optional: Recommended SSL settings for security
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers "HIGH:!aNULL:!MD5";
+        
+    location / {
+        proxy_pass http://192.168.7.100:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+	    proxy_buffering off;
+	    gzip on;
+        gzip_vary on;
+        gzip_proxied any;
+        gzip_comp_level 6;
+        gzip_buffers 16 8k;
+        gzip_http_version 1.1;
+        gzip_min_length 256;
+        gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript image/x-icon image/bmp image/svg+xml;
+    }
+}
+```
