@@ -30,8 +30,8 @@ Here is the basic config.json
     "demo_mode":true,
     "title":"Bitaxe Dashboard",
     "bitaxe_instances": [
-        {"Bitaxe1":"http://127.0.0.1:3000"},
-        {"Bitaxe3":"http://127.0.0.1:3000"}
+        {"Bitaxe1":"http://127.0.0.1"},
+        {"Bitaxe2":"http://127.0.0.1"}
     ],
     "display_fields":[
         {"Mining Metrics":[
@@ -73,7 +73,7 @@ Here is the basic config.json
         
     ],
     "mining_core_enabled":true,
-    "mining_core_url":"http://127.0.0.1:3000",
+    "mining_core_url":"http://127.0.0.1:4000",
     "mining_core_display_fields": [
         {"Network Status":[
             {"networkHashrate":"Network HashRate"},
