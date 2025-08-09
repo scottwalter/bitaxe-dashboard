@@ -57,7 +57,7 @@ Here is the basic config.json
              {"fanrpm":"Fan RPM"},
              {"temptarget":"Target Temp"},
              {"overheat_mode":"Over Heat Mode"},
-             {"uptimeSeconds":"Uptime Seconds"},
+             {"uptimeSeconds":"Uptime"},
              {"coreVoltage":"Core Voltage"},
              {"current":"Current"},
              {"wifiRSSI":"Wifi RSSI"},
