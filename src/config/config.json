@@ -41,7 +41,9 @@
              {"stratumUser":"Stratum User"},
              {"stratumPort":"Stratum Port"},
              {"axeOSVersion":"AxeOS Version"},
-             {"idfVersion":"IDF Version"}
+             {"idfVersion":"IDF Version"},
+             {"boardVersion":"Board Version"},
+	         {"ASICModel":"ASIC Chip"}
              
         ]}
         

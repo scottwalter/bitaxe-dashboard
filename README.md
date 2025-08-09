@@ -25,12 +25,13 @@ Here is the basic config.json
 
 ```json
 {
+    "bitaxe_dashboard_version":1.0,
     "web_server_port": 3000,
     "demo_mode":true,
     "title":"Bitaxe Dashboard",
     "bitaxe_instances": [
         {"Bitaxe1":"http://127.0.0.1:3000"},
-        {"Bitaxe2":"http://127.0.0.1:3000"}
+        {"Bitaxe3":"http://127.0.0.1:3000"}
     ],
     "display_fields":[
         {"Mining Metrics":[
@@ -48,22 +49,26 @@ Here is the basic config.json
             {"hostname":"Hostname"},
             {"power":"Power"},
              {"voltage":"Voltage"},
-             {"current":"Current"},
-             {"temp":"Temperatue"},
-             {"vrTemp":"Voltage Regulator Temperature"},
-             {"coreVoltageActual":"Core Voltage Actual"},
-             {"frequency":"frequency"},
-             {"wifiRSSI":"Wifi RSSI"},
-             {"uptimeSeconds":"Uptime Seconds"},
-             {"overheat_mode":"Over Heat Mode"},
+             {"coreVoltageActual":"ASIC Voltage"},
+             {"frequency":"Frequency"},
+             {"temp":"ASIC Temp"},
+             {"vrTemp":"VR Temp"},
              {"fanspeed":"Fan Speed"},
-             {"temptarget":"Target Temperature"},
              {"fanrpm":"Fan RPM"},
+             {"temptarget":"Target Temp"},
+             {"overheat_mode":"Over Heat Mode"},
+             {"uptimeSeconds":"Uptime Seconds"},
+             {"coreVoltage":"Core Voltage"},
+             {"current":"Current"},
+             {"wifiRSSI":"Wifi RSSI"},
              {"stratumURL":"Stratum URL"},
              {"stratumUser":"Stratum User"},
              {"stratumPort":"Stratum Port"},
+             {"axeOSVersion":"AxeOS Version"},
              {"idfVersion":"IDF Version"},
-             {"axeOSVersion":"AxeOS Version"}
+             {"boardVersion":"Board Version"},
+	         {"ASICModel":"ASIC Chip"}
+             
         ]}
         
     ],
