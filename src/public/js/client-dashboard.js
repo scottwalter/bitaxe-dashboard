@@ -61,6 +61,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Helper Functions ---
 
     /**
+     * Safely retrieves a value from the nested structure of the mining core pool data.
+     * It checks networkStats, poolStats, and the top-level of the pool object.
+     * @param {string} fieldKey The key of the value to retrieve.
+     * @param {object} pool The pool data object.
+     * @returns {*} The found value, or undefined if not found.
+     */
+    function getNestedMiningCoreValue(fieldKey, pool) {
+        if (pool.networkStats && pool.networkStats.hasOwnProperty(fieldKey)) {
+            return pool.networkStats[fieldKey];
+        }
+        if (pool.poolStats && pool.poolStats.hasOwnProperty(fieldKey)) {
+            return pool.poolStats[fieldKey];
+        }
+        if (pool.hasOwnProperty(fieldKey)) {
+            return pool[fieldKey];
+        }
+        return undefined; // Return undefined to be handled by the formatting function.
+    }
+
+
+    /**
      * Safely formats a number to a specified number of decimal places, or returns 'N/A'.
      * @param {number|string} value The value to format.
      * @param {number} [digits=2] The number of decimal places.
@@ -333,78 +354,69 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /**
      * Generates the detailed HTML for mining core summary in the right pane.
-     * @param {object} data - The mining core data object.
+     * @param {object} data - The mining core data object (now an array of pools).
      * @param {Array<object>} displayFields - The display_fields configuration for mining core.
      * @returns {string} The HTML string for the mining core details.
      */
     function generateMiningCoreDetailsHtml(data, displayFields) {
-        if (!data || !data.pools || data.pools.length === 0) {
+        if (!data || data.length === 0) {
             return '<p>No mining core data available. Please check your config. Perhaps you have Mining Core Data disabled?</p>';
         }
 
-        const poolData = data.pools[0]; // The dashboard currently visualizes the first pool's data.
-
-        let html = '<h2>Mining Summary</h2>';
-
-        /**
-         * Safely retrieves a value from the nested structure of the mining core pool data.
-         * It checks networkStats, poolStats, and the top-level of the pool object.
-         * @param {string} fieldKey The key of the value to retrieve.
-         * @param {object} pool The pool data object.
-         * @returns {*} The found value, or undefined if not found.
-         */
-        function getNestedMiningCoreValue(fieldKey, pool) {
-            if (pool.networkStats && pool.networkStats.hasOwnProperty(fieldKey)) {
-                return pool.networkStats[fieldKey];
-            }
-            if (pool.poolStats && pool.poolStats.hasOwnProperty(fieldKey)) {
-                return pool.poolStats[fieldKey];
-            }
-            if (pool.hasOwnProperty(fieldKey)) {
-                return pool[fieldKey];
-            }
-            return undefined; // Return undefined to be handled by the formatting function.
-        }
-
-        displayFields.forEach(categoryObj => {
-            const categoryName = Object.keys(categoryObj)[0];
-            const fieldsArray = categoryObj[categoryName];
-
-            html += `<h3>${categoryName}</h3><div class="details-grid">`;
-            fieldsArray.forEach(fieldObj => {
-                let fieldKey = Object.keys(fieldObj)[0];
-                const fieldLabel = fieldObj[fieldKey];
-
-                // Correct the typo from the config file for 'lastNetworkBlockTime'.
-                if (fieldKey === 'lasNetworkBlockTime') {
-                    fieldKey = 'lastNetworkBlockTime';
-                }
-
-                const displayValue = getNestedMiningCoreValue(fieldKey, poolData);
-                const formattedValue = formatFieldValue(fieldKey, displayValue);
-
-                html += `<strong>${fieldLabel}:</strong> <span>${formattedValue}</span>`;
-            });
-
-            // If this is the "Miner(s) Status" category, add individual miner stats
-            if (categoryName === 'Miner(s) Status' && minerData && minerData.length > 0) {
+        let allPoolsHtml = '<h2>Mining Core Summary</h2>'; // Overall heading
+        // Show each individual miner's status, regardless of whether they are part of a pool.
+        allPoolsHtml += `<div class="mining-pool-summary-card">`; // Container for individual miner status
+        allPoolsHtml += '<h3>Individual Miner Status</h3>';
+        allPoolsHtml += `<div class="details-grid">`; // Grid for individual miner status
+        // Loop through each miner's data and generate HTML.
+            if ( minerData && minerData.length > 0) {
                 minerData.forEach(miner => {
                     if (miner.status === 'Error') {
                         // Display the miner's name and its error status.
-                        html += `<strong>${miner.id}:</strong> <span style="color: #dc3545; font-weight: bold;">Error</span>`;
+                        allPoolsHtml += `<strong>${miner.id}:</strong> <span style="color: #dc3545; font-weight: bold;">Error</span>`;
                     } else {
                         const formattedHashrate = formatDeviceHashrate(miner.hashRate); // Use the specific device hashrate formatter.
                         const bestDiff = miner.bestSessionDiff || 'N/A';
                         // Create one row for each miner with the second column delimited with | for each value.
-                        html += `<strong>${miner.id}</strong> <span>HR: ${formattedHashrate} | SBD: ${bestDiff}</span>`;
-                        html += `<strong>&nbsp</strong> <span>T: ${safeToFixed(Number(miner.temp),2)} | VT: ${safeToFixed(Number(miner.vrTemp),2)}</span>`;
+                        allPoolsHtml += `<strong>${miner.id}</strong> <span>HR: ${formattedHashrate} | SBD: ${bestDiff}</span>`;
+                        allPoolsHtml += `<strong>&nbsp</strong> <span>T: ${safeToFixed(Number(miner.temp),2)} | VT: ${safeToFixed(Number(miner.vrTemp),2)}</span>`;
                     }
                 });
             }
+        allPoolsHtml += `</div>`; // Close details-grid for individual miner status
+        allPoolsHtml += `</div>`; // Close individual miner status card
+            
+        data.forEach(poolData => { // Loop through each pool
+            allPoolsHtml += `<div class="mining-pool-summary-card">`; // Container for each pool's details
+            allPoolsHtml += `<h3>Pool: ${poolData.id.toUpperCase()} (${poolData.coin.symbol} - ${poolData.paymentProcessing.payoutScheme})</h3>`; // Pool specific heading
 
-            html += `</div>`;
+            displayFields.forEach(categoryObj => {
+                const categoryName = Object.keys(categoryObj)[0];
+                const fieldsArray = categoryObj[categoryName];
+
+                allPoolsHtml += `<h4>${categoryName}</h4><div class="details-grid">`;
+                fieldsArray.forEach(fieldObj => {
+                    let fieldKey = Object.keys(fieldObj)[0];
+                    const fieldLabel = fieldObj[fieldKey];
+
+                    // Correct the typo from the config file for 'lasNetworkBlockTime'.
+                    if (fieldKey === 'lasNetworkBlockTime') {
+                        fieldKey = 'lastNetworkBlockTime';
+                    }
+
+                    const displayValue = getNestedMiningCoreValue(fieldKey, poolData);
+                    const formattedValue = formatFieldValue(fieldKey, displayValue);
+
+                    allPoolsHtml += `<strong>${fieldLabel}:</strong> <span>${formattedValue}</span>`;
+                });
+
+                
+
+                allPoolsHtml += `</div>`;
+            });
+            allPoolsHtml += `</div>`; // Close mining-pool-summary-card
         });
-        return html;
+        return allPoolsHtml;
     }
 
     /**

@@ -87,7 +87,7 @@ async function display(req, res, config) {
                     console.error(`Error fetching mining core data from ${config.mining_core_url}: ${miningCoreResponse.status} ${miningCoreResponse.statusText}`);
                 } else {
                     const miningCoreJson = await miningCoreResponse.json();
-                    embeddedData.miningCoreData = miningCoreJson;
+                    embeddedData.miningCoreData = miningCoreJson.pools;
                 }
             } catch (miningCoreError) {
                 console.error(`Network or JSON parsing error for mining core (${config.mining_core_url}):`, miningCoreError);
