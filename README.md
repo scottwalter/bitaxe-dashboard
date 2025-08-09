@@ -35,8 +35,8 @@ Here is the basic config.json
     ],
     "display_fields":[
         {"Mining Metrics":[
-            {"hashRate":"HashRate"},
-            {"expectedHashrate":"Expect HashRate"},
+            {"hashRate":"Hashrate"},
+            {"expectedHashrate":"Expect Hashrate"},
             {"bestDiff":"Best Difficulty"},
             {"bestSessionDiff":"Best Session Difficulty"},
             {"poolDifficulty":"Pool Difficulty"},
@@ -76,7 +76,7 @@ Here is the basic config.json
     "mining_core_url":"http://127.0.0.1:4000",
     "mining_core_display_fields": [
         {"Network Status":[
-            {"networkHashrate":"Network HashRate"},
+            {"networkHashrate":"Network Hashrate"},
             {"networkDifficulty":"Network Difficulty"},
             {"lasNetworkBlockTime":"Last Block Time"},
             {"blockHeight":"Block Height"},
