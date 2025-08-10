@@ -1,5 +1,9 @@
-const fs = require('fs').promises; // Use promise-based fs for async/await
-const path = require('path');
+/**
+ * @file This module provides the data endpoint for the dashboard.
+ * It aggregates data from all configured Bitaxe and Mining Core instances
+ * and serves it as a single JSON object to be consumed by the client-side script.
+ */
+
 const fetch = require('node-fetch');
 
 // Constants for API endpoints
@@ -7,18 +11,11 @@ const MINING_CORE_API_PATH = '/api/pools'; // Endpoint for mining core stats
 const API_SYSTEM_INFO_PATH = '/api/system/info'; // Endpoint for miner info
 
 /**
- * Safely formats a number to two decimal places, or returns 'N/A'.
- * @param {number|string} value The value to format.
- * @returns {string} The formatted number as a string, or 'N/A'.
- */
-function safeToFixed(value) {
-    return typeof value === 'number' && !isNaN(value) ? value.toFixed(2) : 'N/A';
-}
-/**
- * Handles the dashboard display, fetching data and serving HTML with embedded data.
- * This function acts as the main controller for the dashboard page.
- * @param {http.IncomingMessage} req The HTTP request object.
- * @param {http.ServerResponse} res The HTTP response object.
+ * Handles requests for the /embedded-data endpoint.
+ * It fetches data from all configured Bitaxe miner instances and an optional
+ * Mining Core instance, then serves this data as a single JSON object.
+ * @param {import('http').IncomingMessage} req The HTTP request object.
+ * @param {import('http').ServerResponse} res The HTTP response object.
  * @param {object} config The application configuration object.
  */
 async function display(req, res, config) {
@@ -65,7 +62,7 @@ async function display(req, res, config) {
         // Wait for all promises to resolve
         allMinerData = await Promise.all(instancePromises);
 
-        // Prepare the combined data object to be embedded into the HTML.
+        // Prepare the combined data object to be sent as JSON.
         const embeddedData = {
             minerData: allMinerData,
             displayFields: config.display_fields || [],
@@ -88,23 +85,15 @@ async function display(req, res, config) {
             }
         }
 
-        // Read the dashboard HTML template
-        const dashboardHtmlPath = path.join(__dirname, '../pages/html/dashboard.html');
-        let htmlContent = await fs.readFile(dashboardHtmlPath, 'utf8');
-
-        // Embed the fetched data as a JSON string inside a designated placeholder in the HTML.
-        const embeddedDataHtml = `
-${JSON.stringify(embeddedData, null, 2)}
-`;
-        // Send the final HTML response
-        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end(embeddedDataHtml);
+        // Send the final JSON response
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+        res.end(JSON.stringify(embeddedData, null, 2));
         
-    }catch (error) {
-        console.error('Server-side Error in dashboard display:', error);
+    } catch (error) {
+        console.error('Server-side Error in embedded-data display:', error);
         if (!res.headersSent) {
-            res.writeHead(500, { 'Content-Type': 'text/html' });
-            res.end(`<h1>Error</h1><p>An internal server error occurred while preparing the dashboard.</p><p>Details: ${error.message}</p>`);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: 'Internal Server Error', message: error.message }));
         } else {
             console.error('Headers already sent, unable to send 500 error response. Original error:', error);
         }
@@ -114,4 +103,3 @@ ${JSON.stringify(embeddedData, null, 2)}
 module.exports = {
     display
 };
-
