@@ -178,24 +178,28 @@
             align-items: center;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 1924px) {
+        /* --- Responsive Adjustments for Mobile (e.g., iPhone 15 Pro, < 768px) --- */
+        @media (max-width: 768px) {
             body {
                 font-size: 0.85rem; /* Smaller base font size for mobile */
             }
             header h1 {
                 font-size: 1.2em;
             }
+            header p {
+                font-size: 0.7rem;
+            }
             .main-container {
                 flex-direction: column;
-                margin: 1rem;
+                margin: 0.5rem; /* Reduce margin for smaller screens */
+                border-radius: 8px;
             }
             .menu-pane {
                 flex: none; /* No fixed width */
                 width: 100%;
                 border-right: none;
                 border-bottom: 1px solid #333;
-                padding-bottom: 1rem;
+                padding: 1rem; /* Adjust padding for mobile */
             }
             .menu-pane h2 {
                 font-size: 1.1em;
@@ -204,20 +208,36 @@
                 display: flex; /* Make menu items horizontal on small screens */
                 overflow-x: auto;
                 white-space: nowrap;
-                padding-bottom: 10px; /* For scrollbar */
+                padding-bottom: 15px; /* Extra space for scrollbar */
+                -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+                scrollbar-width: thin; /* For Firefox */
+                scrollbar-color: #555 #252525;
+            }
+            /* Style the scrollbar for Webkit browsers (Chrome, Safari) */
+            .menu-pane ul::-webkit-scrollbar {
+                height: 8px;
+            }
+            .menu-pane ul::-webkit-scrollbar-track {
+                background: #252525;
+            }
+            .menu-pane ul::-webkit-scrollbar-thumb {
+                background-color: #555;
+                border-radius: 4px;
             }
             .menu-pane li {
                 flex: 0 0 auto;
                 margin-right: 10px;
                 border: 1px solid #444;
                 border-radius: 5px;
-                padding: 0.6rem 0.8rem; /* Adjusted padding */
-                font-size: 0.8rem; /* Smaller font for menu items */
+                padding: 0.7rem 1rem; /* Increase padding for better touch targets */
+                font-size: 0.9rem;
             }
             .menu-pane li.active {
+                /* Override desktop active style for horizontal menu */
+                background-color: #3a3a3a; /* Use a more subtle background */
                 border-left: none; /* Remove left border highlight */
                 border: 2px solid #ff1744; /* Use red border for highlight */
-                padding: calc(0.6rem - 2px) calc(0.8rem - 2px);
+                padding: calc(0.7rem - 1px) calc(1rem - 1px); /* Adjust padding to account for border */
             }
             .details-pane h2 {
                 font-size: 1.4em;
@@ -225,9 +245,12 @@
             .details-pane h3 {
                 font-size: 1.1em;
             }
+            .details-pane {
+                padding: 1.5rem 1rem; /* Adjust padding for mobile */
+            }
             .details-grid {
-                gap: 0.6rem 1rem; /* Smaller gap */
-                padding: 1rem;
+                grid-template-columns: 1fr; /* Stack grid items vertically */
+                gap: 0.8rem; /* Set a gap for the single column layout */
             }
             .details-grid strong,
             .details-grid span {
@@ -235,30 +258,5 @@
             }
             footer p {
                 font-size: 0.75rem; /* Smaller font for footer */
-            }
-             /* --- Status Indicators --- */
-            .status-indicator {
-                display: inline-block;
-                width: 10px;
-                height: 10px;
-                border-radius: 50%;
-                margin-right: 8px;
-                flex-shrink: 0; /* Prevents the dot from shrinking if the container is flex */
-            }
-
-            .status-online {
-                background-color: #28a745; /* Green */
-                box-shadow: 0 0 4px #28a745;
-            }
-
-            .status-error {
-                background-color: #dc3545; /* Red */
-                box-shadow: 0 0 4px #dc3545;
-            }
-
-            /* Ensure menu items align the indicator and text */
-            .menu-pane ul li {
-                display: flex;
-                align-items: center;
             }
         }
