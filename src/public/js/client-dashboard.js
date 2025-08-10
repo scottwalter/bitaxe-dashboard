@@ -31,10 +31,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Retrieve and Parse Embedded Data ---
-    if (embeddedDataScript && embeddedDataScript.textContent.trim()) {
-        try {
-            const embedded = JSON.parse(embeddedDataScript.textContent);
+    // --- Retrieve and Parse Data via Fetch ---
+    fetch('/embedded-data')
+        .then(response => {
+            if (!response.ok) {
+                // If the response is not OK (e.g., 404, 500), throw an error.
+                const errorMessage = `HTTP error! Status: ${response.status} - ${response.statusText}`;
+                console.error(errorMessage);
+                detailsPane.innerHTML = `<p style="color: red;">Error loading device data: ${errorMessage}. Please check the server and refresh.</p>`;
+                throw new Error(errorMessage); // Propagate error to the catch block
+            }
+            return response.json(); // Parse the response body as JSON.
+        })
+        .then(embedded => {
             minerData = embedded.minerData || [];
             displayFieldsConfig = embedded.displayFields || [];
             miningCoreData = embedded.miningCoreData;
@@ -42,21 +51,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Sort data by hostname for a consistent and predictable menu order.
             minerData.sort((a, b) => (a.hostname || a.id).localeCompare(b.hostname || b.id));
-        } catch (e) {
-            console.error('Error parsing embedded miner data:', e);
-            detailsPane.innerHTML = '<p style="color: red;">Error loading device data. Please refresh the page.</p>';
-            return; // Stop execution if data is unrecoverable.
-        }
-    } else {
-        console.warn('No embedded miner data found.');
-        detailsPane.innerHTML = '<p>No device data available from the server.</p>';
-        return;
-    }
 
-    // Update the "Last updated" timestamp on the client side to reflect when the script ran.
-    if (timestampSpan) {
-        timestampSpan.textContent = new Date().toLocaleString();
-    }
+            // Update the "Last updated" timestamp on the client side to reflect when the data was fetched.
+            if (timestampSpan) {
+                timestampSpan.textContent = new Date().toLocaleString();
+            }
+
+            // Initialize the dashboard after data is successfully fetched
+            populateMenu();
+        })
+        .catch(error => {
+            console.error('Error fetching or parsing embedded data:', error);
+            // Display a user-friendly error message if fetch fails or JSON parsing fails.
+            if (!detailsPane.innerHTML.includes('Error loading device data')) { // Avoid duplicate error messages
+                detailsPane.innerHTML = `<p style="color: red;">Failed to load device data: ${error.message}. Please refresh the page.</p>`;
+            }
+        });
+
+    // populateMenu() call will be moved inside the .then() block of the fetch.
+    // So we remove the standalone call here.
 
     // --- Helper Functions ---
 

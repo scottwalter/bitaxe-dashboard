@@ -1,9 +1,3 @@
-/**
- * @file This module is responsible for generating and serving the main dashboard page.
- * It fetches data from all configured Bitaxe miner instances and an optional Mining Core instance,
- * then injects this data into an HTML template before sending it to the client.
- */
-
 const fs = require('fs').promises; // Use promise-based fs for async/await
 const path = require('path');
 const fetch = require('node-fetch');
@@ -98,20 +92,15 @@ async function display(req, res, config) {
         const dashboardHtmlPath = path.join(__dirname, '../pages/html/dashboard.html');
         let htmlContent = await fs.readFile(dashboardHtmlPath, 'utf8');
 
-
-
-        // Replace other placeholders in the HTML template.
-        const currentYear = new Date().getFullYear().toString();
-        htmlContent = htmlContent.replace(/<!-- TITLE -->/g, config.title || 'Bitaxe Dashboard');
-        htmlContent = htmlContent.replace('<!-- TIMESTAMP -->', new Date().toLocaleString());
-        htmlContent = htmlContent.replace('<!-- CURRENT_YEAR -->', currentYear);
-        htmlContent = htmlContent.replace(/<!-- VERSION -->/g, safeToFixed(config.bitaxe_dashboard_version));
-
+        // Embed the fetched data as a JSON string inside a designated placeholder in the HTML.
+        const embeddedDataHtml = `
+${JSON.stringify(embeddedData, null, 2)}
+`;
         // Send the final HTML response
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end(htmlContent);
-
-    } catch (error) {
+        res.end(embeddedDataHtml);
+        
+    }catch (error) {
         console.error('Server-side Error in dashboard display:', error);
         if (!res.headersSent) {
             res.writeHead(500, { 'Content-Type': 'text/html' });
@@ -125,3 +114,4 @@ async function display(req, res, config) {
 module.exports = {
     display
 };
+
