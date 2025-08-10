@@ -178,20 +178,6 @@
             align-items: center;
         }
 
-        /* Separator for details grid */
-        .grid-separator {
-            grid-column: 1 / -1; /* Span all columns */
-            border: 0;
-            height: 1px;
-            background-color: #444;
-        }
-        .individual-miner-grid-separator {
-            grid-column: 1 / -1; /* Span all columns */
-            border: 0;
-            height: 1px;
-            background-color: #007bff
-        }
-
         /* Responsive adjustments */
         @media (max-width: 1924px) {
             body {
@@ -274,13 +260,5 @@
             .menu-pane ul li {
                 display: flex;
                 align-items: center;
-            }
-
-            /* Separator for details grid */
-            .grid-separator {
-                grid-column: 1 / -1; /* Span all columns */
-                border: 0;
-                height: 1px;
-                background-color: #ddd;
             }
         }
