@@ -305,9 +305,9 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'temp':
                 // Color-code the temperature bar to indicate potential overheating.
                 let tempFillColor;
-                if (value <= 60) {
+                if (value <= 65) {
                     tempFillColor = 'green';
-                } else if (value > 60 && value <= 70) {
+                } else if (value > 65 && value <= 70) {
                     tempFillColor = 'yellow';
                 } else { // 71 to 75
                     tempFillColor = 'red';
