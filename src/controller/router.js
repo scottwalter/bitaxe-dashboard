@@ -9,8 +9,8 @@ const fs = require('fs').promises;
 const path = require('path');
 
 const dashboardPage = require('../pages/dashboard');
-const demoApiEndpoint = require('./demo-api');
-const embeddedData = require('./embedded-data');
+const demoApiEndpoint = require('./demoApi');
+const embeddedData = require('./embeddedData');
 
 // Define a constant for the public directory where client-side assets are stored
 const PUBLIC_DIR = path.join(__dirname, '../public');
@@ -99,7 +99,7 @@ const routes = [
         exactMatch: false // Allows for prefix matching (e.g., /public/css/style.css).
     },
     {
-        path: '/embedded-data',
+        path: '/embeddedData',
         method: 'GET',
         handler: embeddedData.display,
         exactMatch: true // Requires an exact URL match.

@@ -7,7 +7,7 @@
 const http = require('http');
 const fs = require('fs').promises;
 const path = require('path');
-const d = require('./controller/dispatcher');
+const d = require('./controller/router');
 
 /** The name of the configuration file. */
 const CONFIG_FILE_NAME = 'config.json';
