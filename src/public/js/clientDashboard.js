@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Retrieve and Parse Data via Fetch ---
-    fetch('/embeddedData')
+    fetch('/api/system/embeddedData')
         .then(response => {
             if (!response.ok) {
                 // If the response is not OK (e.g., 404, 500), throw an error.
