@@ -100,7 +100,7 @@ const routes = [
         exactMatch: false // Allows for prefix matching (e.g., /public/css/style.css).
     },
     {
-        path: '/api/system/embeddedData',
+        path: '/api/systems/info',
         method: 'GET',
         handler: embeddedData.display,
         exactMatch: true // Requires an exact URL match.
