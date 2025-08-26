@@ -9,9 +9,9 @@ const fs = require('fs').promises;
 const path = require('path');
 
 const dashboardPage = require('../pages/dashboard');
-const demoApiEndpoint = require('./demoApi');
-const embeddedData = require('./embeddedData');
-const instanceData = require('./instanceData');
+const demoApiRouter = require('./demoApiRouter');
+const apiRouter = require('./apiRouter');
+
 
 // Define a constant for the public directory where client-side assets are stored
 const PUBLIC_DIR = path.join(__dirname, '../public');
@@ -81,16 +81,10 @@ const routes = [
         exactMatch: true
     },
     {
-        path: '/api/system/info',
+        path: '/demo/api/',
         method: 'GET',
-        handler: demoApiEndpoint.display,
-        exactMatch: true
-    },
-    {
-        path:'/api/pools',
-        method: 'GET',
-        handler: demoApiEndpoint.display,
-        exactMatch: true
+        handler: demoApiRouter.route,
+        exactMatch: false
     },
     // Generic handler for all static assets in the /public/ directory.
     {
@@ -100,16 +94,10 @@ const routes = [
         exactMatch: false // Allows for prefix matching (e.g., /public/css/style.css).
     },
     {
-        path: '/api/systems/info',
-        method: 'GET',
-        handler: embeddedData.display,
-        exactMatch: true // Requires an exact URL match.
-    },
-    {
-        path: '/api/instance/info',
-        method: 'GET',
-        handler: instanceData.display,
-        exactMatch: true
+        path: '/api/',
+        method: 'ANY',
+        handler: apiRouter.route,
+        exactMatch: false
     },
     // Add more routes here as your application grows
 ];
@@ -120,7 +108,7 @@ const routes = [
  * @param {http.ServerResponse} res The response object.
  * @param {object} config The application configuration object.
  */
-async function dispatch(req, res, config) {
+async function route(req, res, config) {
     try {
         const urlPath = req.url;
         const method = req.method;
@@ -137,7 +125,7 @@ async function dispatch(req, res, config) {
             }
 
             // If a match is found, execute its handler and stop processing.
-            if (isMatch && method === route.method) {
+            if (isMatch && method === route.method || isMatch && route.method==='ANY') {
                 // Execute the matched route's handler function.
                 await route.handler(req, res, config);
                 return; // Exit after handling the request.
@@ -150,7 +138,7 @@ async function dispatch(req, res, config) {
 
     } catch (error) {
         // Centralized error logging for any uncaught exceptions during dispatch or in handlers.
-        console.error(`ERROR in dispatcher for URL ${req.url} (${req.method}):`, error);
+        console.error(`ERROR in router for URL ${req.url} (${req.method}):`, error);
 
         if (!res.headersSent) {
             res.writeHead(500, { 'Content-Type': 'text/plain' });
@@ -164,5 +152,5 @@ async function dispatch(req, res, config) {
 }
 
 module.exports = {
-    dispatch
+    route
 };

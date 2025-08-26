@@ -15,7 +15,7 @@ const fetch = require('node-fetch');
  * @returns {Promise<object>} A promise that resolves to an object indicating success.
  * @throws {Error} If the instance is not found, or if the fetch request fails or returns a non-OK status.
  */
-async function restartBitaxe(instanceName, config) {
+async function instanceRestart(instanceName, config) {
   // Find the specific Bitaxe instance configuration from the array.
   const instance = config.bitaxe_instances.find(item => item[instanceName]);
 
@@ -50,5 +50,5 @@ async function restartBitaxe(instanceName, config) {
 }
 
 module.exports = {
-    restartBitaxe
+    instanceRestart
 };

@@ -23,7 +23,7 @@ function safeToFixed(value) {
  */
 async function display(req, res, config) {
     try {
-        console.log('dashboard.js invoked');
+        //console.log('dashboard.js invoked');
         // Read the dashboard HTML template
         const dashboardHtmlPath = path.join(__dirname, '../pages/html/dashboard.html');
         let htmlContent = await fs.readFile(dashboardHtmlPath, 'utf8');

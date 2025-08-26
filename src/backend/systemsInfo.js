@@ -5,13 +5,13 @@
  */
 
 const fetch = require('node-fetch');
+const apiPath = require('./apiMapService');
 
-// Constants for API endpoints
-const MINING_CORE_API_PATH = '/api/pools'; // Endpoint for mining core stats
-const API_SYSTEM_INFO_PATH = '/api/system/info'; // Endpoint for miner info
+
+
 
 /**
- * Handles requests for the /embedded-data endpoint.
+ * Handles requests for the /api/systems/info endpoint.
  * It fetches data from all configured Bitaxe miner instances and an optional
  * Mining Core instance, then serves this data as a single JSON object.
  * @param {import('http').IncomingMessage} req The HTTP request object.
@@ -19,6 +19,9 @@ const API_SYSTEM_INFO_PATH = '/api/system/info'; // Endpoint for miner info
  * @param {object} config The application configuration object.
  */
 async function display(req, res, config) {
+    // Constants for API endpoints
+    const MINING_CORE_API_PATH = await apiPath.getApiPath(config,'pools'); // Endpoint for mining core stats
+    const API_SYSTEM_INFO_PATH = await apiPath.getApiPath(config,'instanceInfo'); // Endpoint for miner info
     let allMinerData = []; // Array to store fetched data from all miner instances.
 
     try {
@@ -33,6 +36,8 @@ async function display(req, res, config) {
 
             try {
                 //console.log(`Fetching data for Bitaxe instance: ${instanceName} at ${instanceUrl}`);
+                //console.log(`instanceInfoAPI: ${API_SYSTEM_INFO_PATH}`);
+            
                 const response = await fetch(instanceUrl + API_SYSTEM_INFO_PATH);
                 if (!response.ok) {
                     console.error(`Error fetching data from ${instanceUrl}: ${response.status} ${response.statusText}`); // Log the HTTP error.

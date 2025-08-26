@@ -7,7 +7,7 @@
 const http = require('http');
 const fs = require('fs').promises;
 const path = require('path');
-const d = require('./controller/router');
+const router = require('./backend/router');
 
 /** The name of the configuration file. */
 const CONFIG_FILE_NAME = 'config.json';
@@ -18,6 +18,7 @@ const DEFAULT_WEB_SERVER_PORT = 3000;
 
 /** The full, absolute path to the configuration file. */
 const CONFIG_PATH = path.join(__dirname, CONFIG_DIR, CONFIG_FILE_NAME);
+
 
 /**
  * Loads and parses the configuration file. If demo mode is enabled, it modifies
@@ -42,7 +43,7 @@ async function loadConfig() {
             config.bitaxe_instances = [newEntry1, newEntry2];
         }
         console.log(`Configuration loaded successfully.`);
-        // For debugging: console.log(`Loaded Configuration: ${JSON.stringify(config, null, 2)}`);
+        console.log(`Loaded Configuration: ${JSON.stringify(config, null, 2)}`);
         return config;
     } catch (error) {
         if (error.code === 'ENOENT') {
@@ -86,7 +87,7 @@ async function startServer() {
         console.log(`${new Date().toISOString()} - ${clientIp} - Request made to: ${req.url}`);
         
         // Pass the request to the dispatcher, which handles routing and response.
-        await d.dispatch(req, res, config);
+        await router.route(req, res, config);
     });
 
     // Set up a listener for server-level errors, like a port being in use.

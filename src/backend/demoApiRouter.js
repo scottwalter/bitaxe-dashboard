@@ -13,8 +13,8 @@ const path = require('path');
  * This allows the handler to serve the correct mock data for a given endpoint.
  */
 const API_ENDPOINT_MAP = {
-    '/api/pools': 'mining-core.json',
-    '/api/system/info': 'bitaxe-info.json',
+    '/demo/api/pools': 'mining-core.json',
+    '/demo/api/system/info': 'bitaxe-info.json',
 };
 
 /** The directory where the demo API JSON files are stored. */
@@ -26,7 +26,7 @@ const DEMO_API_DIRECTORY = path.join(__dirname, '../demo-apis');
  * @param {import('http').ServerResponse} res The HTTP response object.
  * @param {object} config The application configuration object (not used in this handler).
  */
-async function display(req, res, config) {
+async function route(req, res, config) {
     try {
         const requestedFile = API_ENDPOINT_MAP[req.url];
 
@@ -70,5 +70,5 @@ async function display(req, res, config) {
 }
 
 module.exports = {
-    display
+    route
 };

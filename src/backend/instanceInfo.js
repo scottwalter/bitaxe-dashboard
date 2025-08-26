@@ -4,8 +4,9 @@
  */
 
 const fetch = require('node-fetch');
-// System info API for AxeOS
-const API_SYSTEM_INFO_PATH = '/api/system/info'; // Endpoint for miner info
+const apiPath = require('./apiMapService');
+
+
 
 /**
  * Handles a POST request to fetch system info for a specific Bitaxe miner instance.
@@ -16,6 +17,8 @@ const API_SYSTEM_INFO_PATH = '/api/system/info'; // Endpoint for miner info
  */
 async function display(req, res, config) {
     console.log('instanceData request received');
+    // System info API for AxeOS
+    const API_SYSTEM_INFO_PATH = await apiPath.getApiPath(config,'instanceInfo'); // Endpoint for miner info
     // This endpoint only supports GET requests.
     if (req.method !== 'GET') {
         res.writeHead(405, { 'Content-Type': 'application/json' });
@@ -53,7 +56,7 @@ async function display(req, res, config) {
 
             // Construct the full URL for the system info API endpoint.
             const baseUrl = instance[instanceId];
-            const infoUrl = `${baseUrl}${API_SYSTEM_INFO_PATH}`;
+            const infoUrl = `${baseUrl}${config.apiEndPoints[0].instanceInfoAPI}`;
 
             // Fetch the data from the Bitaxe device.
             const response = await fetch(infoUrl);
