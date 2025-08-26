@@ -15,6 +15,7 @@ const path = require('path');
 const API_ENDPOINT_MAP = {
     '/demo/api/pools': 'mining-core.json',
     '/demo/api/system/info': 'bitaxe-info.json',
+    '/demo/api/instance/service/restart': 'restart-response.txt'
 };
 
 /** The directory where the demo API JSON files are stored. */

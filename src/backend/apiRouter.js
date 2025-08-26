@@ -6,6 +6,8 @@
 //Import all of the various js modules for internal api calls.
 const instanceInfo = require('./instanceInfo');
 const systemsInfo = require('./systemsInfo');
+const instanceServices = require('./instanceServices');
+
 
 //Create the routing map
 const routes = [
@@ -20,6 +22,12 @@ const routes = [
         method: 'GET',
         handler: systemsInfo.display,
         exactMatch: true
+    },
+    {
+        path: '/api/instance/service',
+        method: 'ANY',
+        handler: instanceServices.route,
+        exactMatch: false
     },
     // Add more routes here as your application grows
     

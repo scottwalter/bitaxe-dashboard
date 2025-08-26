@@ -6,6 +6,9 @@
  */
 
 const fetch = require('node-fetch');
+const apiMapService = require('./apiMapService');
+
+
 
 /**
  * Sends a restart command to a specific Bitaxe miner instance.
@@ -26,7 +29,8 @@ async function instanceRestart(instanceName, config) {
 
     // Construct the full URL for the restart API endpoint.
     const baseUrl = instance[instanceName];
-    const restartUrl = `${baseUrl}/api/system/restart`;
+    const apiPath = await apiMapService.getApiPath(config,'instanceRestart');
+    const restartUrl = `${baseUrl}${apiPath}`;
 
     try {
         // Send a POST request to the Bitaxe's restart endpoint.
@@ -48,7 +52,24 @@ async function instanceRestart(instanceName, config) {
         throw error;
     }
 }
+//Rest API paths for bitaxe-dashboard, which will map to AxeOS rest API calls.
+const routes = [
+    {
+        path: '/api/instance/service/restart',
+        method: 'POST',
+        handler: instanceRestart,
+        exactMatch: true
+    }
+]
+/**
+ * Route request to the correct AxeOS rest API service and return the results to the apiRouter.js
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} config 
+ */
+async function route(req, res, config){
 
+}
 module.exports = {
-    instanceRestart
+    route
 };
