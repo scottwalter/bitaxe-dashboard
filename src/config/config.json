@@ -1,5 +1,6 @@
 {
-    "bitaxe_dashboard_version":1.0,
+    "bitaxe_dashboard_version":2.0,
+    "disable_authentication":false,
     "web_server_port": 3000,
     "demo_mode":false,
     "title":"Bitaxe Dashboard",

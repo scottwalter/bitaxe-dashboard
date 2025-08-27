@@ -43,7 +43,7 @@ async function loadConfig() {
             config.bitaxe_instances = [newEntry1, newEntry2];
         }
         console.log(`Configuration loaded successfully.`);
-        console.log(`Loaded Configuration: ${JSON.stringify(config, null, 2)}`);
+       //Uncomment for debugging: console.log(`Loaded Configuration: ${JSON.stringify(config, null, 2)}`);
         return config;
     } catch (error) {
         if (error.code === 'ENOENT') {
@@ -86,7 +86,7 @@ async function startServer() {
         }
         console.log(`${new Date().toISOString()} - ${clientIp} - Request made to: ${req.url}`);
         
-        // Pass the request to the dispatcher, which handles routing and response.
+        // Pass the request to the router, which handles routing and response.
         await router.route(req, res, config);
     });
 

@@ -7,6 +7,8 @@
 const instanceInfo = require('./instanceInfo');
 const systemsInfo = require('./systemsInfo');
 const instanceServices = require('./instanceServices');
+const authController = require('./authController');
+
 
 
 //Create the routing map
@@ -29,6 +31,12 @@ const routes = [
         handler: instanceServices.route,
         exactMatch: false
     },
+    {
+        path: '/api/login',
+        method: 'POST',
+        handler: authController.handleLogin,
+        exactMatch: true
+    }
     // Add more routes here as your application grows
     
 ]

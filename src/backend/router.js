@@ -9,6 +9,7 @@ const fs = require('fs').promises;
 const path = require('path');
 
 const dashboardPage = require('../pages/dashboard');
+const loginPage = require('../pages/loginPage');
 const demoApiRouter = require('./demoApiRouter');
 const apiRouter = require('./apiRouter');
 
@@ -99,6 +100,12 @@ const routes = [
         handler: apiRouter.route,
         exactMatch: false
     },
+    {
+        path: '/login',
+        method: 'GET',
+        handler: loginPage.display,
+        exactMatch: true 
+    }
     // Add more routes here as your application grows
 ];
 
