@@ -1,23 +1,30 @@
 /**
- * @file this file is used to route internal api calls
- * It is a bit cleaner than trying to add all the api routes to the router.js
- * Instead, router.js just sends anything with /api to this apiRouter and it handles the routing to the correct js module.
+ * @file This module serves as a dedicated sub-router for all API requests.
+ * It receives requests prefixed with `/api/` from the main router and delegates them
+ * to the appropriate controller module based on a defined routing map. This approach
+ * keeps the main router clean and organizes API-specific logic.
  */
-//Import all of the various js modules for internal api calls.
+
+// Import all of the various controller modules for internal API calls.
 const instanceInfo = require('./instanceInfo');
 const systemsInfo = require('./systemsInfo');
 const instanceServices = require('./instanceServices');
 const authController = require('./authController');
 
-
-
-//Create the routing map
+/**
+ * Defines the routing map for all internal API endpoints. Each route object specifies:
+ * - `path`: The URL path for the endpoint.
+ * - `method`: The HTTP method (e.g., 'GET', 'POST', 'ANY').
+ * - `handler`: The controller function that will handle the request.
+ * - `exactMatch`: A boolean indicating if the path must be an exact match or a prefix match.
+ * @const {Array<object>}
+ */
 const routes = [
     {   
         path: '/api/instance/info',
         method: 'GET',
         handler: instanceInfo.display,
-        exactMatch: true
+        exactMatch: false
     },
     {
         path: '/api/systems/info',
@@ -40,6 +47,18 @@ const routes = [
     // Add more routes here as your application grows
     
 ]
+
+/**
+ * Dispatches an incoming API request to the correct handler function.
+ * It iterates through the `routes` array, finds the first matching route based on
+ * the request's URL path and method, and then executes its handler.
+ * If no route is matched, it sends a 404 Not Found response.
+ * Includes centralized error handling for all API routes.
+ *
+ * @param {import('http').IncomingMessage} req The HTTP request object.
+ * @param {import('http').ServerResponse} res The HTTP response object.
+ * @param {object} config The application's global configuration object.
+ */
 async function route(req, res, config){
     try {
             const urlPath = req.url;

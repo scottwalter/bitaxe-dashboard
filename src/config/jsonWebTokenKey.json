@@ -1,0 +1,4 @@
+{ 
+    "jsonWebTokenKey":"Some_Super_Secret_Key",
+    "expiresIn":"1h"
+}

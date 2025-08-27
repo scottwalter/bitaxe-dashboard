@@ -1,13 +1,40 @@
 /**
- * @file this module is used to map API endpoints for all modules that need to make API calls to external rest APIs (or demo for demo mode)
+ * @file This module provides a centralized service for mapping logical API endpoint names
+ * to their actual URL paths. It abstracts the API routes, allowing for easy updates
+ * and a separation of concerns. It also handles redirecting API calls to mock endpoints
+ * when the application is running in demo mode.
+ */
+
+/**
+ * A map of internal, abstract API endpoint names to their concrete URL paths.
+ * This allows other modules to request an API path by a logical name (e.g., 'instanceInfo')
+ * without needing to know the exact URL, which might change.
+ * @const {Object<string, string>}
  */
 const apiEndpointMap = {
     'instanceInfo': '/api/system/info',
     'pools': '/api/pools',
     'instanceRestart': '/api/system/restart',
 };
-const demoPrefixPath = '/demo'; //prefix path for demo mode
 
+/**
+ * The URL prefix to prepend to API paths when the application is in demo mode.
+ * This redirects API calls to the mock demo API router.
+ * @const {string}
+ */
+const demoPrefixPath = '/demo';
+
+/**
+ * Retrieves the correct API path for a given logical endpoint name,
+ * automatically prepending a demo prefix if the application is in demo mode.
+ * This function centralizes API path logic, making the application more maintainable.
+ *
+ * @param {object} config The application's global configuration object.
+ * @param {boolean} config.demo_mode - A flag indicating if the application is in demo mode.
+ * @param {string} endpoint The logical name of the endpoint (e.g., 'instanceInfo', 'pools'). This must be a key in `apiEndpointMap`.
+ * @returns {Promise<string>} A promise that resolves to the full, correct API path.
+ * @throws {Error} If the `config` or `endpoint` parameters are missing, or if the `endpoint` key is not found.
+ */
 async function getApiPath(config, endpoint) {
     try {
         if (!config) {

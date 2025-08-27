@@ -12,6 +12,7 @@ const dashboardPage = require('../pages/dashboard');
 const loginPage = require('../pages/loginPage');
 const demoApiRouter = require('./demoApiRouter');
 const apiRouter = require('./apiRouter');
+const jwTokenServices = require('./jwTokenServices');
 
 
 // Define a constant for the public directory where client-side assets are stored
@@ -66,6 +67,28 @@ async function serveStaticAsset(req, res) {
         }
     }
 }
+
+/**
+ * Parses cookies from the request headers.
+ * @param {http.IncomingMessage} req The request object.
+ * @returns {object} An object of key-value pairs for cookies.
+ */
+function parseCookies(req) {
+    const list = {};
+    const cookieHeader = req.headers?.cookie;
+    if (!cookieHeader) return list;
+
+    cookieHeader.split(';').forEach(function(cookie) {
+        let [ name, ...rest] = cookie.split('=');
+        name = name?.trim();
+        if (!name) return;
+        const value = rest.join('=').trim();
+        if (!value) return;
+        list[name] = decodeURIComponent(value);
+    });
+
+    return list;
+}
 // Defines the application's routes. Each route object specifies a path,
 // an HTTP method, the handler function, and whether the path requires an exact match.
 const routes = [
@@ -73,38 +96,51 @@ const routes = [
         path: '/',
         method: 'GET',
         handler: dashboardPage.display,
-        exactMatch: true // Requires an exact URL match.
+        exactMatch: true, // Requires an exact URL match.
+        requireJWT: true // Requires a valid sessionToken
     },
     {
         path: '/index.html',
         method: 'GET',
         handler: dashboardPage.display,
-        exactMatch: true
+        exactMatch: true,
+        requireJWT: true // Requires a valid sessionToken
     },
     {
         path: '/demo/api/',
         method: 'GET',
         handler: demoApiRouter.route,
-        exactMatch: false
+        exactMatch: false,
+        requireJWT: true // Requires a valid sessionToken
     },
     // Generic handler for all static assets in the /public/ directory.
     {
         path: '/public/',
         method: 'GET',
         handler: serveStaticAsset,
-        exactMatch: false // Allows for prefix matching (e.g., /public/css/style.css).
+        exactMatch: false,
+        requireJWT: false // Does not require a valid sessionToken
+    },
+    {
+        path: '/api/login',
+        method: 'POST',
+        handler: apiRouter.route,
+        exactMatch: true,
+        requireJWT: false // Does not require a valid sessionToken
     },
     {
         path: '/api/',
         method: 'ANY',
         handler: apiRouter.route,
-        exactMatch: false
+        exactMatch: false,
+        requireJWT: true // Requires a valid sessionToken for all sub-routes unless a more specific route overrides it.
     },
     {
         path: '/login',
         method: 'GET',
         handler: loginPage.display,
-        exactMatch: true 
+        exactMatch: true ,
+        requireJWT: false // Does not require a valid sessionToken
     }
     // Add more routes here as your application grows
 ];
@@ -133,6 +169,29 @@ async function route(req, res, config) {
 
             // If a match is found, execute its handler and stop processing.
             if (isMatch && method === route.method || isMatch && route.method==='ANY') {
+                // If the route requires authentication, verify the JWT.
+                if (route.requireJWT && config.disable_authentication === false) {
+                    const cookies = parseCookies(req);
+                    const token = cookies.sessionToken;
+
+                    if (!token) {
+                        // No token found, redirect to the login page.
+                        res.writeHead(302, { 'Location': '/login' });
+                        return res.end();
+                    }
+
+                    const decoded = await jwTokenServices.verifyJsonWebToken(token);
+
+                    if (decoded.error) {
+                        // Token is invalid or expired, redirect to login and clear the bad cookie.
+                        console.log('JWT verification failed, redirecting to login:', decoded.message);
+                        res.writeHead(302, {
+                            'Location': '/login',
+                            'Set-Cookie': 'sessionToken=; HttpOnly; Max-Age=0; Path=/'
+                        });
+                        return res.end();
+                    }
+                }
                 // Execute the matched route's handler function.
                 await route.handler(req, res, config);
                 return; // Exit after handling the request.

@@ -31,6 +31,13 @@ async function loadConfig() {
         console.log(`Attempting to load configuration from: ${CONFIG_PATH}`);
         const data = await fs.readFile(CONFIG_PATH, 'utf8');
         const config = JSON.parse(data);
+
+        // Ensure disable_authentication has a default value if not present.
+        if (!config.hasOwnProperty('disable_authentication')) {
+            console.log('"disable_authentication" not found in config, defaulting to true (authentication disabled).');
+            config.disable_authentication = true;
+        }
+
         if(config.demo_mode === true){
             // In demo mode, override URLs to point to the local server's demo API endpoints.
             config.mining_core_url = `http://127.0.0.1:${config.web_server_port}`;
