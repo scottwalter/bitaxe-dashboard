@@ -128,6 +128,9 @@ What can you do with the config.json?
 - If you set disable_settings to true, this will disable the ability to modify settings of each miner, basically making the dashboard read-only. 
 >[!WARNING] 
 > It is highly recommended that you have disable_authentication set to false if you have disable_settings set to false.
+>[!TIP]
+> You MUST have SSL (aka HTTPS) enabled for your bitaxe-dasboard for it to work with disable_authentication set to false. This is becuase subtleCrypto requires SSL for SHA265 message digests.
+
 
 How to configure access.json
 - username, is the username for the login username, duh! If you do NOT create a local access.json file the default username is admin (bad idea to keep this!)
