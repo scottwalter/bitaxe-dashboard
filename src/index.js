@@ -31,11 +31,22 @@ async function loadConfig() {
         console.log(`Attempting to load configuration from: ${CONFIG_PATH}`);
         const data = await fs.readFile(CONFIG_PATH, 'utf8');
         const config = JSON.parse(data);
+        //Set the configuration_outdated to false, initial value
+        config.configuration_outdated=false;
 
         // Ensure disable_authentication has a default value if not present.
         if (!config.hasOwnProperty('disable_authentication')) {
             console.log('"disable_authentication" not found in config, defaulting to true (authentication disabled).');
             config.disable_authentication = true;
+            //Flag the config file as being outdated
+            config.configuration_outdated=true;
+        }
+        // Ensure disable_settings has a default value if not present.
+        if (!config.hasOwnProperty('disable_settings')) {
+            console.log('"disable_settings" not found in config, defaulting to true (settings disabled).');
+            config.disable_settings = true;
+            //Flag the config file as being outdated.
+            config.configuration_outdated=true;
         }
 
         if(config.demo_mode === true){

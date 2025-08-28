@@ -8,8 +8,8 @@ const http = require('http'); // Used for JSDoc type definitions (req, res).
 const fs = require('fs').promises;
 const path = require('path');
 
-const dashboardPage = require('../pages/dashboard');
-const loginPage = require('../pages/loginPage');
+const dashboardPage = require('./dashboard');
+const loginPage = require('./loginPage');
 const demoApiRouter = require('./demoApiRouter');
 const apiRouter = require('./apiRouter');
 const jwTokenServices = require('./jwTokenServices');
@@ -97,21 +97,24 @@ const routes = [
         method: 'GET',
         handler: dashboardPage.display,
         exactMatch: true, // Requires an exact URL match.
-        requireJWT: true // Requires a valid sessionToken
+        requireJWT: true, // Requires a valid sessionToken
+        sendUserInfo: true //Send the user json with request
     },
     {
         path: '/index.html',
         method: 'GET',
         handler: dashboardPage.display,
         exactMatch: true,
-        requireJWT: true // Requires a valid sessionToken
+        requireJWT: true,
+        sendUserInfo: true 
     },
     {
         path: '/demo/api/',
         method: 'GET',
         handler: demoApiRouter.route,
         exactMatch: false,
-        requireJWT: true // Requires a valid sessionToken
+        requireJWT: true, // Requires a valid sessionToken
+        sendUserInfo: false //Don't Send the user json with request
     },
     // Generic handler for all static assets in the /public/ directory.
     {
@@ -119,28 +122,32 @@ const routes = [
         method: 'GET',
         handler: serveStaticAsset,
         exactMatch: false,
-        requireJWT: false // Does not require a valid sessionToken
+        requireJWT: false, // Does not require a valid sessionToken
+        sendUserInfo: false //Don't Send the user json with request
     },
     {
         path: '/api/login',
         method: 'POST',
         handler: apiRouter.route,
         exactMatch: true,
-        requireJWT: false // Does not require a valid sessionToken
+        requireJWT: false, // Does not require a valid sessionToken
+        sendUserInfo: false //Don't Send the user json with request
     },
     {
         path: '/api/',
         method: 'ANY',
         handler: apiRouter.route,
         exactMatch: false,
-        requireJWT: true // Requires a valid sessionToken for all sub-routes unless a more specific route overrides it.
+        requireJWT: true, // Requires a valid sessionToken for all sub-routes unless a more specific route overrides it.
+        sendUserInfo: false //Don't Send the user json with request
     },
     {
         path: '/login',
         method: 'GET',
         handler: loginPage.display,
         exactMatch: true ,
-        requireJWT: false // Does not require a valid sessionToken
+        requireJWT: false, // Does not require a valid sessionToken
+        sendUserInfo: false //Don't Send the user json with request
     }
     // Add more routes here as your application grows
 ];
@@ -155,6 +162,7 @@ async function route(req, res, config) {
     try {
         const urlPath = req.url;
         const method = req.method;
+        let user ='';
 
         // Find a matching route based on the request URL and method.
         for (const route of routes) {
@@ -190,10 +198,20 @@ async function route(req, res, config) {
                             'Set-Cookie': 'sessionToken=; HttpOnly; Max-Age=0; Path=/'
                         });
                         return res.end();
+                    }else{
+                        //No error so lets build a user json
+                        user = {
+                            username: decoded.username,
+                        };
                     }
                 }
-                // Execute the matched route's handler function.
-                await route.handler(req, res, config);
+                // Execute the matched route's handler function and send user json if required.
+                if(route.sendUserInfo){
+                    await route.handler(req, res, config, user);
+                }else{
+                    await route.handler(req, res, config);
+                }
+               
                 return; // Exit after handling the request.
             }
         }

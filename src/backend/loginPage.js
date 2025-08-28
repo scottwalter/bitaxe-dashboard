@@ -28,7 +28,7 @@ function safeToFixed(value) {
  */
 async function display(req, res, config) {
     try {
-        const htmlPath = path.join(__dirname, 'html', 'login.html');
+        const htmlPath = path.join(__dirname, '.', 'pages', 'html', 'login.html');
         let htmlContent = await fs.readFile(htmlPath, 'utf-8');
         
         // Replace placeholders in the HTML template with dynamic values.

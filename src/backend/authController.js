@@ -77,7 +77,7 @@ async function handleLogin(req, res, config) {
                 // Path=/: Makes the cookie available to all pages on the site.
                 res.writeHead(200, { 
                     'Content-Type': 'application/json',
-                    'Set-Cookie': `sessionToken=${token}; HttpOnly; Max-Age=3600; SameSite=Strict; Path=/` // TODO: Max-Age should be configurable
+                    'Set-Cookie': `sessionToken=${token}; HttpOnly; Max-Age=${config.cookie_max_age} SameSite=Strict; Path=/` 
                 });
                 res.end(JSON.stringify({ message: 'Login successful' }));
             } else {

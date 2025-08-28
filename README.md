@@ -11,8 +11,8 @@ Assumptions:
 2. You are on either a Mac Apple Silicon or Linux AMD64 device (for Docker, only supports Linux/arm4 and Linux/amd64)
 
 Docker Install (Recommended!): All commands assumed as root or with sudo pre-fixed
-1. Create a local folder for the config.json file (i.e. /data/bitaxe-dashboard/config)
-2. Copy the config.json into a file in that directory, naming it config.json
+1. Create a local folder for the config.json, access.json & jsonWebToken.json files. (i.e. /data/bitaxe-dashboard/config)
+2. Copy the config.json, access.json & jsonWebToken.json into the config directory (this is as of Version 2.0)
 3. Configure the config.json to your environment (See below)
 4. Run the following Docker command:
 ```bash
@@ -25,8 +25,11 @@ Here is the basic config.json
 
 ```json
 {
-    "bitaxe_dashboard_version":1.0,
+    "bitaxe_dashboard_version":2.0,
     "web_server_port": 3000,
+    "disable_authentication":false,
+    "cookie_max_age":3600,
+    "disable_settings":false,
     "demo_mode":true,
     "title":"Bitaxe Dashboard",
     "bitaxe_instances": [
@@ -98,6 +101,19 @@ Here is the basic config.json
     ]
 }
 ```
+Basic access.json
+```json
+{
+    "username":"{SHA256_PASSWORD_STRING}"
+}
+```
+Basic jsonWebToken.json
+```json
+{ 
+    "jsonWebTokenKey":"{YOUR_OWN_Some_Super_Secret_Key}",
+    "expiresIn":"1h"
+}
+```
 What can you do with the config.json?
 > [!IMPORTANT]
 > First, make sure you set demo_mode to false in your local config.json or it will just use dummy data!
@@ -107,6 +123,31 @@ What can you do with the config.json?
 > Go to http://{your_bitaxe_ip_address}/api/system/info to see the possible keys.
 - You can reorder sections or individual key:value pairs to the way you want to see the data, the application will dynamically read them and follow what you set. 
 - The rest should be fairly self-explanitory (title, ports, bitaxe_instances - Name them whatever you want, just make sure the URL is correct!)
+- cookie_max_age should be set to the same length of time as expiresIn or longer.
+- If you set disable_authentication to true, the dashboard will not ask for username / password. If you have disable_settings set to false, this is a bad idea, you will be allowing anyone to change your miner's settings.
+- If you set disable_settings to true, this will disable the ability to modify settings of each miner, basically making the dashboard read-only. 
+>[!WARNING] 
+> It is highly recommended that you have disable_authentication set to false if you have disable_settings set to false.
+
+How to configure access.json
+- username, is the username for the login username, duh! If you do NOT create a local access.json file the default username is admin (bad idea to keep this!)
+- {SHA256_PASSWORD_STRING}, is the SHA256 encrypted password for the username. If you do NOT create a local access.json file the default password is password (for the admin username). (bad ideas to keep this!)
+
+How to generate a SHA265 passsword on Ubuntu (or pretty much any Linux box)
+```bash
+echo -n "password" | sha256sum
+```
+>[!TIP]
+>Take only the String part, not the space - at the end of the output. Example: 
+```bash
+5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8  -
+```
+>[TIP]
+>Only copy up to the last character (the 8 in the example above)
+
+How to configure jsonWebToken.json
+- Replace {YOUR_OWN_Some_Super_Secret_Key} with your own secret key. Make is a large set of numbers and letters, at least 32 characters.
+- ExpiresIn - this sets the length of time the JWT will be valid. In the example above, it is 1 hour (1h).
 
 Fun Facts
 - The bar scales for temp, vrTemp, and fanspeed will change from green to yellow to red based on value. The idea is to let you quickly spot an issue. 

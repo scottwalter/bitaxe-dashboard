@@ -21,11 +21,11 @@ function safeToFixed(value) {
  * @param {http.ServerResponse} res The HTTP response object.
  * @param {object} config The application configuration object.
  */
-async function display(req, res, config) {
+async function display(req, res, config, user) {
     try {
         //console.log('dashboard.js invoked');
         // Read the dashboard HTML template
-        const dashboardHtmlPath = path.join(__dirname, '../pages/html/dashboard.html');
+        const dashboardHtmlPath = path.join(__dirname, '.','pages','html','dashboard.html');
         let htmlContent = await fs.readFile(dashboardHtmlPath, 'utf8');
         // Replace other placeholders in the HTML template.
         const currentYear = new Date().getFullYear().toString();
@@ -33,6 +33,13 @@ async function display(req, res, config) {
         htmlContent = htmlContent.replace('<!-- TIMESTAMP -->', new Date().toLocaleString());
         htmlContent = htmlContent.replace('<!-- CURRENT_YEAR -->', currentYear);
         htmlContent = htmlContent.replace(/<!-- VERSION -->/g, safeToFixed(config.bitaxe_dashboard_version));
+        if(config.configuration_outdated){
+            htmlContent = htmlContent.replace('<!-- CONFIG VERSION -->','<B><font color="red">CONFIG FILE OUTDATED!</font></B>');
+        }
+        if(!config.disable_authentication){
+            //Include the login username
+            htmlContent = htmlContent.replace('<!-- LOGIN INFO -->',`<p>Username: ${user.username}</p>`);
+        }
 
         // Send the final HTML response
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
