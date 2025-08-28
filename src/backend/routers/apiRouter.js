@@ -6,10 +6,10 @@
  */
 
 // Import all of the various controller modules for internal API calls.
-const instanceInfo = require('./instanceInfo');
-const systemsInfo = require('./systemsInfo');
-const instanceServices = require('./instanceServices');
-const authController = require('./authController');
+const instanceInfo = require('../instanceInfo');
+const systemsInfo = require('../systemsInfo');
+const instanceServices = require('../services/instanceServices');
+const authController = require('../authController');
 
 /**
  * Defines the routing map for all internal API endpoints. Each route object specifies:
@@ -42,6 +42,12 @@ const routes = [
         path: '/api/login',
         method: 'POST',
         handler: authController.handleLogin,
+        exactMatch: true
+    },
+    {
+        path: '/api/logout',
+        method: 'ANY',
+        handler: authController.handleLogout,
         exactMatch: true
     }
     // Add more routes here as your application grows

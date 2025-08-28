@@ -6,7 +6,7 @@
 
 const fs = require('fs').promises;
 const path = require('path');
-const jwTokenServices = require('./jwTokenServices');
+const jwTokenServices = require('./services/jwTokenServices');
 
 /**
  * Handles a POST request to the `/api/login` endpoint. It expects a JSON body
@@ -75,9 +75,10 @@ async function handleLogin(req, res, config) {
                 // Max-Age: Sets the cookie's lifetime in seconds (e.g., 3600 = 1 hour).
                 // SameSite=Strict: Prevents the cookie from being sent on cross-site requests, mitigating CSRF attacks.
                 // Path=/: Makes the cookie available to all pages on the site.
+                //console.log(`cookie age: ${config.cookie_max_age}`);
                 res.writeHead(200, { 
                     'Content-Type': 'application/json',
-                    'Set-Cookie': `sessionToken=${token}; HttpOnly; Max-Age=${config.cookie_max_age} SameSite=Strict; Path=/` 
+                    'Set-Cookie': `sessionToken=${token}; HttpOnly; Max-Age=${config.cookie_max_age}; SameSite=Strict; Path=/` 
                 });
                 res.end(JSON.stringify({ message: 'Login successful' }));
             } else {
@@ -93,7 +94,33 @@ async function handleLogin(req, res, config) {
         }
     });
 }
+/**
+ * Handles a request to the `/api/logout` endpoint.
+ * It clears the `sessionToken` cookie by setting its expiration date to the past,
+ * effectively logging the user out. It then sends a success message.
+ *
+ * @param {import('http').IncomingMessage} req The HTTP request object.
+ * @param {import('http').ServerResponse} res The HTTP response object.
+ * @param {object} config The application configuration object (not directly used).
+ */
+async function handleLogout(req, res, config) {
+    try {
+        // Clear the session cookie by setting its Max-Age to 0.
+        res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Set-Cookie': `sessionToken=; HttpOnly; Max-Age=0; Path=/`
+        });
+        res.end(JSON.stringify({ message: 'Logout successful' }));
+    } catch (error) {
+        console.error('Logout error:', error);
+        if (!res.headersSent) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Internal Server Error during logout.' }));
+        }
+    }
+}
 
 module.exports = {
-    handleLogin
+    handleLogin,
+    handleLogout
 };

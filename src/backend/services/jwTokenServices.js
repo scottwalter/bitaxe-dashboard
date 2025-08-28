@@ -18,7 +18,7 @@ let expiresIn;
  * the application will log a fatal error and exit, as it cannot function securely without these settings.
  */
 try {
-    const keyFilePath = path.join(__dirname, '..', 'config', 'jsonWebTokenKey.json');
+    const keyFilePath = path.join(__dirname, '..', '..','config', 'jsonWebTokenKey.json');
     const keyFileContent = fs.readFileSync(keyFilePath, 'utf8');
     const keyData = JSON.parse(keyFileContent);
     secretKey = keyData.jsonWebTokenKey;

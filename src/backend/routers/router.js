@@ -8,15 +8,15 @@ const http = require('http'); // Used for JSDoc type definitions (req, res).
 const fs = require('fs').promises;
 const path = require('path');
 
-const dashboardPage = require('./dashboard');
-const loginPage = require('./loginPage');
+const dashboardPage = require('../dashboard');
+const loginPage = require('../loginPage');
 const demoApiRouter = require('./demoApiRouter');
 const apiRouter = require('./apiRouter');
-const jwTokenServices = require('./jwTokenServices');
+const jwTokenServices = require('../services/jwTokenServices');
 
 
 // Define a constant for the public directory where client-side assets are stored
-const PUBLIC_DIR = path.join(__dirname, '../public');
+const PUBLIC_DIR = path.join(__dirname, '..','..','public');
 
 // A map of file extensions to their corresponding MIME types for static assets.
 const MIME_TYPES = {
@@ -128,6 +128,14 @@ const routes = [
     {
         path: '/api/login',
         method: 'POST',
+        handler: apiRouter.route,
+        exactMatch: true,
+        requireJWT: false, // Does not require a valid sessionToken
+        sendUserInfo: false //Don't Send the user json with request
+    },
+    {
+        path: '/api/logout',
+        method: 'ANY',
         handler: apiRouter.route,
         exactMatch: true,
         requireJWT: false, // Does not require a valid sessionToken

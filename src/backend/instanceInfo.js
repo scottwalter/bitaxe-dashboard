@@ -5,7 +5,7 @@
  */
 
 const fetch = require('node-fetch');
-const apiPath = require('./apiMapService');
+const apiPath = require('./services/apiMapService');
 const { URL } = require('url'); // Import URL for parsing query parameters.
 
 /**
