@@ -89,7 +89,8 @@ async function display(req, res, config) {
                 console.error(`Network or JSON parsing error for mining core (${config.mining_core_url}):`, miningCoreError);
             }
         }
-
+        //Add if settings are enabled for the dashbaord
+        embeddedData.disable_settings = config.disable_settings;        
         // Send the final JSON response
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify(embeddedData, null, 2));

@@ -68,6 +68,7 @@ const routes = [
  * @param {*} config 
  */
 async function route(req, res, config){
+    //First, see if disable_settings is true or false. If true, do not service this call!
 
 }
 module.exports = {

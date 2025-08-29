@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let displayFieldsConfig = []; // Stores the display_fields from config.json for miners.
     let miningCoreData = null; // Stores the data for the Mining Core instance.
     let miningCoreDisplayFields = []; // Stores the display_fields from config.json for Mining Core.
+    let disableSettings=true;
 
     if (refreshIcon) {
         refreshIcon.addEventListener('click', () => {
@@ -48,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             displayFieldsConfig = embedded.displayFields || [];
             miningCoreData = embedded.miningCoreData;
             miningCoreDisplayFields = embedded.miningCoreDisplayFields || [];
+            disableSettings = embedded.disable_settings;
 
             // Sort data by hostname for a consistent and predictable menu order.
             minerData.sort((a, b) => (a.hostname || a.id).localeCompare(b.hostname || b.id));
@@ -459,7 +461,12 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
 
-        let html = `<h2>${ data.id || 'Unknown Device'}</h2>`;
+        let html = `<h2>${ data.id || 'Unknown Device'}`;
+        //Decide is restart icon should show up based on disable_settings config.
+        if(!disableSettings){
+        html += ` <div class="restart-icon"><span title="Restart Instance"></span></div>`;
+        }
+        html += `</h2>`;
 
         displayFieldsConfig.forEach(categoryObj => {
             const categoryName = Object.keys(categoryObj)[0];
