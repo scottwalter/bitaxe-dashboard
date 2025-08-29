@@ -128,6 +128,7 @@ What can you do with the config.json?
 - If you set disable_settings to true, this will disable the ability to modify settings of each miner, basically making the dashboard read-only. 
 >[!WARNING] 
 > It is highly recommended that you have disable_authentication set to false if you have disable_settings set to false.
+
 >[!TIP]
 > You MUST have SSL (aka HTTPS) enabled for your bitaxe-dasboard for it to work with disable_authentication set to false. This is becuase subtleCrypto requires SSL for SHA265 message digests.
 
@@ -142,14 +143,16 @@ echo -n "password" | sha256sum
 ```
 >[!TIP]
 >Take only the String part, not the space - at the end of the output. Example: 
+
 ```bash
 5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8  -
 ```
->[TIP]
+
+>[!TIP]
 >Only copy up to the last character (the 8 in the example above)
 
 How to configure jsonWebToken.json
-- Replace {YOUR_OWN_Some_Super_Secret_Key} with your own secret key. Make is a large set of numbers and letters, at least 32 characters.
+- Replace {YOUR_OWN_Some_Super_Secret_Key} with your own secret key. Make it a large set of numbers and letters, at least 32 characters.
 - ExpiresIn - this sets the length of time the JWT will be valid. In the example above, it is 1 hour (1h).
 
 Fun Facts
