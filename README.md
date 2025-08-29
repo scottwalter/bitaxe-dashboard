@@ -135,7 +135,7 @@ What can you do with the config.json?
 
 How to configure access.json
 - username, is the username for the login username, duh! If you do NOT create a local access.json file the default username is admin (bad idea to keep this!)
-- {SHA256_PASSWORD_STRING}, is the SHA256 encrypted password for the username. If you do NOT create a local access.json file the default password is password (for the admin username). (bad ideas to keep this!)
+- {SHA256_PASSWORD_STRING}, is the SHA256 encrypted password for the username. If you do NOT create a local access.json file the default password is password (for the admin username). (bad idea to keep this!)
 
 How to generate a SHA265 passsword on Ubuntu (or pretty much any Linux box)
 ```bash

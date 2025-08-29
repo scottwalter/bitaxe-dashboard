@@ -226,7 +226,7 @@ async function route(req, res, config) {
 
         // If no route matches after checking all possibilities, send a 404 Not Found response
         res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.end('404 Not Found');
+        res.end('404 Not Found - Router could not find the path');
 
     } catch (error) {
         // Centralized error logging for any uncaught exceptions during dispatch or in handlers.

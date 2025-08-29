@@ -117,6 +117,9 @@
             padding-bottom: 0.5rem;
             margin-bottom: 1.5rem;
             font-size: 1.8em;
+            display: flex;
+            align-items: center;
+            gap: .5em;;
         }
 
         .details-pane h3 {
@@ -230,7 +233,7 @@
             position: relative;
             transition: transform 0.5s ease-in-out, border-color 0.5s ease-in-out; /* Add border-color to transition */
             cursor: pointer;
-            display: inline-block;
+            
         }
 
         .restart-icon span {
@@ -256,8 +259,78 @@
             transform: translate(-50%, -50%) rotate(405deg);
             border-color: transparent transparent transparent #ff1744; /* Hover arrow color */
         }
+        /* --- Settings Icon for Editing settings --- */
+         /* Main icon container - the circle */
+        .circle-s-icon {
+            width: .5em; /* Adjusted width for border */
+            height: .5em; /* Adjusted height for border */
+            border-radius: 50%; /* Makes it a perfect circle */
+            border: 3px solid #f5f5f5; /* Initial border color */
+            background-color: transparent; /* No initial fill */
+            position: relative;
+            display: flex; /* Use flexbox to center the 's' */
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out; /* Smooth transition for all properties */
+        }
 
+        /* The 's' character in the middle */
+        .circle-s-icon::before {
+            content: 'S'; /* The 's' character */
+            font-family: "Inter", sans-serif; /* Use a clear font */
+            font-size: .5em; /* Size of the 's' */
+            font-weight: bold;
+            color: #f5f5f5; /* Color of the 's' (matching border) */
+            transition: color 0.3s ease-in-out;
+        }
 
+        /* Hover effects */
+        .circle-s-icon:hover {
+            background-color: #ff1744; /* Hover fill color */
+            border-color: #ff1744; /* Border matches fill on hover */
+            transform: scale(1.1); /* Slight scale on hover */
+        }
+
+        .circle-s-icon:hover::before {
+            color: #222; /* Hover color for the 's' (contrasting with red fill) */
+        }
+        /* --- Settings Icon for Restart --- */
+         /* Main icon container - the circle */
+        .circle-r-icon {
+            width: .5em; /* Adjusted width for border */
+            height: .5em; /* Adjusted height for border */
+            border-radius: 50%; /* Makes it a perfect circle */
+            border: 3px solid #f5f5f5; /* Initial border color */
+            background-color: transparent; /* No initial fill */
+            position: relative;
+            display: flex; /* Use flexbox to center the 's' */
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out; /* Smooth transition for all properties */
+        }
+
+        /* The 'r' character in the middle */
+        .circle-r-icon::before {
+            content: 'R'; /* The 'r' character */
+            font-family: "Inter", sans-serif; /* Use a clear font */
+            font-size: .5em; /* Size of the 'r' */
+            font-weight: bold;
+            color: #f5f5f5; /* Color of the 'r' (matching border) */
+            transition: color 0.3s ease-in-out;
+        }
+
+        /* Hover effects */
+        .circle-r-icon:hover {
+            background-color: #ff1744; /* Hover fill color */
+            border-color: #ff1744; /* Border matches fill on hover */
+            transform: scale(1.1); /* Slight scale on hover */
+        }
+
+        .circle-r-icon:hover::before {
+            color: #222; /* Hover color for the 'r' (contrasting with red fill) */
+        }
         /* --- Responsive Adjustments for Mobile (e.g., iPhone 15 Pro, < 768px) --- */
         @media (max-width: 768px) {
             body {
@@ -321,6 +394,9 @@
             }
             .details-pane h2 {
                 font-size: 1.4em;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
             }
             .details-pane h3 {
                 font-size: 1.1em;

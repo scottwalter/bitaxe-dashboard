@@ -13,22 +13,23 @@ const apiMapService = require('./apiMapService');
 /**
  * Sends a restart command to a specific Bitaxe miner instance.
  *
- * @param {string} instanceName - The name of the Bitaxe instance to restart, as defined in the config file.
  * @param {object} config - The application's configuration object, which contains the `bitaxe_instances` array.
  * @returns {Promise<object>} A promise that resolves to an object indicating success.
  * @throws {Error} If the instance is not found, or if the fetch request fails or returns a non-OK status.
  */
-async function instanceRestart(instanceName, config) {
+async function instanceRestart(req, res, config) {
+  const requestUrl = new URL(req.url, `http://${req.headers.host}`);
+  const instanceId = requestUrl.searchParams.get('instanceId');
   // Find the specific Bitaxe instance configuration from the array.
-  const instance = config.bitaxe_instances.find(item => item[instanceName]);
+  const instance = config.bitaxe_instances.find(item => item[instanceId]);
 
     // If the instance is not found in the configuration, throw an error.
     if (!instance) {
-        throw new Error(`Bitaxe instance "${instanceName}" not found in configuration.`);
+        throw new Error(`Bitaxe instance "${instanceId}" not found in configuration.`);
     }
 
     // Construct the full URL for the restart API endpoint.
-    const baseUrl = instance[instanceName];
+    const baseUrl = instance[instanceId];
     const apiPath = await apiMapService.getApiPath(config,'instanceRestart');
     const restartUrl = `${baseUrl}${apiPath}`;
 
@@ -44,7 +45,7 @@ async function instanceRestart(instanceName, config) {
             throw new Error(`HTTP error! Status: ${response.status}, Body: ${await response.text()}`);
         }
         // If successful, return a success status object.
-        return { status: 'success', message: `Restart initiated for ${instanceName}` };
+        return { status: 'success', message: `Restart initiated for ${instanceId}` };
     } catch (error) {
         // Log any errors that occur during the fetch operation.
         console.error("Failed to restart Bitaxe:", error);
@@ -69,6 +70,11 @@ const routes = [
  */
 async function route(req, res, config){
     //First, see if disable_settings is true or false. If true, do not service this call!
+    if(!config.disable_settings || config.disable_settings === undefined){ //Make sure we know if settings are enabled!
+        
+    }else{
+        //Throw some error message about settings being disabled
+    }
 
 }
 module.exports = {

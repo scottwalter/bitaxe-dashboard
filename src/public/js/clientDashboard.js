@@ -464,7 +464,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let html = `<h2>${ data.id || 'Unknown Device'}`;
         //Decide is restart icon should show up based on disable_settings config.
         if(!disableSettings){
-        html += ` <div class="restart-icon"><span title="Restart Instance"></span></div>`;
+        html += ` <div class="circle-r-icon" title="Restart Instance"></div>`;
+        html += ` <div class="circle-s-icon" title="Edit Settings"></div>`;
+        
         }
         html += `</h2>`;
 
