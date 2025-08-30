@@ -14,7 +14,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const deviceMenu = document.getElementById('device-menu');
     const detailsPane = document.getElementById('details-pane');
-    const embeddedDataScript = document.getElementById('embedded-data');
     const timestampSpan = document.getElementById('timestamp');
     const summaryMenuItem = document.getElementById('summary-menu-item');
     const miningCoreDetailsDiv = document.getElementById('mining-core-details');
