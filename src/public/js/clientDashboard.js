@@ -19,6 +19,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const miningCoreDetailsDiv = document.getElementById('mining-core-details');
     const refreshIcon = document.getElementById('refresh-icon');
 
+    const header = document.querySelector('header');
+    if (header) {
+        const logoutButton = document.createElement('div');
+        logoutButton.id = 'logout-button';
+        logoutButton.className = 'animated-button';
+        logoutButton.textContent = 'Logout';
+        logoutButton.title = 'Logout from dashboard';
+        header.appendChild(logoutButton);
+
+        logoutButton.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/api/logout', {
+                    method: 'POST'
+                });
+                if (response.ok) {
+                    // On successful logout, the server clears the session cookie.
+                    // Redirect the user to the login page.
+                    window.location.href = '/login';
+                } else {
+                    const result = await response.json();
+                    alert(`Logout failed: ${result.message || 'Unknown error'}`);
+                }
+            } catch (error) {
+                console.error('Logout request failed:', error);
+                alert('Failed to send logout command. See console for details.');
+            }
+        });
+    }
+
     let minerData = [];
     let displayFieldsConfig = []; // Stores the display_fields from config.json for miners.
     let miningCoreData = null; // Stores the data for the Mining Core instance.

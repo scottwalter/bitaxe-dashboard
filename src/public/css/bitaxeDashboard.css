@@ -17,6 +17,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
             font-size: 1.0em; /* Even further reduced font size for smaller height */
             font-weight: bold;
+            position: relative; /* For positioning child elements */
         }
         header p {
             font-size: 0.75rem;
@@ -378,6 +379,13 @@
 
         .animated-button:hover::before {
             transform: scaleX(1); /* Expand to full width on hover */
+        }
+
+        #logout-button {
+            position: absolute;
+            top: 50%;
+            right: 1.5rem;
+            transform: translateY(-50%);
         }
 
         /* --- Responsive Adjustments for Mobile (e.g., iPhone 15 Pro, < 768px) --- */
