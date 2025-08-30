@@ -351,6 +351,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const overheatStatus = value ? 'Enabled' : 'Disabled';
                 const overheatColor = value ? 'red' : 'green';
                 return `<span style="color: ${overheatColor}; font-weight: bold;">${overheatStatus}</span>`;
+            case 'isUsingFallbackStratum':
+                const fallbackStatus = value ? 'Enabled' : 'Disabled';
+                const fallbackColor = value ? 'red' : 'green';
+                return `<span style="color: ${fallbackColor}; font-weight: bold;">${fallbackStatus}</span>`;
+
             case 'lastNetworkBlockTime':
             case 'lastPoolBlockTime':
                 // Directly parse ISO 8601 string, no need to multiply by 1000

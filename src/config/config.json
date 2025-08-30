@@ -43,6 +43,7 @@
              {"stratumURL":"Stratum URL"},
              {"stratumUser":"Stratum User"},
              {"stratumPort":"Stratum Port"},
+             {"isUsingFallbackStratum":"Using Fallback Stratum"},
              {"axeOSVersion":"AxeOS Version"},
              {"idfVersion":"IDF Version"},
              {"boardVersion":"Board Version"},
