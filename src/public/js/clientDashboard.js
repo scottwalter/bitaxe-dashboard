@@ -464,9 +464,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let html = `<h2>${ data.id || 'Unknown Device'}`;
         //Decide is restart icon should show up based on disable_settings config.
         if(!disableSettings){
-        html += ` <div class="circle-r-icon" title="Restart Instance"></div>`;
-        html += ` <div class="circle-s-icon" title="Edit Settings"></div>`;
-        
+            html += ` <div class="animated-button restart-button" data-instance-id="${data.id}" title="Restart Instance">Restart</div>`;
+            html += ` <div class="animated-button settings-button" data-instance-id="${data.id}" title="Edit Settings">Settings</div>`;
         }
         html += `</h2>`;
 
@@ -612,6 +611,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 const selectedData = minerData.find(m => m.id === listItem.dataset.deviceId);
                 if (selectedData) {
                     detailsPane.innerHTML = generateDeviceDetailsHtml(selectedData);
+
+                    // --- Attach Event Listeners to Dynamically Created Buttons ---
+                    const restartButton = detailsPane.querySelector('.restart-button');
+                    if (restartButton) {
+                        restartButton.addEventListener('click', async (e) => {
+                            const instanceId = e.target.dataset.instanceId;
+                            if (confirm(`Are you sure you want to restart instance "${instanceId}"?`)) {
+                                try {
+                                    // The actual API endpoint is defined in instanceServices.js
+                                    const response = await fetch(`/api/instance/service/restart?instanceId=${instanceId}`, {
+                                        method: 'POST'
+                                    });
+                                    const result = await response.json();
+                                    if (response.ok) {
+                                        alert(`Instance "${instanceId}" is restarting.`);
+                                        setTimeout(() => location.reload(), 2000); // Refresh to see updated status
+                                    } else {
+                                        alert(`Error restarting instance: ${result.message || 'Unknown error'}`);
+                                    }
+                                } catch (error) {
+                                    console.error('Restart request failed:', error);
+                                    alert('Failed to send restart command. See console for details.');
+                                }
+                            }
+                        });
+                    }
+
+                    const settingsButton = detailsPane.querySelector('.settings-button');
+                    if (settingsButton) {
+                        settingsButton.addEventListener('click', (e) => {
+                            alert(`Settings functionality for "${e.target.dataset.instanceId}" is not yet implemented.`);
+                        });
+                    }
                 } else {
                     detailsPane.innerHTML = '<p style="color: red;">Error: Data for this device not found.</p>';
                 }

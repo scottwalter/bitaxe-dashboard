@@ -69,13 +69,50 @@ const routes = [
  * @param {*} config 
  */
 async function route(req, res, config){
-    //First, see if disable_settings is true or false. If true, do not service this call!
-    if(!config.disable_settings || config.disable_settings === undefined){ //Make sure we know if settings are enabled!
-        
-    }else{
-        //Throw some error message about settings being disabled
+    // First, check if settings are disabled in the configuration.
+    if(config.disable_settings === true){
+        res.writeHead(403, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: 'Settings are disabled by configuration.' }));
+        return;
     }
 
+    // Use URL to parse pathname correctly, ignoring query strings for routing.
+    const urlPath = new URL(req.url, `http://${req.headers.host}`).pathname;
+    const method = req.method;
+
+    for (const r of routes) { // Renamed to 'r' to avoid conflict with function name 'route'
+        let isMatch = false;
+        if (r.exactMatch) {
+            isMatch = urlPath === r.path;
+        } else {
+            isMatch = urlPath.startsWith(r.path);
+        }
+
+        if (isMatch && (method === r.method || r.method === 'ANY')) {
+            try {
+                // The handler is expected to return a result object on success.
+                const result = await r.handler(req, res, config);
+                
+                // If the handler returns a result, send it as a successful JSON response.
+                if (result && !res.headersSent) {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify(result));
+                }
+                // If the handler sent its own response, we do nothing.
+            } catch (error) {
+                console.error(`Error in instanceServices handler for ${urlPath}:`, error);
+                if (!res.headersSent) {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: 'Internal Server Error', error: error.message }));
+                }
+            }
+            return; // Request handled, exit the loop.
+        }
+    }
+
+    // If no route within this sub-router matches.
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ message: `Service endpoint not found at ${urlPath}` }));
 }
 module.exports = {
     route
