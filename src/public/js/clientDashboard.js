@@ -149,8 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
             category: 'Performance',
             fields: [
                 { key: 'overclockEnabled', label: 'Enable Overclock', type: 'checkbox' },
-                { key: 'frequency', label: 'Frequency (MHz)', type: 'number' },
-                { key: 'coreVoltage', label: 'Core Voltage (mV)', type: 'number' },
+                { key: 'frequency', label: 'Frequency (MHz)', type: 'number', max: 1000 },
+                { key: 'coreVoltage', label: 'Core Voltage (mV)', type: 'number', max: 1300 },
                 { key: 'autofanspeed', label: 'Auto Fan Speed', type: 'checkbox' },
                 { key: 'fanspeed', label: 'Manual Fan Speed (%)', type: 'number', note: 'Used if auto is off' },
                 { key: 'temptarget', label: 'Target Temp (°C)', type: 'number', note: 'Used if auto is on' },
@@ -182,7 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         fieldHtml = `<input type="password" id="${field.key}" name="${field.key}" placeholder="${field.placeholder || ''}">`;
                         break;
                     default: // text, number
-                        fieldHtml = `<input type="${field.type}" id="${field.key}" name="${field.key}" value="${currentValue}">`;
+                        const maxAttr = field.max ? `max="${field.max}"` : '';
+                        fieldHtml = `<input type="${field.type}" id="${field.key}" name="${field.key}" value="${currentValue}" ${maxAttr}>`;
                 }
                 let noteHtml = field.note ? ` <small>(${field.note})</small>` : '';
                 formHtml += `<div>${fieldHtml}${noteHtml}</div>`;
@@ -233,6 +234,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            const frequencyInput = form.querySelector('[name="frequency"]');
+            if (frequencyInput && Number(frequencyInput.value) > 1000) {
+                alert('Frequency cannot be greater than 1000 MHz.');
+                return; // Stop the submission
+            }
+
+            const coreVoltageInput = form.querySelector('[name="coreVoltage"]');
+            if (coreVoltageInput && Number(coreVoltageInput.value) > 1300) {
+                alert('Core Voltage cannot be greater than 1300 mV.');
+                return; // Stop the submission
+            }
+
             const payload = {};
             const instanceId = form.dataset.instanceId;
 
