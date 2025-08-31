@@ -133,3 +133,10 @@
 .modal-actions .cancel-button::before {
     display: none;
 }
+
+.confirm-message {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+    line-height: 1.5;
+}

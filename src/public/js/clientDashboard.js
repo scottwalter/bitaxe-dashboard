@@ -272,6 +272,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function openConfirmModal(title, message, onConfirm) {
+        const existingModal = document.getElementById('confirm-modal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+    
+        const modalHtml = `
+            <div id="confirm-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h2>${title}</h2>
+                    <p class="confirm-message">${message}</p>
+                    <div class="modal-actions">
+                        <button type="button" class="animated-button cancel-button">Cancel</button>
+                        <button type="button" class="animated-button confirm-button">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    
+        const modal = document.getElementById('confirm-modal');
+        const closeButton = modal.querySelector('.close-button');
+        const cancelButton = modal.querySelector('.cancel-button');
+        const confirmButton = modal.querySelector('.confirm-button');
+    
+        const closeModal = () => modal.remove();
+    
+        closeButton.addEventListener('click', closeModal);
+        cancelButton.addEventListener('click', closeModal);
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    
+        confirmButton.addEventListener('click', () => {
+            onConfirm();
+            closeModal();
+        });
+    }
+
     // --- Helper Functions ---
 
     /**
@@ -819,26 +862,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     // --- Attach Event Listeners to Dynamically Created Buttons ---
                     const restartButton = detailsPane.querySelector('.restart-button');
                     if (restartButton) {
-                        restartButton.addEventListener('click', async (e) => {
+                        restartButton.addEventListener('click', (e) => {
                             const instanceId = e.target.dataset.instanceId;
-                            if (confirm(`Are you sure you want to restart instance "${instanceId}"?`)) {
-                                try {
-                                    // The actual API endpoint is defined in instanceServices.js
-                                    const response = await fetch(`/api/instance/service/restart?instanceId=${instanceId}`, {
-                                        method: 'POST'
-                                    });
-                                    const result = await response.json();
-                                    if (response.ok) {
-                                        alert(`Instance "${instanceId}" is restarting.`);
-                                        setTimeout(() => location.reload(), 2000); // Refresh to see updated status
-                                    } else {
-                                        alert(`Error restarting instance: ${result.message || 'Unknown error'}`);
+                            openConfirmModal(
+                                'Confirm Restart',
+                                `Are you sure you want to restart instance "${instanceId}"?`,
+                                async () => {
+                                    try {
+                                        const response = await fetch(`/api/instance/service/restart?instanceId=${instanceId}`, {
+                                            method: 'POST'
+                                        });
+                                        const result = await response.json();
+                                        if (response.ok) {
+                                            alert(`Instance "${instanceId}" is restarting.`);
+                                            setTimeout(() => location.reload(), 2000); // Refresh to see updated status
+                                        } else {
+                                            alert(`Error restarting instance: ${result.message || 'Unknown error'}`);
+                                        }
+                                    } catch (error) {
+                                        console.error('Restart request failed:', error);
+                                        alert('Failed to send restart command. See console for details.');
                                     }
-                                } catch (error) {
-                                    console.error('Restart request failed:', error);
-                                    alert('Failed to send restart command. See console for details.');
                                 }
-                            }
+                            );
                         });
                     }
 
