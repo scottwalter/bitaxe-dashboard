@@ -81,7 +81,7 @@ Here is the basic config.json
         {"Network Status":[
             {"networkHashrate":"Network Hashrate"},
             {"networkDifficulty":"Network Difficulty"},
-            {"lasNetworkBlockTime":"Last Block Time"},
+            {"lastNetworkBlockTime":"Last Block Time"},
             {"blockHeight":"Block Height"},
             {"connectedPeers":"Connected Peers"},
             {"nodeVersion":"Node Version"}
