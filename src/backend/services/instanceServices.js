@@ -5,16 +5,20 @@
  * Bitaxe instance URL and forward requests accordingly.
  */
 
+const http = require('http'); // Used for JSDoc type definitions (req, res).
 const fetch = require('node-fetch');
 const apiMapService = require('./apiMapService');
 
 
 
 /**
- * Sends a restart command to a specific Bitaxe miner instance.
+ * Sends a restart command to a specific Bitaxe miner instance. It reads the `instanceId`
+ * from the request's query parameters to identify the target device.
  *
+ * @param {http.IncomingMessage} req The HTTP request object, containing the URL with query parameters.
+ * @param {http.ServerResponse} res The HTTP response object (not directly used, but part of handler signature).
  * @param {object} config - The application's configuration object, which contains the `bitaxe_instances` array.
- * @returns {Promise<object>} A promise that resolves to an object indicating success.
+ * @returns {Promise<object>} A promise that resolves to an object indicating success, e.g., `{ status: 'success', message: '...' }`.
  * @throws {Error} If the instance is not found, or if the fetch request fails or returns a non-OK status.
  */
 async function instanceRestart(req, res, config) {
@@ -53,6 +57,19 @@ async function instanceRestart(req, res, config) {
         throw error;
     }
 }
+
+/**
+ * Handles updating the settings for a specific Bitaxe miner instance. It reads the
+ * `instanceId` from the request's query parameters and the settings payload from the
+ * request body.
+ *
+ * @param {http.IncomingMessage} req The HTTP request object, containing the URL and the JSON payload.
+ * @param {http.ServerResponse} res The HTTP response object (not directly used, but part of handler signature).
+ * @param {object} config The application's configuration object, containing `bitaxe_instances`.
+ * @returns {Promise<object>} A promise that resolves to an object indicating success, e.g., `{ status: 'success', message: '...' }`.
+ * @throws {Error} If the instance is not found, the request body is empty or invalid JSON,
+ * or if the fetch request fails or returns a non-OK status.
+ */
 async function handleSetting(req, res, config) {
     const requestUrl = new URL(req.url, `http://${req.headers.host}`);
     const instanceId = requestUrl.searchParams.get('instanceId');
@@ -107,7 +124,13 @@ async function handleSetting(req, res, config) {
         throw error;
     }
 }
-//Rest API paths for bitaxe-dashboard, which will map to AxeOS rest API calls.
+
+/**
+ * Defines the API routes handled by this service. Each route object specifies a path,
+ * an HTTP method, the handler function, and whether the path requires an exact match.
+ * These routes are specifically for interacting with individual Bitaxe instances (e.g., restarting, settings).
+ * @const {Array<object>}
+ */
 const routes = [
     {
         path: '/api/instance/service/restart',
@@ -122,11 +145,16 @@ const routes = [
         exactMatch: true
     }
 ]
+
 /**
- * Route request to the correct AxeOS rest API service and return the results to the apiRouter.js
- * @param {*} req 
- * @param {*} res 
- * @param {*} config 
+ * Routes incoming requests for instance-specific services (like restart or settings)
+ * to the appropriate handler. It first checks if settings modifications are globally disabled.
+ * If a matching route is found, its handler is executed. Otherwise, it returns a 404 error.
+ *
+ * @param {http.IncomingMessage} req The HTTP request object.
+ * @param {http.ServerResponse} res The HTTP response object.
+ * @param {object} config The application's configuration object.
+ * @returns {Promise<void>} A promise that resolves when the request has been handled.
  */
 async function route(req, res, config){
     // First, check if settings are disabled in the configuration.
