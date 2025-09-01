@@ -57,6 +57,24 @@ document.addEventListener('DOMContentLoaded', () => {
     let miningCoreData = null; // Stores the data for the Mining Core instance.
     let miningCoreDisplayFields = []; // Stores the display_fields from config.json for Mining Core.
     let disableSettings=true;
+    // Define the ASIC Temp, VR Temp and Fan Speed progress bar color limits (green, yellow, red)
+    let ASICTempMap = {
+        green: 65,
+        yellow: 70,
+        red: 75,
+     }
+     let VRTempMap = {
+        green: 70,
+        yellow: 85,
+        red: 100,
+     }
+     let FanSpeedMap = {
+        green: 80,
+        yellow: 95,
+        red: 100,
+     }
+
+
 
     if (refreshIcon) {
         refreshIcon.addEventListener('click', () => {
@@ -291,9 +309,9 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'fanspeed':
                 // Color-code the fan speed bar to indicate potential stress.
                 let fanSpeedFillColor;
-                if (value <= 80) {
+                if (value <= FanSpeedMap.green) {
                     fanSpeedFillColor = 'green';
-                } else if (value >= 81 && value <= 95) {
+                } else if (value >= FanSpeedMap.green && value <= FanSpeedMap.yellow) {
                     fanSpeedFillColor = 'yellow';
                 } else { // 96 to 100
                     fanSpeedFillColor = 'red';
@@ -336,9 +354,9 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'temp':
                 // Color-code the temperature bar to indicate potential overheating.
                 let tempFillColor;
-                if (value <= 65) {
+                if (value <= ASICTempMap.green) {
                     tempFillColor = 'green';
-                } else if (value > 65 && value <= 70) {
+                } else if (value > ASICTempMap.green && value <= ASICTempMap.yellow) {
                     tempFillColor = 'yellow';
                 } else { // 71 to 75
                     tempFillColor = 'red';
@@ -347,9 +365,9 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'vrTemp':
                 // Color-code the VRM temperature bar to indicate potential overheating.
                 let vrTempFillColor;
-                if (value <= 70) {
+                if (value <= VRTempMap.green) {
                     vrTempFillColor = 'green';
-                } else if (value >= 71 && value <= 85) {
+                } else if (value >= VRTempMap.green && value <= VRTempMap.yellow) {
                     vrTempFillColor = 'yellow';
                 } else { // 86 to 100
                     vrTempFillColor = 'red';
@@ -400,7 +418,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 return String(value);
         }
     }
-
+    /**
+     * Generate the color for a field that has a limits map (green, yellow, red)
+     * 
+     */
+    function getLimitColor(value, limits) {
+        if (value <= limits.green) {
+            return 'green';
+        } else if (value >= limits.green && value <= limits.yellow) {
+            return 'yellow';
+        } else { 
+            return 'red';
+        }
+    }
     /**
      * Generates the detailed HTML for mining core summary in the right pane.
      * @param {object} data - The mining core data object (now an array of pools).
@@ -425,23 +455,35 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show each individual miner's status, regardless of whether they are part of a pool.
         allPoolsHtml += `<div class="mining-pool-summary-card">`; // Container for individual miner status
         allPoolsHtml += '<h3>Individual Miner Status</h3>';
-        allPoolsHtml += `<div class="details-grid">`; // Grid for individual miner status
+        //allPoolsHtml += `<div class="details-grid">`; // Grid for individual miner status
         // Loop through each miner's data and generate HTML.
             if ( minerData && minerData.length > 0) {
                 minerData.forEach(miner => {
                     if (miner.status === 'Error') {
                         // Display the miner's name and its error status.
-                        allPoolsHtml += `<strong>${miner.id}:</strong> <span style="color: #dc3545; font-weight: bold;">Error</span>`;
+                        allPoolsHtml += `<h4>${miner.id}:</h4> <span style="color: #dc3545; font-weight: bold;">Error</span>`;
                     } else {
                         const formattedHashrate = formatDeviceHashrate(miner.hashRate); // Use the specific device hashrate formatter.
+                        const formattedExpected = formatDeviceHashrate(miner.expectedHashrate);
                         const bestDiff = miner.bestSessionDiff || 'N/A';
+                        const AsicTemp = safeToFixed(Number(miner.temp),2);
+                        const VRTemp = safeToFixed(Number(miner.vrTemp),2);
+                        const displayAsicTemp = `<font color="${getLimitColor(AsicTemp, ASICTempMap)}"><b>${AsicTemp}</b></font>`;
+                        const displayVRTemp = `<font color="${getLimitColor(VRTemp, VRTempMap)}"><b>${VRTemp}</b></font>`;
+                        const displayFanSpeed = `<font color="${getLimitColor(miner.fanspeed, FanSpeedMap)}"><b>${miner.fanspeed}</b></font>`;
                         // Create one row for each miner with the second column delimited with | for each value.
-                        allPoolsHtml += `<strong>${miner.id}</strong> <span>HR: ${formattedHashrate} | SBD: ${bestDiff}</span>`;
-                        allPoolsHtml += `<strong>&nbsp</strong> <span>T: ${safeToFixed(Number(miner.temp),2)} | VT: ${safeToFixed(Number(miner.vrTemp),2)}</span>`;
+                        allPoolsHtml += `<h4>${miner.id}</h4><div class="details-grid">`;
+                        allPoolsHtml += `<strong>Hash (Expected | Current): </strong><span>${formattedExpected} | ${formattedHashrate}</span>`;
+                        allPoolsHtml += `<strong>Difficulty (Best | Session): </strong><span>${miner.bestDiff} | ${miner.bestSessionDiff}</span>`;
+                        allPoolsHtml += `<strong>Pool (Diff | Shares): </strong><span>${miner.poolDifficulty} | ${miner.sharesAccepted}</span>`;
+                        allPoolsHtml += `<strong>Temp (ASIC | VR): </strong><span>${displayAsicTemp} | ${displayVRTemp}</span>`;
+                        allPoolsHtml += `<strong>Fan (Speed | RPM): </strong><span>${displayFanSpeed} | ${miner.fanrpm}</span>`;
+                        
                     }
+                     allPoolsHtml += `</div>`; // Close details-grid for individual miner status
                 });
             }
-        allPoolsHtml += `</div>`; // Close details-grid for individual miner status
+       
         allPoolsHtml += `</div>`; // Close individual miner status card
             
         data.forEach(poolData => { // Loop through each pool
