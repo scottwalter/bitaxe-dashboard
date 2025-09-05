@@ -57,6 +57,7 @@ Here is the basic config.json
              {"temp":"ASIC Temp"},
              {"vrTemp":"VR Temp"},
              {"fanspeed":"Fan Speed"},
+             {"minFanSpeed":"Min Fan Speed"},
              {"fanrpm":"Fan RPM"},
              {"temptarget":"Target Temp"},
              {"overheat_mode":"Over Heat Mode"},
