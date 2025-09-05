@@ -78,6 +78,7 @@
     font-weight: bold;
     text-align: right;
     padding-right: 10px;
+    white-space: nowrap;
 }
 
 .form-grid input[type="text"],

@@ -36,6 +36,8 @@ const modalService = (() => {
                 { key: 'stratumPort', label: 'Port', type: 'number' },
                 { key: 'stratumUser', label: 'Username', type: 'text' },
                 { key: 'stratumPassword', label: 'Password', type: 'password', placeholder: 'Leave blank to keep current' },
+                { key: 'stratumSuggestedDifficulty', label: 'Suggested Difficulty', type: 'number'},
+                { key: 'stratumExtranonceSubscribe', label: 'Extranonce Subscribe', type: 'checkbox'},
             ]
         },
         {
@@ -45,6 +47,8 @@ const modalService = (() => {
                 { key: 'fallbackStratumPort', label: 'Port', type: 'number' },
                 { key: 'fallbackStratumUser', label: 'Username', type: 'text' },
                 { key: 'fallbackStratumPassword', label: 'Password', type: 'password', placeholder: 'Leave blank to keep current' },
+                { key: 'fallbackStratumSuggestedDifficulty', label: 'Suggested Difficulty', type: 'number'},
+                { key: 'fallbackStratumExtranonceSubscribe', label: 'Extranonce Subscribe', type: 'checkbox'},
             ]
         },
         {
@@ -55,7 +59,9 @@ const modalService = (() => {
                 { key: 'coreVoltage', label: 'Core Voltage (mV)', type: 'number', max: 1300 },
                 { key: 'autofanspeed', label: 'Auto Fan Speed', type: 'checkbox' },
                 { key: 'fanspeed', label: 'Manual Fan Speed (%)', type: 'number', note: 'Used if auto is off' },
+                { key: 'minFanSpeed', label: 'Minimum Fan Speed (%)', type: 'number', note: 'Used if auto is on' },
                 { key: 'temptarget', label: 'Target Temp (°C)', type: 'number', note: 'Used if auto is on' },
+                
             ]
         }
     ];
