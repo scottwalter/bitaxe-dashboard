@@ -76,6 +76,7 @@ const modalService = (() => {
                 { key: 'disable_authentication', label: 'Disable Authentication', type: 'checkbox' },
                 { key: 'cookie_max_age', label: 'Cookie Max Age (seconds)', type: 'number', min: 300 },
                 { key: 'disable_settings', label: 'Disable Device Settings', type: 'checkbox' },
+                { key: 'disable_configurations', label: 'Disable Configurations', type: 'checkbox' },
                 { key: 'demo_mode', label: 'Demo Mode', type: 'checkbox' },
             ]
         },
@@ -294,7 +295,6 @@ const modalService = (() => {
         const rows = container.querySelectorAll('.instance-row');
         const instances = [];
         
-        console.log(`Found ${rows.length} instance rows`);
         
         rows.forEach((row, index) => {
             const nameInput = row.querySelector('.instance-name');
@@ -302,7 +302,6 @@ const modalService = (() => {
             const name = nameInput ? nameInput.value.trim() : '';
             const url = urlInput ? urlInput.value.trim() : '';
             
-            console.log(`Row ${index}: name="${name}", url="${url}"`);
             
             if (name && url) {
                 const instance = {};
@@ -311,7 +310,6 @@ const modalService = (() => {
             }
         });
         
-        console.log('Collected instances:', instances);
         return instances;
     }
 
@@ -553,7 +551,6 @@ const modalService = (() => {
         const sections = container.querySelectorAll('.display-section');
         const displayFields = [];
         
-        console.log(`Found ${sections.length} display field sections for ${fieldKey}`);
         
         sections.forEach((section, sectionIndex) => {
             const sectionNameInput = section.querySelector('.section-name-input');
@@ -570,7 +567,6 @@ const modalService = (() => {
                 const fieldKey = fieldKeyInput ? fieldKeyInput.value.trim() : '';
                 const displayName = fieldDisplayInput ? fieldDisplayInput.value.trim() : '';
                 
-                console.log(`Section "${sectionName}" Field ${fieldIndex}: key="${fieldKey}", display="${displayName}"`);
                 
                 if (fieldKey && displayName) {
                     const fieldObj = {};
@@ -586,7 +582,6 @@ const modalService = (() => {
             }
         });
         
-        console.log(`Collected ${displayFields.length} display field sections for ${fieldKey}:`, displayFields);
         return displayFields;
     }
 
@@ -712,7 +707,6 @@ const modalService = (() => {
             });
         });
 
-        console.log('Configuration payload being sent:', payload);
         
         try {
             const response = await fetch('/api/configuration', {

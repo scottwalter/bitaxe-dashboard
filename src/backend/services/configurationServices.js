@@ -61,7 +61,6 @@ async function updateConfiguration(req, res, config) {
         let updates;
         try {
             updates = JSON.parse(body);
-            console.log('Configuration updates received:', JSON.stringify(updates, null, 2));
         } catch (jsonError) {
             throw new Error(`Invalid JSON in request body: ${jsonError.message}`);
         }
@@ -85,13 +84,10 @@ async function updateConfiguration(req, res, config) {
 
         // Write updated configuration back to file
         try {
-            console.log('Writing updated configuration:', JSON.stringify(updatedConfig, null, 2));
             await fs.writeFile(CONFIG_FILE_PATH, JSON.stringify(updatedConfig, null, 4), 'utf8');
-            console.log('Configuration file updated successfully');
             
             // Reload the configuration in memory - no server restart needed!
             await configurationManager.reloadConfig();
-            console.log('Configuration reloaded in memory');
             
         } catch (error) {
             throw new Error(`Failed to write configuration file: ${error.message}`);
@@ -116,6 +112,13 @@ async function updateConfiguration(req, res, config) {
  * @param {object} config The application's configuration object.
  */
 async function route(req, res, config) {
+    // First, check if configurations are disabled in the configuration.
+    if(config.disable_configurations === true){
+        res.writeHead(403, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: 'Configurations are disabled by configuration.' }));
+        return;
+    }
+    
     try {
         const method = req.method;
         let result;

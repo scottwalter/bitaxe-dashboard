@@ -90,7 +90,11 @@ async function display(req, res, config) {
             }
         }
         //Add if settings are enabled for the dashbaord
-        embeddedData.disable_settings = config.disable_settings;        
+        embeddedData.disable_settings = config.disable_settings;
+        //Add if configurations are enabled for the dashboard
+        embeddedData.disable_configurations = config.disable_configurations;
+        //Add if authentication is enabled for the dashboard
+        embeddedData.disable_authentication = config.disable_authentication;        
         // Send the final JSON response
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify(embeddedData, null, 2));

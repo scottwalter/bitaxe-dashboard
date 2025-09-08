@@ -45,6 +45,13 @@ class ConfigurationManager {
                 config.disable_settings = true;
                 config.configuration_outdated = true;
             }
+            
+            // Ensure disable_configurations has a default value if not present
+            if (!config.hasOwnProperty('disable_configurations')) {
+                console.log('"disable_configurations" not found in config, defaulting to true (configurations disabled).');
+                config.disable_configurations = true;
+                config.configuration_outdated = true;
+            }
 
             // Handle demo mode configuration
             if (config.demo_mode === true) {

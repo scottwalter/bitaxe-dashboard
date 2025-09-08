@@ -23,40 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const miningCoreDetailsDiv = document.getElementById('mining-core-details');
     const refreshIcon = document.getElementById('refresh-icon');
 
-    const header = document.querySelector('header');
-    if (header) {
-        const logoutButton = document.createElement('div');
-        logoutButton.id = 'logout-button';
-        logoutButton.className = 'animated-button';
-        logoutButton.textContent = 'Logout';
-        logoutButton.title = 'Logout from dashboard';
-        header.appendChild(logoutButton);
-
-        logoutButton.addEventListener('click', async () => {
-            try {
-                const response = await fetch('/api/logout', {
-                    method: 'POST'
-                });
-                if (response.ok) {
-                    // On successful logout, the server clears the session cookie.
-                    // Redirect the user to the login page.
-                    window.location.href = '/login';
-                } else {
-                    const result = await response.json();
-                    alert(`Logout failed: ${result.message || 'Unknown error'}`);
-                }
-            } catch (error) {
-                console.error('Logout request failed:', error);
-                alert('Failed to send logout command. See console for details.');
-            }
-        });
-    }
 
     let minerData = [];
     let displayFieldsConfig = []; // Stores the display_fields from config.json for miners.
     let miningCoreData = null; // Stores the data for the Mining Core instance.
     let miningCoreDisplayFields = []; // Stores the display_fields from config.json for Mining Core.
     let disableSettings=true;
+    let disableConfigurations=true;
+    let disableAuthentication=false;
     // Define the ASIC Temp, VR Temp and Fan Speed progress bar color limits (green, yellow, red)
     let ASICTempMap = {
         green: 65,
@@ -82,22 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Add configuration button to menu header
-    const menuHeader = document.querySelector('.menu-header');
-    if (menuHeader) {
-        const configButton = document.createElement('span');
-        configButton.id = 'config-button';
-        configButton.className = 'config-icon';
-        configButton.innerHTML = '&#x2699;'; // Gear icon
-        configButton.title = 'Application Configuration';
-        
-        // Insert before the refresh icon
-        menuHeader.insertBefore(configButton, refreshIcon);
-
-        configButton.addEventListener('click', () => {
-            modalService.openConfigModal();
-        });
-    }
+    // Configuration button will be added after data is loaded and we know the disable_configurations setting
 
     // --- Retrieve and Parse Data via Fetch ---
     fetch('/api/systems/info')
@@ -117,6 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
             miningCoreData = embedded.miningCoreData;
             miningCoreDisplayFields = embedded.miningCoreDisplayFields || [];
             disableSettings = embedded.disable_settings;
+            disableConfigurations = embedded.disable_configurations;
+            disableAuthentication = embedded.disable_authentication;
 
             // Sort data by hostname for a consistent and predictable menu order.
             minerData.sort((a, b) => (a.hostname || a.id).localeCompare(b.hostname || b.id));
@@ -125,6 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (timestampSpan) {
                 timestampSpan.textContent = new Date().toLocaleString();
             }
+
+            // Add logout button based on disable_authentication setting
+            addLogoutButton();
+            
+            // Add configuration button based on disable_configurations setting
+            addConfigurationButton();
 
             // Initialize the dashboard after data is successfully fetched
             populateMenu();
@@ -455,11 +422,15 @@ document.addEventListener('DOMContentLoaded', () => {
      * @returns {string} The HTML string for the mining core details.
      */
     function generateMiningCoreDetailsHtml(data, displayFields) {
-        if (!data || data.length === 0) {
-            return '<p>No mining core data available. Please check your config. Perhaps you have Mining Core Data disabled?</p>';
+        // If we have no miners at all, show an appropriate message
+        if (!minerData || minerData.length === 0) {
+            return '<p>No miner data available. Please check your configuration.</p>';
         }
 
-        let allPoolsHtml = '<h2>Mining Core Summary</h2>'; // Overall heading
+        // Set appropriate title based on whether mining core data is available
+        let allPoolsHtml = data && data.length > 0 
+            ? '<h2>Mining Core Summary</h2>' 
+            : '<h2>Miners Summary</h2>'; // Overall heading
         //Show date / time of last update
          allPoolsHtml += `<div class="mining-pool-summary-card">`; 
         allPoolsHtml += '<h3>Status Timestamp</h3>';
@@ -502,8 +473,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
        
         allPoolsHtml += `</div>`; // Close individual miner status card
-            
-        data.forEach(poolData => { // Loop through each pool
+        
+        // Only show pool data if mining core data is available    
+        if (data && data.length > 0) {
+            data.forEach(poolData => { // Loop through each pool
             allPoolsHtml += `<div class="mining-pool-summary-card">`; // Container for each pool's details
             allPoolsHtml += `<h3>Pool: ${poolData.id.toUpperCase()} (${poolData.coin.symbol} - ${poolData.paymentProcessing.payoutScheme})</h3>`; // Pool specific heading
 
@@ -532,7 +505,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 allPoolsHtml += `</div>`;
             });
             allPoolsHtml += `</div>`; // Close mining-pool-summary-card
-        });
+            });
+        }
         return allPoolsHtml;
     }
 
@@ -582,6 +556,78 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- UI Population and Event Handling ---
+
+    /**
+     * Adds the logout button to the header if authentication is enabled.
+     */
+    function addLogoutButton() {
+        // Only add the logout button if authentication is enabled
+        if (!disableAuthentication) {
+            const header = document.querySelector('header');
+            
+            if (header) {
+                // Check if button already exists to avoid duplicates
+                const existingButton = document.getElementById('logout-button');
+                if (!existingButton) {
+                    const logoutButton = document.createElement('div');
+                    logoutButton.id = 'logout-button';
+                    logoutButton.className = 'animated-button';
+                    logoutButton.textContent = 'Logout';
+                    logoutButton.title = 'Logout from dashboard';
+                    header.appendChild(logoutButton);
+
+                    logoutButton.addEventListener('click', async () => {
+                        try {
+                            const response = await fetch('/api/logout', {
+                                method: 'POST'
+                            });
+                            if (response.ok) {
+                                // On successful logout, the server clears the session cookie.
+                                // Redirect the user to the login page.
+                                window.location.href = '/login';
+                            } else {
+                                const result = await response.json();
+                                alert(`Logout failed: ${result.message || 'Unknown error'}`);
+                            }
+                        } catch (error) {
+                            console.error('Logout request failed:', error);
+                            alert('Failed to send logout command. See console for details.');
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    /**
+     * Adds the configuration button to the menu header if configurations are enabled.
+     */
+    function addConfigurationButton() {
+        // Only add the configuration button if configurations are enabled
+        if (!disableConfigurations) {
+            const menuHeader = document.querySelector('.menu-header');
+            const refreshIcon = document.getElementById('refresh-icon');
+            
+            if (menuHeader && refreshIcon) {
+                // Check if button already exists to avoid duplicates
+                const existingButton = document.getElementById('config-button');
+                if (!existingButton) {
+                    const configButton = document.createElement('span');
+                    configButton.id = 'config-button';
+                    configButton.className = 'config-icon';
+                    configButton.innerHTML = '&#x2699;'; // Gear icon
+                    configButton.title = 'Application Configuration';
+                    
+                    // Insert before the refresh icon
+                    menuHeader.insertBefore(configButton, refreshIcon);
+
+                    configButton.addEventListener('click', () => {
+                        modalService.openConfigModal();
+                    });
+                }
+            }
+        }
+    }
 
     /**
      * Populates the left-hand device menu, dynamically adjusting its width
@@ -754,8 +800,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Automatically select and display details for the first item on page load.
-        if (summaryMenuItem && miningCoreData) {
-            summaryMenuItem.click(); // Prioritize the summary view if it's available.
+        if (summaryMenuItem && minerData.length > 0) {
+            summaryMenuItem.click(); // Prioritize the summary view if miners are available.
         } else if (minerData.length > 0) { // Check if minerData exists before trying to click first element
             // If there are devices, click the first one
             const firstDeviceListItem = deviceMenu.querySelector('li[data-device-id]');

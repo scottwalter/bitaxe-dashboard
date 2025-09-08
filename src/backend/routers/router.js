@@ -177,7 +177,9 @@ async function route(req, res, config) {
             let isMatch = false;
 
             if (route.exactMatch) {
-                isMatch = urlPath === route.path;
+                // For exact matches, compare only the pathname part (ignoring query parameters)
+                const url = new URL(req.url, `http://${req.headers.host}`);
+                isMatch = url.pathname === route.path;
             } else {
                 // Handle prefix matches for paths like /image/
                 isMatch = urlPath.startsWith(route.path);
@@ -213,6 +215,55 @@ async function route(req, res, config) {
                         };
                     }
                 }
+
+                // Check for enable configurations parameter (?ec) on dashboard routes
+                if ((route.path === '/' || route.path === '/index.html') && method === 'GET') {
+                    const url = new URL(req.url, `http://${req.headers.host}`);
+                    const hasEnableConfig = url.searchParams.has('ec');
+                    
+                    if (hasEnableConfig) {
+                        // Only allow ?ec parameter when authentication is enabled (more secure)
+                        if (config.disable_authentication === false) {
+                            console.log('Enable configurations parameter detected - re-enabling configurations');
+                            
+                            // Import configuration manager to update the setting
+                            const configurationManager = require('../services/configurationManager');
+                            
+                            try {
+                                // Read current config
+                                const fs = require('fs').promises;
+                                const path = require('path');
+                                const configPath = path.join(__dirname, '..', '..', 'config', 'config.json');
+                                const configContent = await fs.readFile(configPath, 'utf8');
+                                const currentConfig = JSON.parse(configContent);
+                                
+                                // Update disable_configurations to false
+                                currentConfig.disable_configurations = false;
+                                
+                                // Write updated configuration
+                                await fs.writeFile(configPath, JSON.stringify(currentConfig, null, 4), 'utf8');
+                                
+                                // Reload configuration in memory
+                                await configurationManager.reloadConfig();
+                                
+                                console.log('Enable configurations applied - configurations re-enabled');
+                                
+                                // Redirect to clean URL (remove ?ec parameter)
+                                const cleanUrl = `${url.pathname}`;
+                                res.writeHead(302, { 'Location': cleanUrl });
+                                return res.end();
+                                
+                            } catch (error) {
+                                console.error('Error applying enable configurations:', error);
+                                // Continue with normal page load if enable config fails
+                            }
+                        } else {
+                            console.log('Enable configurations parameter ignored - authentication is disabled');
+                            // Continue with normal page load when authentication is disabled
+                        }
+                    }
+                }
+
                 // Execute the matched route's handler function and send user json if required.
                 if(route.sendUserInfo){
                     await route.handler(req, res, config, user);
