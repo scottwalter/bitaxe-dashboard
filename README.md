@@ -30,6 +30,7 @@ Here is the basic config.json
     "disable_authentication":false,
     "cookie_max_age":3600,
     "disable_settings":false,
+    "disable_configurations": false,
     "demo_mode":true,
     "title":"Bitaxe Dashboard",
     "bitaxe_instances": [
