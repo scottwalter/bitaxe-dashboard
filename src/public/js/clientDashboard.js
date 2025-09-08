@@ -82,6 +82,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Add configuration button to menu header
+    const menuHeader = document.querySelector('.menu-header');
+    if (menuHeader) {
+        const configButton = document.createElement('span');
+        configButton.id = 'config-button';
+        configButton.className = 'config-icon';
+        configButton.innerHTML = '&#x2699;'; // Gear icon
+        configButton.title = 'Application Configuration';
+        
+        // Insert before the refresh icon
+        menuHeader.insertBefore(configButton, refreshIcon);
+
+        configButton.addEventListener('click', () => {
+            modalService.openConfigModal();
+        });
+    }
+
     // --- Retrieve and Parse Data via Fetch ---
     fetch('/api/systems/info')
         .then(response => {

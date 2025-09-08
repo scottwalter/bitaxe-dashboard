@@ -113,7 +113,7 @@ const routes = [
         method: 'GET',
         handler: demoApiRouter.route,
         exactMatch: false,
-        requireJWT: true, // Requires a valid sessionToken
+        requireJWT: false, // Requires a valid sessionToken
         sendUserInfo: false //Don't Send the user json with request
     },
     // Generic handler for all static assets in the /public/ directory.

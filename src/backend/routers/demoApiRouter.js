@@ -19,7 +19,8 @@ const API_ENDPOINT_MAP = {
 };
 
 /** The directory where the demo API JSON files are stored. */
-const DEMO_API_DIRECTORY = path.join(__dirname, '../demo-apis');
+const DEMO_API_DIRECTORY = path.join(__dirname, '..','..','/demo-apis');
+console.log(`Demo API Directory: ${DEMO_API_DIRECTORY}`);
 
 /**
  * Handles incoming requests for demo API endpoints.

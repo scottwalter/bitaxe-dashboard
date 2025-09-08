@@ -84,7 +84,8 @@
 .form-grid input[type="text"],
 .form-grid input[type="password"],
 .form-grid input[type="number"],
-.form-grid select {
+.form-grid select,
+.form-grid textarea {
     background-color: #3a3a3a; /* Dark input background */
     color: #e0e0e0; /* Light input text */
     border: 1px solid #555; /* Darker border */
@@ -93,17 +94,27 @@
     border-radius: 4px;
     box-sizing: border-box;
     transition: border-color 0.2s ease-in-out;
+    font-family: inherit;
 }
 
-.form-grid input:focus, .form-grid select:focus {
+.form-grid input:focus, .form-grid select:focus, .form-grid textarea:focus {
     border-color: #ff1744; /* Red accent on focus */
     outline: none;
+}
+
+.form-grid textarea {
+    resize: vertical; /* Allow vertical resize only */
+    min-height: 80px;
 }
 
 .form-grid input[type="checkbox"] {
     justify-self: start;
     width: 1.2em;
     height: 1.2em;
+}
+
+.form-grid .full-width-field {
+    grid-column: 1 / -1;
 }
 
 .modal-actions {
@@ -140,4 +151,241 @@
     margin-bottom: 20px;
     font-size: 1.1em;
     line-height: 1.5;
+}
+
+/* Bitaxe Instances Table Styling */
+#bitaxe-instances-container {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.instances-table-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr auto;
+    gap: 10px;
+    padding: 10px;
+    background-color: #444;
+    border-radius: 4px 4px 0 0;
+    font-weight: bold;
+    color: #f0f0f0;
+    border-bottom: 1px solid #555;
+}
+
+#bitaxe-instances-rows {
+    background-color: #3a3a3a;
+    border-radius: 0 0 4px 4px;
+    border: 1px solid #555;
+    border-top: none;
+}
+
+.instance-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr auto;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #555;
+}
+
+.instance-row:last-child {
+    border-bottom: none;
+}
+
+.instance-row input[type="text"] {
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+    border: 1px solid #666;
+    padding: 8px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease-in-out;
+}
+
+.instance-row input[type="text"]:focus {
+    border-color: #ff1744;
+    outline: none;
+}
+
+.remove-instance-btn {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+    font-size: 0.8em;
+    padding: 6px 12px;
+    white-space: nowrap;
+}
+
+.remove-instance-btn:hover {
+    background-color: #c82333 !important;
+    border-color: #bd2130 !important;
+}
+
+.remove-instance-btn::before {
+    background-color: #c82333 !important;
+}
+
+.add-instance-btn {
+    margin-top: 10px;
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    color: white !important;
+    font-size: 0.9em;
+}
+
+.add-instance-btn:hover {
+    background-color: #218838 !important;
+    border-color: #1e7e34 !important;
+}
+
+.add-instance-btn::before {
+    background-color: #218838 !important;
+}
+
+/* Display Fields Editor Styling */
+.display-fields-editor {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #444;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.editor-header h4 {
+    margin: 0;
+    color: #f0f0f0;
+    font-size: 1.1em;
+}
+
+.display-sections {
+    background-color: #3a3a3a;
+    border: 1px solid #555;
+    border-radius: 4px;
+}
+
+.display-section {
+    border-bottom: 2px solid #555;
+    background-color: #2c2c2c;
+}
+
+.display-section:last-child {
+    border-bottom: none;
+}
+
+.section-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 15px;
+    padding: 15px;
+    background-color: #444;
+    align-items: center;
+}
+
+.section-name-input {
+    background-color: #2c2c2c !important;
+    color: #e0e0e0 !important;
+    border: 2px solid #666 !important;
+    padding: 8px !important;
+    border-radius: 4px !important;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.section-name-input:focus {
+    border-color: #ff1744 !important;
+    outline: none !important;
+}
+
+.section-fields {
+    padding: 15px;
+}
+
+.fields-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    padding: 10px;
+    background-color: #555;
+    border-radius: 4px 4px 0 0;
+    font-weight: bold;
+    color: #f0f0f0;
+    border-bottom: 1px solid #666;
+}
+
+.fields-rows {
+    background-color: #3a3a3a;
+    border-radius: 0 0 4px 4px;
+    border: 1px solid #666;
+    border-top: none;
+}
+
+.field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #555;
+}
+
+.field-row:last-child {
+    border-bottom: none;
+}
+
+.field-key-input, .field-display-input {
+    background-color: #2c2c2c !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #666 !important;
+    padding: 8px !important;
+    border-radius: 4px !important;
+    box-sizing: border-box !important;
+    transition: border-color 0.2s ease-in-out !important;
+}
+
+.field-key-input:focus, .field-display-input:focus {
+    border-color: #ff1744 !important;
+    outline: none !important;
+}
+
+.remove-section-btn, .remove-field-btn {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+    font-size: 0.8em;
+    padding: 6px 12px;
+    white-space: nowrap;
+}
+
+.remove-section-btn:hover, .remove-field-btn:hover {
+    background-color: #c82333 !important;
+    border-color: #bd2130 !important;
+}
+
+.remove-section-btn::before, .remove-field-btn::before {
+    background-color: #c82333 !important;
+}
+
+.add-section-btn, .add-field-btn {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    color: white !important;
+    font-size: 0.9em;
+    margin-top: 10px;
+}
+
+.add-section-btn:hover, .add-field-btn:hover {
+    background-color: #218838 !important;
+    border-color: #1e7e34 !important;
+}
+
+.add-section-btn::before, .add-field-btn::before {
+    background-color: #218838 !important;
+}
+
+.add-section-btn {
+    margin-top: 0; /* Override the default margin for the header button */
 }
