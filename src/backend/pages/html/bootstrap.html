@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>First Time Setup - <!-- TITLE --></title>
+    <link rel="stylesheet" href="/public/css/bitaxeDashboard.css">
+    <link rel="stylesheet" href="/public/css/bootstrap.css">
+    <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <header>
+        <h1><!-- TITLE --></h1>
+        <p>Version: <!-- VERSION --></p>
+    </header>
+
+    <div class="main-container">
+        <main class="details-pane">
+            <div id="bootstrap-container">
+                <div class="bootstrap-header">
+                    <h2>Welcome to Bitaxe Dashboard</h2>
+                    <p>This appears to be your first time running the application. Please configure the initial settings below.</p>
+                    <p style="color: #ff1744;">!!!! If you are running Bitaxe-Dashboard via Docker make sure you have mapped the config folder to you local filesystem !!!!</p>
+                    <p style="color: #ff1744;">Docker Run Example:</p>
+                    <p style="color: #ff1744;"> sudo docker run -d --name bitaxe-dashboard -p 3000:3000/tcp -v {/your/local/config_path}:/app/config scottwalter/bitaxe-dashboard:latest </p>
+                </div>
+
+                <form id="bootstrapForm" class="bootstrap-form">
+                    <!-- Basic Settings -->
+                    <div class="form-section">
+                        <h3>Basic Settings</h3>
+                        
+                        <div class="form-group">
+                            <label for="title">Dashboard Title</label>
+                            <input type="text" id="title" name="title" value="Bitaxe Dashboard" required>
+                            <small>The title that will appear at the top of your dashboard</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="port">Web Server Port</label>
+                            <input type="number" id="port" name="port" value="3000" min="1024" max="65523" required>
+                            <small>Port number for the web server (1024-65523)</small>
+                        </div>
+                    </div>
+
+                    <!-- Authentication Settings -->
+                    <div class="form-section">
+                        <h3>Authentication Settings</h3>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableAuth" name="enableAuth" value="true" checked>
+                                Enable Authentication
+                            </label>
+                            <small>Uncheck to disable login requirements (not recommended for production)</small>
+                            <small>Application must be running in HTTPS / SSL if enabled</small>
+                        </div>
+
+                        <div id="authFields">
+                            <div class="form-group">
+                                <label for="username">Admin Username</label>
+                                <input type="text" id="username" name="username" value="admin" required>
+                                <small>Username for administrative access</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password">Admin Password</label>
+                                <div class="password-input-group">
+                                    <input type="password" id="password" name="password" required>
+                                    <button type="button" class="password-toggle" data-target="password">👁️</button>
+                                </div>
+                                <small>Strong password recommended</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm Password</label>
+                                <div class="password-input-group">
+                                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                                    <button type="button" class="password-toggle" data-target="confirmPassword">👁️</button>
+                                </div>
+                                <div id="passwordMatch" class="validation-message" style="display: none;"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="jwt-input-group">
+                                    <label for="jwtKey">JWT Secret Key</label>
+                                    <div class="jwt-input-row">
+                                        <input type="text" id="jwtKey" name="jwtKey" required>
+                                        <button type="button" id="generateJWT" class="btn-secondary">Generate Key</button>
+                                    </div>
+                                    <small>32-character secret key for session tokens</small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="jwtExpiry">Session Duration</label>
+                                <select id="jwtExpiry" name="jwtExpiry">
+                                    <option value="1h" selected>1 Hour</option>
+                                    <option value="8h">8 Hours</option>
+                                    <option value="24h">24 Hours</option>
+                                    <option value="7d">7 Days</option>
+                                </select>
+                                <small>How long users stay logged in</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bitaxe Devices -->
+                    <div class="form-section">
+                        <h3>Bitaxe Devices</h3>
+                        <p>Add your Bitaxe device URLs below. You can add more later through the configuration menu.</p>
+                        
+                        <div id="bitaxeInstances">
+                            <div class="device-instance">
+                                <div class="form-group">
+                                    <label>Device Name</label>
+                                    <input type="text" name="deviceName" placeholder="Bitaxe1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Device URL</label>
+                                    <input type="url" name="deviceUrl" placeholder="http://192.168.1.100" required>
+                                </div>
+                                <button type="button" class="remove-device btn-danger" style="display: none;">Remove</button>
+                            </div>
+                        </div>
+                        
+                        <button type="button" id="addDevice" class="btn-secondary">Add Another Device</button>
+                    </div>
+
+                    <!-- Mining Core Settings -->
+                    <div class="form-section">
+                        <h3>Mining Core Integration (Optional)</h3>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableMiningCore" name="enableMiningCore" value="true">
+                                Enable Mining Core Integration
+                            </label>
+                            <small>Connect to a mining pool server for additional statistics</small>
+                        </div>
+
+                        <div id="miningCoreFields" style="display: none;">
+                            <div class="form-group">
+                                <label for="miningCoreUrl">Mining Core API URL</label>
+                                <input type="url" id="miningCoreUrl" name="miningCoreUrl" placeholder="http://192.168.1.100:4000">
+                                <small>URL to your mining core API endpoint</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Create Configuration</button>
+                    </div>
+
+                    <div id="bootstrap-message" class="message" style="display: none;"></div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; <!-- CURRENT_YEAR --> Scott Walter. Ver. <!-- VERSION --></p>
+    </footer>
+
+    <script src="/public/js/bootstrap.js"></script>
+</body>
+</html>

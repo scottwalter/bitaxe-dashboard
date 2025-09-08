@@ -1,17 +1,41 @@
 /**
- * @file Configuration Manager - Handles dynamic loading and reloading of configuration
- * without requiring server restarts. Provides a centralized way to access and update
- * the application configuration.
+ * @file Configuration Manager - Dynamic configuration management without server restarts.
+ * 
+ * This module provides a singleton-based configuration management system that allows
+ * for hot-reloading of configuration changes. It handles configuration loading,
+ * validation, default value assignment, and runtime updates without requiring
+ * server restarts.
+ * 
+ * Features:
+ * - Dynamic configuration reloading
+ * - Configuration validation and defaults
+ * - Demo mode configuration override
+ * - Event-based change notifications
+ * - Singleton pattern for global access
+ * 
+ * @author Scott Walter
+ * @version 2.0.0
+ * @since 1.0.0
  */
 
 const fs = require('fs').promises;
 const path = require('path');
 
-/** The full, absolute path to the configuration file. */
+/** 
+ * Full absolute path to the main configuration file.
+ * @constant {string}
+ */
 const CONFIG_FILE_PATH = path.join(__dirname, '..', '..', 'config', 'config.json');
 
 /**
- * Configuration Manager class - manages configuration loading, reloading, and access
+ * Configuration Manager class - Singleton for dynamic configuration management.
+ * 
+ * Manages the application configuration lifecycle including loading from file,
+ * applying defaults, handling demo mode overrides, and providing hot-reload
+ * capabilities without server restart.
+ * 
+ * @class ConfigurationManager
+ * @since 1.0.0
  */
 class ConfigurationManager {
     constructor() {

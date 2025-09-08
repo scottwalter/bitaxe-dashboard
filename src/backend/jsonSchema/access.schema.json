@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bitaxe-dashboard.local/schemas/access.json",
+  "title": "Bitaxe Dashboard Access Configuration",
+  "description": "Authentication credentials schema for the Bitaxe Dashboard application",
+  "type": "object",
+  "patternProperties": {
+    "^[a-zA-Z0-9_-]+$": {
+      "type": "string",
+      "pattern": "^[a-fA-F0-9]{64}$",
+      "description": "SHA256 hash of the user's password (64 hexadecimal characters)"
+    }
+  },
+  "additionalProperties": false,
+  "minProperties": 1,
+  "examples": [
+    {
+      "admin": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8"
+    }
+  ]
+}

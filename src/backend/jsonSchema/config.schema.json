@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bitaxe-dashboard.local/schemas/config.json",
+  "title": "Bitaxe Dashboard Configuration",
+  "description": "Configuration schema for the Bitaxe Dashboard application",
+  "type": "object",
+  "required": [
+    "bitaxe_dashboard_version",
+    "disable_authentication",
+    "cookie_max_age",
+    "disable_settings",
+    "disable_configurations",
+    "web_server_port",
+    "demo_mode",
+    "title",
+    "bitaxe_instances",
+    "display_fields"
+  ],
+  "properties": {
+    "bitaxe_dashboard_version": {
+      "type": "integer",
+      "description": "Version number of the dashboard configuration format",
+      "minimum": 1
+    },
+    "disable_authentication": {
+      "type": "boolean",
+      "description": "Whether to disable authentication for the dashboard"
+    },
+    "cookie_max_age": {
+      "type": "integer",
+      "description": "Maximum age of authentication cookies in seconds",
+      "minimum": 0
+    },
+    "disable_settings": {
+      "type": "boolean",
+      "description": "Whether to disable the settings interface"
+    },
+    "disable_configurations": {
+      "type": "boolean",
+      "description": "Whether to disable configuration management"
+    },
+    "web_server_port": {
+      "type": "integer",
+      "description": "Port number for the web server",
+      "minimum": 1,
+      "maximum": 65535
+    },
+    "demo_mode": {
+      "type": "boolean",
+      "description": "Whether to run in demo mode with mock data"
+    },
+    "title": {
+      "type": "string",
+      "description": "Title of the dashboard application",
+      "minLength": 1
+    },
+    "bitaxe_instances": {
+      "type": "array",
+      "description": "List of Bitaxe device instances",
+      "items": {
+        "type": "object",
+        "patternProperties": {
+          "^.+$": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL endpoint for the Bitaxe device"
+          }
+        },
+        "additionalProperties": false,
+        "minProperties": 1,
+        "maxProperties": 1
+      }
+    },
+    "display_fields": {
+      "type": "array",
+      "description": "Configuration for dashboard display fields organized by sections",
+      "items": {
+        "type": "object",
+        "patternProperties": {
+          "^.+$": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "patternProperties": {
+                "^.+$": {
+                  "type": "string",
+                  "description": "Human-readable name for the API field"
+                }
+              },
+              "additionalProperties": false,
+              "minProperties": 1,
+              "maxProperties": 1
+            }
+          }
+        },
+        "additionalProperties": false,
+        "minProperties": 1,
+        "maxProperties": 1
+      }
+    },
+    "mining_core_enabled": {
+      "type": "boolean",
+      "description": "Whether mining core integration is enabled"
+    },
+    "mining_core_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL for the mining core API"
+    },
+    "mining_core_display_fields": {
+      "type": "array",
+      "description": "Display fields configuration for mining core data",
+      "items": {
+        "type": "object",
+        "patternProperties": {
+          "^.+$": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "patternProperties": {
+                "^.+$": {
+                  "type": "string",
+                  "description": "Human-readable name for the mining core API field"
+                }
+              },
+              "additionalProperties": false,
+              "minProperties": 1,
+              "maxProperties": 1
+            }
+          }
+        },
+        "additionalProperties": false,
+        "minProperties": 1,
+        "maxProperties": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

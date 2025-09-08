@@ -1,7 +1,20 @@
 /**
- * @file This module acts as the central request router for the application.
- * It maps incoming HTTP requests to the appropriate handler based on the URL path and method.
- * It handles serving dynamic pages, static assets (CSS, JS), and API endpoints.
+ * @file Central HTTP request router for the Bitaxe Dashboard application.
+ * 
+ * This module provides the main routing logic for the application during normal
+ * operation mode. It handles URL-based routing to different handlers including
+ * dashboard pages, API endpoints, static assets, and authentication flows.
+ * 
+ * Features:
+ * - JWT-based authentication middleware
+ * - Static asset serving with MIME type detection
+ * - Route-based handler dispatch
+ * - User session management
+ * - Security middleware integration
+ * 
+ * @author Scott Walter
+ * @version 2.0.0
+ * @since 1.0.0
  */
 
 const http = require('http'); // Used for JSDoc type definitions (req, res).
@@ -15,10 +28,16 @@ const apiRouter = require('./apiRouter');
 const jwTokenServices = require('../services/jwTokenServices');
 
 
-// Define a constant for the public directory where client-side assets are stored
+/**
+ * Path to the public directory containing client-side static assets.
+ * @constant {string}
+ */
 const PUBLIC_DIR = path.join(__dirname, '..','..','public');
 
-// A map of file extensions to their corresponding MIME types for static assets.
+/**
+ * MIME type mappings for static file serving.
+ * @constant {Object.<string, string>}
+ */
 const MIME_TYPES = {
     '.css': 'text/css',
     '.js': 'application/javascript',

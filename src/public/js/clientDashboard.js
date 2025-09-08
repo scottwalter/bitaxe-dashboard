@@ -1,18 +1,32 @@
 /**
- * @file This script provides the client-side logic for the Bitaxe Dashboard.
- * It runs after the DOM is fully loaded, fetches device and configuration data
- * from a backend API, and then dynamically generates the dashboard's content.
- *
- * Responsibilities include:
- * - Fetching all device data from the `/api/systems/info` endpoint upon loading.
- * - Populating the left-hand navigation menu with discovered devices and a summary view.
- * - Handling clicks on menu items to display detailed information for each device or the summary.
- * - Formatting various data points (e.g., hashrate, uptime, temperature) for human-readable display.
- * - Generating visual elements like progress bars with color-coded thresholds.
- * - Dynamically adjusting the width of the navigation menu to fit device names.
- * - Implementing interactive modals for viewing/editing device settings and confirming actions like restarting.
- * - Sending updates (settings, restart commands) back to the server via specific API endpoints.
- * - Adding a logout button and handling the session termination.
+ * @file Bitaxe Dashboard Client-Side Application Logic.
+ * 
+ * This module provides the complete client-side functionality for the Bitaxe
+ * Dashboard application. It manages the dynamic dashboard interface, device
+ * data polling, user interactions, and real-time updates.
+ * 
+ * Core Features:
+ * - Real-time device data fetching and display
+ * - Dynamic navigation menu generation
+ * - Interactive device detail panels
+ * - Responsive data visualization with progress bars
+ * - Modal-based configuration management
+ * - Mining pool integration display
+ * - Authentication and session management
+ * - Auto-refresh with configurable intervals
+ * - Error handling and user feedback
+ * 
+ * Data Flow:
+ * 1. Initial load fetches all device and configuration data
+ * 2. Navigation menu populated with discovered devices
+ * 3. Summary view displays aggregated statistics
+ * 4. Device selection shows detailed information
+ * 5. Periodic polling keeps data current
+ * 6. User actions trigger API calls and UI updates
+ * 
+ * @author Scott Walter
+ * @version 2.0.0
+ * @since 1.0.0
  */
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://bitaxe-dashboard.local/schemas/jsonWebTokenKey.json",
+  "title": "JWT Configuration",
+  "description": "JSON Web Token configuration schema for the Bitaxe Dashboard application",
+  "type": "object",
+  "required": [
+    "jsonWebTokenKey",
+    "expiresIn"
+  ],
+  "properties": {
+    "jsonWebTokenKey": {
+      "type": "string",
+      "description": "Secret key used for signing JWT tokens",
+      "minLength": 8
+    },
+    "expiresIn": {
+      "type": "string",
+      "description": "JWT token expiration time (e.g., '1h', '30m', '7d')",
+      "pattern": "^\\d+[smhdw]$"
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "jsonWebTokenKey": "Some_Super_Secret_Key",
+      "expiresIn": "1h"
+    }
+  ]
+}
