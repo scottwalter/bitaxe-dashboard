@@ -2,6 +2,7 @@
  * @file This is the main entry point for the Bitaxe Dashboard application.
  * It initializes the server, loads the configuration, and starts listening for
  * incoming HTTP requests, which are then handed off to the dispatcher.
+ * Dynamic-Config feature
  */
 
 const http = require('http');
