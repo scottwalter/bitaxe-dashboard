@@ -16,6 +16,7 @@ const apiEndpointMap = {
     'pools': '/api/pools',
     'instanceRestart': '/api/system/restart',
     'instanceSettings': '/api/system',
+    'statisticsDashboard': '/api/system/statistics/dashboard',
 };
 
 /**

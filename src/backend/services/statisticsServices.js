@@ -45,8 +45,9 @@ async function route(req, res, config) {
     const instanceUrl = instanceConfig[instanceName];
 
     try {
-        // Proxy the statistics request to the specific miner
-        const statisticsUrl = `${instanceUrl}/api/system/statistics/dashboard`;
+        // Get the statistics endpoint path from apiMapService
+        const statisticsPath = await apiMapService.getApiPath(config, 'statisticsDashboard');
+        const statisticsUrl = `${instanceUrl}${statisticsPath}`;
         
         // Use dynamic import for node-fetch 3.x compatibility
         const { default: fetch } = await import('node-fetch');

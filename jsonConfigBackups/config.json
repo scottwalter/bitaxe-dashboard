@@ -1,6 +1,6 @@
 {
     "bitaxe_dashboard_version": 2,
-    "disable_authentication": true,
+    "disable_authentication": false,
     "cookie_max_age": 3600,
     "disable_settings": false,
     "disable_configurations": false,
