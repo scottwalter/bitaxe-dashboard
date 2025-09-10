@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Icon Previews - Restart & Settings</title>
+    <style>
+        body {
+            background: #1a1a1a;
+            color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .preview-section {
+            margin-bottom: 40px;
+        }
+        
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .icon-demo {
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background: #2a2a2a;
+        }
+        
+        .icon-demo h3 {
+            margin-top: 0;
+            color: #FF1744;
+        }
+        
+        /* Restart Icon Styles */
+        
+        /* Restart Option 1: Circular Arrow */
+        .restart-icon-1 {
+            width: 20px;
+            height: 20px;
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .restart-icon-1::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f5f5f5;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 2s linear infinite;
+        }
+        
+        .restart-icon-1::after {
+            content: '→';
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            font-size: 10px;
+            color: #FF1744;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .restart-icon-1:hover::before {
+            animation-duration: 0.5s;
+            border-color: #FF1744;
+        }
+        
+        /* Restart Option 2: Refresh Symbol */
+        .restart-icon-2 {
+            width: 18px;
+            height: 18px;
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin: 10px;
+            border: 1px solid #f5f5f5;
+            border-radius: 2px;
+            padding: 4px;
+            background: transparent;
+        }
+        
+        .restart-icon-2::before,
+        .restart-icon-2::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border: 2px solid #f5f5f5;
+            border-radius: 50% 50% 50% 0;
+        }
+        
+        .restart-icon-2::before {
+            top: 2px;
+            left: 2px;
+            transform: rotate(-45deg);
+            animation: refreshPulse 3s ease-in-out infinite;
+        }
+        
+        .restart-icon-2::after {
+            top: 4px;
+            left: 4px;
+            transform: rotate(135deg);
+            animation: refreshPulse 3s ease-in-out infinite 1.5s;
+        }
+        
+        .restart-icon-2:hover {
+            border-color: #fff;
+        }
+        
+        .restart-icon-2:hover::before,
+        .restart-icon-2:hover::after {
+            border-color: #FF1744;
+            animation-duration: 1s;
+        }
+        
+        /* Restart Option 3: Power Symbol */
+        .restart-icon-3 {
+            width: 18px;
+            height: 18px;
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .restart-icon-3::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            width: 2px;
+            height: 8px;
+            background: #f5f5f5;
+            transform: translateX(-50%);
+            animation: powerBlink 2s ease-in-out infinite;
+        }
+        
+        .restart-icon-3::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 14px;
+            height: 14px;
+            border: 2px solid transparent;
+            border-radius: 50%;
+            border-top-color: #f5f5f5;
+            border-right-color: #f5f5f5;
+            border-bottom-color: #f5f5f5;
+            animation: powerRotate 2s linear infinite;
+        }
+        
+        .restart-icon-3:hover::before {
+            background: #FF1744;
+        }
+        
+        .restart-icon-3:hover::after {
+            border-top-color: #FF1744;
+            border-right-color: #FF1744;
+            border-bottom-color: #FF1744;
+            animation-duration: 0.5s;
+        }
+        
+        /* Restart Option 4: Rotating Arrows */
+        .restart-icon-4 {
+            width: 18px;
+            height: 18px;
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .restart-icon-4 .arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border: 3px solid transparent;
+        }
+        
+        .restart-icon-4 .arrow:nth-child(1) {
+            top: 2px;
+            right: 2px;
+            border-left-color: #f5f5f5;
+            animation: arrowPulse 2s ease-in-out infinite 0s;
+        }
+        
+        .restart-icon-4 .arrow:nth-child(2) {
+            bottom: 2px;
+            left: 2px;
+            border-right-color: #f5f5f5;
+            animation: arrowPulse 2s ease-in-out infinite 1s;
+        }
+        
+        .restart-icon-4::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            border: 1px solid #f5f5f5;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: centerPulse 4s ease-in-out infinite;
+        }
+        
+        .restart-icon-4:hover .arrow:nth-child(1) {
+            border-left-color: #FF1744;
+        }
+        
+        .restart-icon-4:hover .arrow:nth-child(2) {
+            border-right-color: #FF1744;
+        }
+        
+        .restart-icon-4:hover::before {
+            border-color: #FF1744;
+        }
+        
+        /* Settings Icon Styles */
+        
+        /* Settings Option 1: Classic Gear */
+        .settings-icon-1 {
+            width: 18px;
+            height: 18px;
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .settings-icon-1::before {
+            content: '⚙';
+            font-size: 18px;
+            color: #f5f5f5;
+            animation: gearRotate 4s linear infinite;
+            display: block;
+            text-align: center;
+        }
+        
+        .settings-icon-1:hover::before {
+            color: #FF1744;
+            animation-duration: 1s;
+        }
+        
+        /* Settings Option 2: CSS Gear */
+        .settings-icon-2 {
+            width: 18px;
+            height: 18px;
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .settings-icon-2::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: #f5f5f5;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .settings-icon-2 .tooth {
+            position: absolute;
+            width: 2px;
+            height: 4px;
+            background: #f5f5f5;
+            transform-origin: center;
+        }
+        
+        .settings-icon-2 .tooth:nth-child(1) { top: 0; left: 50%; transform: translateX(-50%) rotate(0deg); }
+        .settings-icon-2 .tooth:nth-child(2) { top: 2px; right: 2px; transform: rotate(45deg); }
+        .settings-icon-2 .tooth:nth-child(3) { right: 0; top: 50%; transform: translateY(-50%) rotate(90deg); }
+        .settings-icon-2 .tooth:nth-child(4) { bottom: 2px; right: 2px; transform: rotate(135deg); }
+        .settings-icon-2 .tooth:nth-child(5) { bottom: 0; left: 50%; transform: translateX(-50%) rotate(180deg); }
+        .settings-icon-2 .tooth:nth-child(6) { bottom: 2px; left: 2px; transform: rotate(225deg); }
+        .settings-icon-2 .tooth:nth-child(7) { left: 0; top: 50%; transform: translateY(-50%) rotate(270deg); }
+        .settings-icon-2 .tooth:nth-child(8) { top: 2px; left: 2px; transform: rotate(315deg); }
+        
+        .settings-icon-2 {
+            animation: gearRotate 6s linear infinite;
+        }
+        
+        .settings-icon-2:hover {
+            animation-duration: 2s;
+        }
+        
+        .settings-icon-2:hover::before,
+        .settings-icon-2:hover .tooth {
+            background: #FF1744;
+        }
+        
+        /* Settings Option 3: Sliders */
+        .settings-icon-3 {
+            width: 18px;
+            height: 14px;
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin: 10px;
+            background: transparent;
+        }
+        
+        .settings-icon-3 .slider {
+            position: absolute;
+            width: 2px;
+            height: 12px;
+            background: #f5f5f5;
+            top: 1px;
+        }
+        
+        .settings-icon-3 .slider:nth-child(1) {
+            left: 1px;
+            animation: sliderMove1 3s ease-in-out infinite;
+        }
+        
+        .settings-icon-3 .slider:nth-child(2) {
+            left: 5px;
+            animation: sliderMove2 3s ease-in-out infinite 1s;
+        }
+        
+        .settings-icon-3 .slider:nth-child(3) {
+            left: 9px;
+            animation: sliderMove3 3s ease-in-out infinite 2s;
+        }
+        
+        .settings-icon-3 .slider:nth-child(4) {
+            left: 13px;
+            animation: sliderMove4 3s ease-in-out infinite 2.5s;
+        }
+        
+        .settings-icon-3 .knob {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #FF1744;
+            border-radius: 50%;
+            left: -1px;
+        }
+        
+        .settings-icon-3 .slider:nth-child(1) .knob { top: 2px; animation: knobMove1 3s ease-in-out infinite; }
+        .settings-icon-3 .slider:nth-child(2) .knob { top: 6px; animation: knobMove2 3s ease-in-out infinite 1s; }
+        .settings-icon-3 .slider:nth-child(3) .knob { top: 4px; animation: knobMove3 3s ease-in-out infinite 2s; }
+        .settings-icon-3 .slider:nth-child(4) .knob { top: 8px; animation: knobMove4 3s ease-in-out infinite 2.5s; }
+        
+        .settings-icon-3:hover .slider {
+            background: #FF1744;
+        }
+        
+        .settings-icon-3:hover .knob {
+            background: #fff;
+        }
+        
+        /* Settings Option 4: Dots Menu */
+        .settings-icon-4 {
+            width: 18px;
+            height: 18px;
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .settings-icon-4 .dot {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #f5f5f5;
+            border-radius: 50%;
+        }
+        
+        .settings-icon-4 .dot:nth-child(1) {
+            top: 3px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: dotPulse 2s ease-in-out infinite 0s;
+        }
+        
+        .settings-icon-4 .dot:nth-child(2) {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: dotPulse 2s ease-in-out infinite 0.5s;
+        }
+        
+        .settings-icon-4 .dot:nth-child(3) {
+            bottom: 3px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: dotPulse 2s ease-in-out infinite 1s;
+        }
+        
+        .settings-icon-4::before {
+            content: '';
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 8px;
+            height: 2px;
+            background: #f5f5f5;
+            animation: menuSlide 3s ease-in-out infinite;
+        }
+        
+        .settings-icon-4::after {
+            content: '';
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            width: 6px;
+            height: 2px;
+            background: #f5f5f5;
+            animation: menuSlide 3s ease-in-out infinite 1.5s;
+        }
+        
+        .settings-icon-4:hover .dot {
+            background: #FF1744;
+        }
+        
+        .settings-icon-4:hover::before,
+        .settings-icon-4:hover::after {
+            background: #FF1744;
+        }
+        
+        /* Animations */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        @keyframes refreshPulse {
+            0%, 100% { opacity: 0.7; transform: scale(1) rotate(-45deg); }
+            50% { opacity: 1; transform: scale(1.1) rotate(-45deg); }
+        }
+        
+        @keyframes powerBlink {
+            0%, 50%, 100% { opacity: 1; }
+            25%, 75% { opacity: 0.3; }
+        }
+        
+        @keyframes powerRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes arrowPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+        
+        @keyframes centerPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        @keyframes gearRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes sliderMove1 {
+            0%, 100% { background: #f5f5f5; }
+            50% { background: #FF1744; }
+        }
+        
+        @keyframes sliderMove2 {
+            0%, 100% { background: #f5f5f5; }
+            50% { background: #FF1744; }
+        }
+        
+        @keyframes sliderMove3 {
+            0%, 100% { background: #f5f5f5; }
+            50% { background: #FF1744; }
+        }
+        
+        @keyframes sliderMove4 {
+            0%, 100% { background: #f5f5f5; }
+            50% { background: #FF1744; }
+        }
+        
+        @keyframes knobMove1 {
+            0%, 100% { top: 2px; }
+            50% { top: 8px; }
+        }
+        
+        @keyframes knobMove2 {
+            0%, 100% { top: 6px; }
+            50% { top: 2px; }
+        }
+        
+        @keyframes knobMove3 {
+            0%, 100% { top: 4px; }
+            50% { top: 8px; }
+        }
+        
+        @keyframes knobMove4 {
+            0%, 100% { top: 8px; }
+            50% { top: 2px; }
+        }
+        
+        @keyframes dotPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.4); }
+        }
+        
+        @keyframes menuSlide {
+            0%, 100% { width: 8px; opacity: 0.7; }
+            50% { width: 12px; opacity: 1; }
+        }
+        
+        /* Current Static Power Button CSS (from main app) */
+        .current-restart-icon {
+            width: 16px;
+            height: 16px;
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin: 10px;
+            vertical-align: middle;
+            transition: all 0.3s ease;
+        }
+        .current-restart-icon:hover {
+            transform: scale(1.15);
+        }
+        /* Vertical power line */
+        .current-restart-icon::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            width: 2px;
+            height: 8px;
+            background: #f5f5f5;
+            transform: translateX(-50%);
+            transition: background 0.3s ease;
+        }
+        /* Power button circle */
+        .current-restart-icon::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #f5f5f5;
+            border-radius: 50%;
+            transition: border-color 0.3s ease;
+        }
+        .current-restart-icon:hover::before {
+            background: #FF1744;
+        }
+        .current-restart-icon:hover::after {
+            border-color: #FF1744;
+        }
+
+        /* Hover effects for better visibility */
+        .icon-demo:hover {
+            background: #333;
+            border-color: #FF1744;
+        }
+    </style>
+</head>
+<body>
+    <h1>Icon Preview - Restart & Settings Icons</h1>
+    <p>Hover over the icons to see hover effects. Click to test interaction.</p>
+    
+    <div class="preview-section">
+        <h2>Restart Icon Options</h2>
+        <div class="icon-grid">
+            <div class="icon-demo">
+                <h3>Restart Option 1</h3>
+                <p>Circular Arrow</p>
+                <div class="restart-icon-1"></div>
+                <p><small>Spinning circle with arrow indicator</small></p>
+            </div>
+            
+            <div class="icon-demo">
+                <h3>Restart Option 2</h3>
+                <p>Refresh Symbol</p>
+                <div class="restart-icon-2"></div>
+                <p><small>Dual curved arrows pulsing</small></p>
+            </div>
+            
+            <div class="icon-demo">
+                <h3>Restart Option 3</h3>
+                <p>Power Symbol</p>
+                <div class="restart-icon-3"></div>
+                <p><small>Power button with rotating arc</small></p>
+            </div>
+            
+            <div class="icon-demo">
+                <h3>Restart Option 4</h3>
+                <p>Rotating Arrows</p>
+                <div class="restart-icon-4">
+                    <div class="arrow"></div>
+                    <div class="arrow"></div>
+                </div>
+                <p><small>Opposing arrows with center circle</small></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="preview-section">
+        <h2>Settings Icon Options</h2>
+        <div class="icon-grid">
+            <div class="icon-demo">
+                <h3>Settings Option 1</h3>
+                <p>Classic Gear</p>
+                <div class="settings-icon-1"></div>
+                <p><small>Unicode gear symbol rotating</small></p>
+            </div>
+            
+            <div class="icon-demo">
+                <h3>Settings Option 2</h3>
+                <p>CSS Gear</p>
+                <div class="settings-icon-2">
+                    <div class="tooth"></div>
+                    <div class="tooth"></div>
+                    <div class="tooth"></div>
+                    <div class="tooth"></div>
+                    <div class="tooth"></div>
+                    <div class="tooth"></div>
+                    <div class="tooth"></div>
+                    <div class="tooth"></div>
+                </div>
+                <p><small>CSS-built gear with teeth</small></p>
+            </div>
+            
+            <div class="icon-demo">
+                <h3>Settings Option 3</h3>
+                <p>Sliders</p>
+                <div class="settings-icon-3">
+                    <div class="slider"><div class="knob"></div></div>
+                    <div class="slider"><div class="knob"></div></div>
+                    <div class="slider"><div class="knob"></div></div>
+                    <div class="slider"><div class="knob"></div></div>
+                </div>
+                <p><small>Four sliders with moving knobs</small></p>
+            </div>
+            
+            <div class="icon-demo">
+                <h3>Settings Option 4</h3>
+                <p>Dots Menu</p>
+                <div class="settings-icon-4">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <p><small>Three dots with menu lines</small></p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="preview-section">
+        <h2>Current App Icons (Debug)</h2>
+        <div class="icon-grid">
+            <div class="icon-demo">
+                <h3>Current Restart Icon</h3>
+                <p>Static Power Button (from main app)</p>
+                <div class="current-restart-icon"></div>
+                <p><small>This is the exact CSS from your application</small></p>
+            </div>
+        </div>
+    </div>
+    
+    <div style="margin-top: 40px; padding: 20px; background: #333; border-radius: 8px;">
+        <h3>Debug Information:</h3>
+        <p>• The "Current Restart Icon" above uses the exact same CSS that's currently in your main application</p>
+        <p>• If this icon looks different from what you see in the app, then the issue is with how it's being rendered in the HTML context</p>
+        <p>• If this icon looks the same as what you see in the app, then the CSS itself is the issue</p>
+        <br>
+        <h3>Instructions:</h3>
+        <p>1. Review the current restart icon above and compare it to what you see in your application</p>
+        <p>2. Let me know if they look different or the same</p>
+        <p>3. If they look the same, we can modify the CSS. If different, we need to look at the HTML structure</p>
+    </div>
+</body>
+</html>

@@ -85,6 +85,15 @@ const statisticsModal = (() => {
                                 <div class="stats-status-item">
                                     <span>Update interval: 25s</span>
                                 </div>
+                                <div class="stats-status-item">
+                                    <span>Hashrate: <span id="stats-current-hashrate">--</span></span>
+                                </div>
+                                <div class="stats-status-item">
+                                    <span>Average: <span id="stats-hashrate-average">--</span></span>
+                                </div>
+                                <div class="stats-status-item">
+                                    <span>ASIC Temp: <span id="stats-current-temperature">--</span></span>
+                                </div>
                             </div>
                             <div class="stats-last-update" id="stats-last-update">
                                 Initializing...
@@ -330,8 +339,57 @@ const statisticsModal = (() => {
             currentChart.data.datasets[1].data.splice(0, excess);
         }
 
+        // Update current stats display
+        updateCurrentStats(statistics);
+        
         currentChart.update('none'); // Update without animation
         updateStatusIndicators(true);
+    }
+
+    /**
+     * Updates the current statistics display with the latest values
+     * @param {Array} statistics - Array of statistics data points
+     */
+    function updateCurrentStats(statistics) {
+        const currentHashrateElement = document.getElementById('stats-current-hashrate');
+        const hashrateAverageElement = document.getElementById('stats-hashrate-average');
+        const currentTemperatureElement = document.getElementById('stats-current-temperature');
+
+        if (!statistics || statistics.length === 0) {
+            if (currentHashrateElement) currentHashrateElement.textContent = '--';
+            if (hashrateAverageElement) hashrateAverageElement.textContent = '--';
+            if (currentTemperatureElement) currentTemperatureElement.textContent = '--';
+            return;
+        }
+
+        // Get current values (last data point)
+        const lastDataPoint = statistics[statistics.length - 1];
+        if (lastDataPoint && lastDataPoint.length >= 2) {
+            const currentHashrate = lastDataPoint[0]; // GH/s
+            const currentTemperature = lastDataPoint[1]; // °C
+
+            // Calculate average hashrate from all available data points
+            let totalHashrate = 0;
+            let validPoints = 0;
+            statistics.forEach(dataPoint => {
+                if (dataPoint && dataPoint.length >= 1 && typeof dataPoint[0] === 'number') {
+                    totalHashrate += dataPoint[0];
+                    validPoints++;
+                }
+            });
+            const averageHashrate = validPoints > 0 ? totalHashrate / validPoints : 0;
+
+            // Update the display elements
+            if (currentHashrateElement) {
+                currentHashrateElement.textContent = formatHashrate(currentHashrate);
+            }
+            if (hashrateAverageElement) {
+                hashrateAverageElement.textContent = formatHashrate(averageHashrate);
+            }
+            if (currentTemperatureElement) {
+                currentTemperatureElement.textContent = `${currentTemperature.toFixed(1)}°C`;
+            }
+        }
     }
 
     /**

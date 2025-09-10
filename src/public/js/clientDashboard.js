@@ -121,15 +121,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Helper Functions ---
 
     /**
-     * Attaches event listeners to clickable instance names in the summary view
+     * Attaches event listeners to Chart buttons in the summary view
      */
-    function attachInstanceNameEventListeners() {
-        const clickableNames = document.querySelectorAll('.clickable-instance-name');
-        clickableNames.forEach(nameElement => {
-            nameElement.addEventListener('click', (e) => {
+    function attachChartButtonEventListeners() {
+        const chartButtons = document.querySelectorAll('.chart-button');
+        chartButtons.forEach(buttonElement => {
+            buttonElement.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                const instanceId = nameElement.getAttribute('data-instance-id');
+                const instanceId = buttonElement.getAttribute('data-instance-id');
                 if (instanceId && window.statisticsModal) {
                     window.statisticsModal.openStatisticsModal(instanceId);
                 }
@@ -460,7 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Set appropriate title based on whether mining core data is available
         let allPoolsHtml = data && data.length > 0 
-            ? '<h2>Mining Core Summary</h2>' 
+            ? '<h2>Mining Summary</h2>' 
             : '<h2>Miners Summary</h2>'; // Overall heading
         //Show date / time of last update
          allPoolsHtml += `<div class="mining-pool-summary-card">`; 
@@ -480,7 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 minerData.forEach(miner => {
                     if (miner.status === 'Error') {
                         // Display the miner's name and its error status.
-                        allPoolsHtml += `<h4><span class="clickable-instance-name" data-instance-id="${miner.id}" style="color: #dc3545;">${miner.id}</span>:</h4> <span style="color: #dc3545; font-weight: bold;">Error</span>`;
+                        allPoolsHtml += `<h4>${miner.id}: <span style="color: #dc3545; font-weight: bold;">Error</span></h4>`;
                     } else {
                         const formattedHashrate = formatDeviceHashrate(miner.hashRate); // Use the specific device hashrate formatter.
                         const formattedExpected = formatDeviceHashrate(miner.expectedHashrate);
@@ -491,7 +491,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         const displayVRTemp = `<font color="${getLimitColor(VRTemp, VRTempMap)}"><b>${VRTemp}</b></font>`;
                         const displayFanSpeed = `<font color="${getLimitColor(miner.fanspeed, FanSpeedMap)}"><b>${miner.fanspeed}</b></font>`;
                         // Create one row for each miner with the second column delimited with | for each value.
-                        allPoolsHtml += `<h4><span class="clickable-instance-name" data-instance-id="${miner.id}">${miner.id}</span></h4><div class="details-grid">`;
+                        allPoolsHtml += `<h4>${miner.id} <div class="line-graph-icon chart-button" data-instance-id="${miner.id}" title="View ${miner.id} Statistics">
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                            <div class="bar"></div>
+                        </div></h4><div class="details-grid">`;
                         allPoolsHtml += `<strong>Hash (Expected | Current): </strong><span>${formattedExpected} | ${formattedHashrate}</span>`;
                         allPoolsHtml += `<strong>Difficulty (Best | Session): </strong><span>${miner.bestDiff} | ${miner.bestSessionDiff}</span>`;
                         allPoolsHtml += `<strong>Pool (Diff | Shares): </strong><span>${miner.poolDifficulty} | ${miner.sharesAccepted}</span>`;
@@ -561,8 +566,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let html = `<h2>${ data.id || 'Unknown Device'}`;
         //Decide is restart icon should show up based on disable_settings config.
         if(!disableSettings){
-            html += ` <div class="animated-button restart-button" data-instance-id="${data.id}" title="Restart Instance">Restart</div>`;
-            html += ` <div class="animated-button settings-button" data-instance-id="${data.id}" title="Edit Settings">Settings</div>`;
+            html += ` <img src="/public/icon/icons8-rotate-right-64-white.png" class="restart-button restart-icon-hover" data-instance-id="${data.id}" title="Restart Instance" style="width: 35px; height: 35px; margin-left: 8px; vertical-align: middle; cursor: pointer;">`;
+            html += ` <img src="/public/icon/icons8-audio-65-white.png" class="settings-button settings-icon-hover" data-instance-id="${data.id}" title="Edit Settings" style="width: 40px; height: 40px; margin-left: 8px; vertical-align: middle; cursor: pointer;">`;
         }
         html += `</h2>`;
 
@@ -723,8 +728,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Display the mining core summary in the details pane.
                 detailsPane.innerHTML = generateMiningCoreDetailsHtml(miningCoreData, miningCoreDisplayFields);
                 
-                // Add event listeners to clickable instance names
-                attachInstanceNameEventListeners();
+                // Add event listeners to Chart buttons
+                attachChartButtonEventListeners();
             });
         }
 

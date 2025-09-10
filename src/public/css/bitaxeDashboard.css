@@ -395,6 +395,178 @@
             transform: translateY(-50%);
         }
 
+        /* --- Animated Bar Chart Icon --- */
+        .line-graph-icon {
+            width: 16px;
+            height: 12px;
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin-left: 8px;
+            vertical-align: middle;
+            transition: transform 0.2s ease;
+            border: 1px solid #f5f5f5;
+            border-radius: 2px;
+            padding: 2px;
+            background: transparent;
+        }
+
+        .line-graph-icon:hover {
+            transform: scale(1.1);
+            border-color: #fff;
+        }
+
+        .line-graph-icon .bar {
+            position: absolute;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to top, #FF1744, #FF4569);
+            border-radius: 1px 1px 0 0;
+            animation: barPulse 2s ease-in-out infinite;
+        }
+
+        .line-graph-icon .bar:nth-child(1) {
+            left: 1px;
+            height: 4px;
+            animation-delay: 0s;
+        }
+
+        .line-graph-icon .bar:nth-child(2) {
+            left: 5px;
+            height: 8px;
+            animation-delay: 0.3s;
+        }
+
+        .line-graph-icon .bar:nth-child(3) {
+            left: 9px;
+            height: 12px;
+            animation-delay: 0.6s;
+        }
+
+        .line-graph-icon .bar:nth-child(4) {
+            left: 13px;
+            height: 6px;
+            animation-delay: 0.9s;
+        }
+
+        @keyframes barPulse {
+            0%, 100% {
+                opacity: 0.7;
+                transform: scaleY(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scaleY(1.2);
+                box-shadow: 0 0 4px rgba(255, 23, 68, 0.5);
+            }
+        }
+
+        .line-graph-icon:hover .bar {
+            animation-duration: 1s;
+        }
+
+        /* --- Static Restart Icon (Power Symbol) --- */
+        /* Restart icon now uses GIF - no CSS needed */
+
+        /* Icon hover effects - switch from white to red */
+        .restart-icon-hover:hover {
+            content: url('/public/icon/icons8-rotate-right-64-red.png');
+        }
+        
+        .settings-icon-hover:hover {
+            content: url('/public/icon/icons8-audio-65-red.png');
+        }
+
+        .settings-icon .slider {
+            position: absolute;
+            width: 3px;
+            height: 14px;
+            background: #f5f5f5;
+            top: 2px;
+        }
+
+        .settings-icon .slider:nth-child(1) {
+            left: 2px;
+            animation: sliderMove1 3s ease-in-out infinite;
+        }
+
+        .settings-icon .slider:nth-child(2) {
+            left: 7px;
+            animation: sliderMove2 3s ease-in-out infinite 1s;
+        }
+
+        .settings-icon .slider:nth-child(3) {
+            left: 12px;
+            animation: sliderMove3 3s ease-in-out infinite 2s;
+        }
+
+        .settings-icon .slider:nth-child(4) {
+            left: 17px;
+            animation: sliderMove4 3s ease-in-out infinite 2.5s;
+        }
+
+        .settings-icon .knob {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #FF1744;
+            border-radius: 50%;
+            left: -1px;
+        }
+
+        .settings-icon .slider:nth-child(1) .knob { top: 3px; animation: knobMove1 3s ease-in-out infinite; }
+        .settings-icon .slider:nth-child(2) .knob { top: 8px; animation: knobMove2 3s ease-in-out infinite 1s; }
+        .settings-icon .slider:nth-child(3) .knob { top: 5px; animation: knobMove3 3s ease-in-out infinite 2s; }
+        .settings-icon .slider:nth-child(4) .knob { top: 10px; animation: knobMove4 3s ease-in-out infinite 2.5s; }
+
+        .settings-icon:hover .slider {
+            background: #FF1744;
+        }
+
+        .settings-icon:hover .knob {
+            background: #fff;
+        }
+
+        @keyframes sliderMove1 {
+            0%, 100% { background: #f5f5f5; }
+            50% { background: #FF1744; }
+        }
+
+        @keyframes sliderMove2 {
+            0%, 100% { background: #f5f5f5; }
+            50% { background: #FF1744; }
+        }
+
+        @keyframes sliderMove3 {
+            0%, 100% { background: #f5f5f5; }
+            50% { background: #FF1744; }
+        }
+
+        @keyframes sliderMove4 {
+            0%, 100% { background: #f5f5f5; }
+            50% { background: #FF1744; }
+        }
+
+        @keyframes knobMove1 {
+            0%, 100% { top: 3px; }
+            50% { top: 10px; }
+        }
+
+        @keyframes knobMove2 {
+            0%, 100% { top: 8px; }
+            50% { top: 3px; }
+        }
+
+        @keyframes knobMove3 {
+            0%, 100% { top: 5px; }
+            50% { top: 10px; }
+        }
+
+        @keyframes knobMove4 {
+            0%, 100% { top: 10px; }
+            50% { top: 3px; }
+        }
+
         /* --- Responsive Adjustments for Mobile (e.g., iPhone 15 Pro, < 768px) --- */
         @media (max-width: 768px) {
             body {
