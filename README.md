@@ -5,10 +5,15 @@ The application is mobile friendly, so you can see it on an iPhone for example, 
 > [!CAUTION]
 > I am not responsible for anything you do with this code, or anything this code does to you! You are using this at your own risk!
 
-Install Instructions:
-Assumptions:
-1. You have Docker installed and configured
-2. You are on either a Mac Apple Silicon or Linux AMD64 device (for Docker, only supports Linux/arm4 and Linux/amd64)
+# Quick Start Guide
+If you don't want to mess with the install, follow the quick start guide
+[Documentation](https://github.com/scottwalter/bitaxe-dashboard/wiki/Quick-Start-%E2%80%90-Bootstrap)
+
+# Install Instructions
+>[!IMPORTANT]
+>-Assumptions
+>- You have Docker installed and configured
+>- You are on either a Mac Apple Silicon or Linux AMD64 device (for Docker, only supports Linux/arm4 and Linux/amd64)
 
 Docker Install (Recommended!): All commands assumed as root or with sudo pre-fixed
 1. Create a local folder for the config.json, access.json & jsonWebToken.json files. (i.e. /data/bitaxe-dashboard/config)
