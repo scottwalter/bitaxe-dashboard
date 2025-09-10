@@ -7,6 +7,7 @@
     <title><!-- TITLE --></title>
     <link rel="stylesheet" href="/public/css/bitaxeDashboard.css">
     <link rel="stylesheet" href="/public/css/modal.css">
+    <link rel="stylesheet" href="/public/css/statisticsModal.css">
 </head>
 <body>
     <header>
@@ -42,8 +43,13 @@
         <p>&copy; <!-- CURRENT_YEAR --> Scott Walter. Last updated: <span id="timestamp"><!-- TIMESTAMP --></span>, Ver. <!-- VERSION --></p>
     </footer>
 
+    <!-- Chart.js for statistics visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    
     <!-- This script tag will be replaced by the server-side JS with the actual data -->
     <script src="/public/js/modalService.js"></script>
+    <script src="/public/js/statisticsModal.js"></script>
     <script src="/public/js/clientDashboard.js"></script>
 </body>
 </html>

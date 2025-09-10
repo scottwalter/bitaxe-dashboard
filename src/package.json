@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "jsonwebtoken": "^9.0.2",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^3.3.2"
   }
 }

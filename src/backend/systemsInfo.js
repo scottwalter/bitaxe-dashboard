@@ -4,7 +4,7 @@
  * and serves it as a single JSON object to be consumed by the client-side script.
  */
 
-const fetch = require('node-fetch');
+// Dynamic import for node-fetch 3.x will be used inline
 const apiPath = require('./services/apiMapService');
 
 
@@ -37,6 +37,9 @@ async function display(req, res, config) {
             try {
                 //console.log(`Fetching data for Bitaxe instance: ${instanceName} at ${instanceUrl}`);
                 //console.log(`instanceInfoAPI: ${API_SYSTEM_INFO_PATH}`);
+                
+                // Use dynamic import for node-fetch 3.x compatibility
+                const { default: fetch } = await import('node-fetch');
             
                 const response = await fetch(instanceUrl + API_SYSTEM_INFO_PATH);
                 if (!response.ok) {
@@ -78,6 +81,9 @@ async function display(req, res, config) {
         // Conditionally fetch mining core data
         if (config.mining_core_enabled && config.mining_core_url) {
             try {
+                // Use dynamic import for node-fetch 3.x compatibility
+                const { default: fetch } = await import('node-fetch');
+                
                 const miningCoreResponse = await fetch(config.mining_core_url + MINING_CORE_API_PATH);
                 if (!miningCoreResponse.ok) {
                     console.error(`Error fetching mining core data from ${config.mining_core_url}: ${miningCoreResponse.status} ${miningCoreResponse.statusText}`);

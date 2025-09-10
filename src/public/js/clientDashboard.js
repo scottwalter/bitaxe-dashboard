@@ -121,6 +121,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Helper Functions ---
 
     /**
+     * Attaches event listeners to clickable instance names in the summary view
+     */
+    function attachInstanceNameEventListeners() {
+        const clickableNames = document.querySelectorAll('.clickable-instance-name');
+        clickableNames.forEach(nameElement => {
+            nameElement.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const instanceId = nameElement.getAttribute('data-instance-id');
+                if (instanceId && window.statisticsModal) {
+                    window.statisticsModal.openStatisticsModal(instanceId);
+                }
+            });
+        });
+    }
+
+    /**
      * Safely retrieves a value from the nested structure of the mining core pool data.
      * It checks networkStats, poolStats, and the top-level of the pool object.
      * @param {string} fieldKey The key of the value to retrieve.
@@ -463,7 +480,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 minerData.forEach(miner => {
                     if (miner.status === 'Error') {
                         // Display the miner's name and its error status.
-                        allPoolsHtml += `<h4>${miner.id}:</h4> <span style="color: #dc3545; font-weight: bold;">Error</span>`;
+                        allPoolsHtml += `<h4><span class="clickable-instance-name" data-instance-id="${miner.id}" style="color: #dc3545;">${miner.id}</span>:</h4> <span style="color: #dc3545; font-weight: bold;">Error</span>`;
                     } else {
                         const formattedHashrate = formatDeviceHashrate(miner.hashRate); // Use the specific device hashrate formatter.
                         const formattedExpected = formatDeviceHashrate(miner.expectedHashrate);
@@ -474,15 +491,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         const displayVRTemp = `<font color="${getLimitColor(VRTemp, VRTempMap)}"><b>${VRTemp}</b></font>`;
                         const displayFanSpeed = `<font color="${getLimitColor(miner.fanspeed, FanSpeedMap)}"><b>${miner.fanspeed}</b></font>`;
                         // Create one row for each miner with the second column delimited with | for each value.
-                        allPoolsHtml += `<h4>${miner.id}</h4><div class="details-grid">`;
+                        allPoolsHtml += `<h4><span class="clickable-instance-name" data-instance-id="${miner.id}">${miner.id}</span></h4><div class="details-grid">`;
                         allPoolsHtml += `<strong>Hash (Expected | Current): </strong><span>${formattedExpected} | ${formattedHashrate}</span>`;
                         allPoolsHtml += `<strong>Difficulty (Best | Session): </strong><span>${miner.bestDiff} | ${miner.bestSessionDiff}</span>`;
                         allPoolsHtml += `<strong>Pool (Diff | Shares): </strong><span>${miner.poolDifficulty} | ${miner.sharesAccepted}</span>`;
                         allPoolsHtml += `<strong>Temp (ASIC | VR): </strong><span>${displayAsicTemp} | ${displayVRTemp}</span>`;
                         allPoolsHtml += `<strong>Fan (Speed | RPM): </strong><span>${displayFanSpeed} | ${miner.fanrpm}</span>`;
-                        
+                        allPoolsHtml += `</div>`; // Close details-grid for individual miner status
                     }
-                     allPoolsHtml += `</div>`; // Close details-grid for individual miner status
                 });
             }
        
@@ -706,6 +722,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Display the mining core summary in the details pane.
                 detailsPane.innerHTML = generateMiningCoreDetailsHtml(miningCoreData, miningCoreDisplayFields);
+                
+                // Add event listeners to clickable instance names
+                attachInstanceNameEventListeners();
             });
         }
 

@@ -6,7 +6,7 @@
  */
 
 const http = require('http'); // Used for JSDoc type definitions (req, res).
-const fetch = require('node-fetch');
+// Dynamic import for node-fetch 3.x will be used inline
 const apiMapService = require('./apiMapService');
 
 
@@ -38,6 +38,9 @@ async function instanceRestart(req, res, config) {
     const restartUrl = `${baseUrl}${apiPath}`;
 
     try {
+        // Use dynamic import for node-fetch 3.x compatibility
+        const { default: fetch } = await import('node-fetch');
+        
         // Send a POST request to the Bitaxe's restart endpoint.
         const response = await fetch(restartUrl, {
             method: 'POST',
@@ -103,6 +106,9 @@ async function handleSetting(req, res, config) {
         }
         JSON.parse(body); // Validate that the body is valid JSON.
 
+        // Use dynamic import for node-fetch 3.x compatibility
+        const { default: fetch } = await import('node-fetch');
+        
         // Send a PATCH request to the Bitaxe's settings endpoint.
         const response = await fetch(settingsUrl, {
             method: 'PATCH',

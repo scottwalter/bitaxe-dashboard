@@ -4,7 +4,7 @@
  * to the correct device based on an `instanceId`.
  */
 
-const fetch = require('node-fetch');
+// Dynamic import for node-fetch 3.x will be used inline
 const apiPath = require('./services/apiMapService');
 const { URL } = require('url'); // Import URL for parsing query parameters.
 
@@ -50,6 +50,9 @@ async function display(req, res, config) {
         const baseUrl = instance[instanceId];
         const infoUrl = `${baseUrl}${API_SYSTEM_INFO_PATH}`;
 
+        // Use dynamic import for node-fetch 3.x compatibility
+        const { default: fetch } = await import('node-fetch');
+        
         // Fetch the data from the Bitaxe device.
         const response = await fetch(infoUrl);
         if (!response.ok) {

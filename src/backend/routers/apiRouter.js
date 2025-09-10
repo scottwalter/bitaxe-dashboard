@@ -11,6 +11,7 @@ const systemsInfo = require('../systemsInfo');
 const instanceServices = require('../services/instanceServices');
 const authController = require('../authController');
 const configurationServices = require('../services/configurationServices');
+const statisticsServices = require('../services/statisticsServices');
 
 /**
  * Defines the routing map for all internal API endpoints. Each route object specifies:
@@ -56,6 +57,12 @@ const routes = [
         method: 'ANY',
         handler: configurationServices.route,
         exactMatch: true
+    },
+    {
+        path: '/api/statistics',
+        method: 'GET',
+        handler: statisticsServices.route,
+        exactMatch: false
     }
     // Add more routes here as your application grows
     
