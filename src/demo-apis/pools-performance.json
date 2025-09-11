@@ -1,0 +1,204 @@
+{
+  "stats": [
+    {
+      "poolHashrate": 3921767948459.9434,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 51795882591459600,
+      "networkDifficulty": 922498478.9320989,
+      "created": "2025-09-10T18:00:00Z"
+    },
+    {
+      "poolHashrate": 4129322401767.325,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 54961096665397230,
+      "networkDifficulty": 989444119.902036,
+      "created": "2025-09-10T19:00:00Z"
+    },
+    {
+      "poolHashrate": 3606796960817.2197,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 48120476637861280,
+      "networkDifficulty": 856365625.2298259,
+      "created": "2025-09-10T20:00:00Z"
+    },
+    {
+      "poolHashrate": 4011458259197.784,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 52990353355980104,
+      "networkDifficulty": 1050034024.5937845,
+      "created": "2025-09-10T21:00:00Z"
+    },
+    {
+      "poolHashrate": 4125736103856.464,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 57549186919037810,
+      "networkDifficulty": 911532925.1893542,
+      "created": "2025-09-10T22:00:00Z"
+    },
+    {
+      "poolHashrate": 3996375713855.7637,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 53846557417068170,
+      "networkDifficulty": 1051914658.3321103,
+      "created": "2025-09-10T23:00:00Z"
+    },
+    {
+      "poolHashrate": 3902240494913.3486,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 56614921004249864,
+      "networkDifficulty": 1022312704.0138667,
+      "created": "2025-09-11T00:00:00Z"
+    },
+    {
+      "poolHashrate": 4130269335662.198,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 52265605900489240,
+      "networkDifficulty": 1037807657.3429322,
+      "created": "2025-09-11T01:00:00Z"
+    },
+    {
+      "poolHashrate": 4056844063610.596,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 51232765245319310,
+      "networkDifficulty": 859469711.8243484,
+      "created": "2025-09-11T02:00:00Z"
+    },
+    {
+      "poolHashrate": 3972203944586.732,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 55838420765882540,
+      "networkDifficulty": 1048448984.5569726,
+      "created": "2025-09-11T03:00:00Z"
+    },
+    {
+      "poolHashrate": 3934142568121.3135,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 53356751021027370,
+      "networkDifficulty": 987348084.2018765,
+      "created": "2025-09-11T04:00:00Z"
+    },
+    {
+      "poolHashrate": 4167831290895.9424,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 50256080269092400,
+      "networkDifficulty": 866566806.1111699,
+      "created": "2025-09-11T05:00:00Z"
+    },
+    {
+      "poolHashrate": 4056421926659.6304,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 50731861039456340,
+      "networkDifficulty": 908751846.5693187,
+      "created": "2025-09-11T06:00:00Z"
+    },
+    {
+      "poolHashrate": 3995545075172.166,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 52508956635392680,
+      "networkDifficulty": 913694799.4000901,
+      "created": "2025-09-11T07:00:00Z"
+    },
+    {
+      "poolHashrate": 4043970236773.331,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 51109356009356020,
+      "networkDifficulty": 906549995.2147075,
+      "created": "2025-09-11T08:00:00Z"
+    },
+    {
+      "poolHashrate": 3794175412624.2,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 58634978478479656,
+      "networkDifficulty": 1074398357.7221384,
+      "created": "2025-09-11T09:00:00Z"
+    },
+    {
+      "poolHashrate": 4121889695633.0293,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 59787444175234680,
+      "networkDifficulty": 1175771069.300636,
+      "created": "2025-09-11T10:00:00Z"
+    },
+    {
+      "poolHashrate": 3738678821562.679,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 52204312532576280,
+      "networkDifficulty": 1051116683.7082653,
+      "created": "2025-09-11T11:00:00Z"
+    },
+    {
+      "poolHashrate": 4046102885744.9634,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 57161284292671770,
+      "networkDifficulty": 984660375.8781897,
+      "created": "2025-09-11T12:00:00Z"
+    },
+    {
+      "poolHashrate": 3872068986539.987,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 54108070900460380,
+      "networkDifficulty": 971106801.6452751,
+      "created": "2025-09-11T13:00:00Z"
+    },
+    {
+      "poolHashrate": 3928277730460.238,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 50924055517471020,
+      "networkDifficulty": 950156901.177088,
+      "created": "2025-09-11T14:00:00Z"
+    },
+    {
+      "poolHashrate": 4070774638977.9795,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 58895241753903750,
+      "networkDifficulty": 980442860.7716535,
+      "created": "2025-09-11T15:00:00Z"
+    },
+    {
+      "poolHashrate": 3932843803456.4185,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 53944789011446130,
+      "networkDifficulty": 983347716.1185944,
+      "created": "2025-09-11T16:00:00Z"
+    },
+    {
+      "poolHashrate": 4020128051603.467,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 55273266619743704,
+      "networkDifficulty": 1010907556.6975483,
+      "created": "2025-09-11T17:00:00Z"
+    },
+    {
+      "poolHashrate": 3933787209734.787,
+      "connectedMiners": 1,
+      "validSharesPerSecond": 0,
+      "networkHashrate": 53021962904775896,
+      "networkDifficulty": 943081080.8185605,
+      "created": "2025-09-11T18:00:00Z"
+    }
+  ]
+}

@@ -1,0 +1,436 @@
+{
+  "pendingShares": 721105148.143434,
+  "pendingBalance": 0,
+  "totalPaid": 0,
+  "todayPaid": 0,
+  "minerEffort": 0,
+  "performance": {
+    "created": "2025-09-11T18:46:13.346613Z",
+    "workers": {
+      "bitaxe1": {
+        "hashrate": 904588451658.5415,
+        "sharesPerSecond": 0.035
+      },
+      "bitaxe2": {
+        "hashrate": 1354790453586.9617,
+        "sharesPerSecond": 0.058
+      },
+      "bitaxe3": {
+        "hashrate": 1208401936162.4482,
+        "sharesPerSecond": 0.083
+      }
+    }
+  },
+  "performanceSamples": [
+    {
+      "created": "2025-09-10T18:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1346871955490.3213,
+          "sharesPerSecond": 0.07069999999999999
+        },
+        "bitaxe2": {
+          "hashrate": 1303333431208.6697,
+          "sharesPerSecond": 0.05486666666666667
+        },
+        "bitaxe3": {
+          "hashrate": 1627974101178.1472,
+          "sharesPerSecond": 0.061433333333333326
+        }
+      }
+    },
+    {
+      "created": "2025-09-10T19:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1347586792763.744,
+          "sharesPerSecond": 0.04436666666666666
+        },
+        "bitaxe2": {
+          "hashrate": 1345742708996.0815,
+          "sharesPerSecond": 0.05716666666666665
+        },
+        "bitaxe3": {
+          "hashrate": 1435992900007.4995,
+          "sharesPerSecond": 0.05036666666666668
+        }
+      }
+    },
+    {
+      "created": "2025-09-10T20:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1110673101646.6948,
+          "sharesPerSecond": 0.05876666666666666
+        },
+        "bitaxe2": {
+          "hashrate": 1336920464954.1128,
+          "sharesPerSecond": 0.06026666666666668
+        },
+        "bitaxe3": {
+          "hashrate": 1159203394216.4119,
+          "sharesPerSecond": 0.06486666666666668
+        }
+      }
+    },
+    {
+      "created": "2025-09-10T21:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1448840425179.2083,
+          "sharesPerSecond": 0.07813333333333335
+        },
+        "bitaxe2": {
+          "hashrate": 1233465890918.108,
+          "sharesPerSecond": 0.05769999999999999
+        },
+        "bitaxe3": {
+          "hashrate": 1329151943100.4688,
+          "sharesPerSecond": 0.10776666666666665
+        }
+      }
+    },
+    {
+      "created": "2025-09-10T22:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1521054988061.806,
+          "sharesPerSecond": 0.05643333333333334
+        },
+        "bitaxe2": {
+          "hashrate": 1253235951218.0823,
+          "sharesPerSecond": 0.0606
+        },
+        "bitaxe3": {
+          "hashrate": 1351445164576.5752,
+          "sharesPerSecond": 0.10103333333333332
+        }
+      }
+    },
+    {
+      "created": "2025-09-10T23:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1309873432066.62,
+          "sharesPerSecond": 0.05780000000000001
+        },
+        "bitaxe2": {
+          "hashrate": 1316747199424.1746,
+          "sharesPerSecond": 0.06713333333333332
+        },
+        "bitaxe3": {
+          "hashrate": 1369755082364.9685,
+          "sharesPerSecond": 0.07186666666666669
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T00:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1318719929120.39,
+          "sharesPerSecond": 0.050566666666666656
+        },
+        "bitaxe2": {
+          "hashrate": 1306721608613.9272,
+          "sharesPerSecond": 0.06340000000000003
+        },
+        "bitaxe3": {
+          "hashrate": 1276798957179.0315,
+          "sharesPerSecond": 0.07159999999999998
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T01:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1430234683127.387,
+          "sharesPerSecond": 0.04410000000000001
+        },
+        "bitaxe2": {
+          "hashrate": 1487484213094.4578,
+          "sharesPerSecond": 0.07913333333333332
+        },
+        "bitaxe3": {
+          "hashrate": 1212550439440.3542,
+          "sharesPerSecond": 0.05826666666666668
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T02:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1330045855062.3086,
+          "sharesPerSecond": 0.05606666666666666
+        },
+        "bitaxe2": {
+          "hashrate": 1244690770555.728,
+          "sharesPerSecond": 0.05063333333333334
+        },
+        "bitaxe3": {
+          "hashrate": 1482107437992.56,
+          "sharesPerSecond": 0.09590000000000001
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T03:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1435839803620.2087,
+          "sharesPerSecond": 0.08183333333333334
+        },
+        "bitaxe2": {
+          "hashrate": 1314250482202.6345,
+          "sharesPerSecond": 0.0611
+        },
+        "bitaxe3": {
+          "hashrate": 1222113658763.89,
+          "sharesPerSecond": 0.08803333333333337
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T04:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1263346447435.1367,
+          "sharesPerSecond": 0.07203333333333334
+        },
+        "bitaxe2": {
+          "hashrate": 1376668969786.7783,
+          "sharesPerSecond": 0.05123333333333334
+        },
+        "bitaxe3": {
+          "hashrate": 1294127150899.3977,
+          "sharesPerSecond": 0.06120000000000002
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T05:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1349405160297.7434,
+          "sharesPerSecond": 0.06810000000000002
+        },
+        "bitaxe2": {
+          "hashrate": 1410279612533.9692,
+          "sharesPerSecond": 0.06846666666666668
+        },
+        "bitaxe3": {
+          "hashrate": 1408146518064.2305,
+          "sharesPerSecond": 0.04436666666666667
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T06:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1410745281475.4207,
+          "sharesPerSecond": 0.08146666666666666
+        },
+        "bitaxe2": {
+          "hashrate": 1447813947078.1526,
+          "sharesPerSecond": 0.07410000000000003
+        },
+        "bitaxe3": {
+          "hashrate": 1197862698106.058,
+          "sharesPerSecond": 0.057300000000000004
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T07:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1357468254935.3303,
+          "sharesPerSecond": 0.05533333333333334
+        },
+        "bitaxe2": {
+          "hashrate": 1322677043424.8005,
+          "sharesPerSecond": 0.05123333333333334
+        },
+        "bitaxe3": {
+          "hashrate": 1315399776812.036,
+          "sharesPerSecond": 0.08536666666666666
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T08:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1363921377482.6003,
+          "sharesPerSecond": 0.08546666666666666
+        },
+        "bitaxe2": {
+          "hashrate": 1348509922169.8206,
+          "sharesPerSecond": 0.056466666666666665
+        },
+        "bitaxe3": {
+          "hashrate": 1331538937120.91,
+          "sharesPerSecond": 0.10550000000000001
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T09:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1347133311381.9019,
+          "sharesPerSecond": 0.09493333333333333
+        },
+        "bitaxe2": {
+          "hashrate": 1202584337899.2444,
+          "sharesPerSecond": 0.04193333333333334
+        },
+        "bitaxe3": {
+          "hashrate": 1244457763343.0537,
+          "sharesPerSecond": 0.05803333333333333
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T10:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1395164056314.6006,
+          "sharesPerSecond": 0.06206666666666668
+        },
+        "bitaxe2": {
+          "hashrate": 1428791681001.8096,
+          "sharesPerSecond": 0.0747
+        },
+        "bitaxe3": {
+          "hashrate": 1297933958316.6199,
+          "sharesPerSecond": 0.036566666666666685
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T11:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1308478000417.6208,
+          "sharesPerSecond": 0.07029999999999997
+        },
+        "bitaxe2": {
+          "hashrate": 1190564940170.035,
+          "sharesPerSecond": 0.07
+        },
+        "bitaxe3": {
+          "hashrate": 1239635880975.0232,
+          "sharesPerSecond": 0.05303333333333334
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T12:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1220438305552.9202,
+          "sharesPerSecond": 0.05146666666666668
+        },
+        "bitaxe2": {
+          "hashrate": 1442543471852.0532,
+          "sharesPerSecond": 0.05526666666666666
+        },
+        "bitaxe3": {
+          "hashrate": 1383121108339.9905,
+          "sharesPerSecond": 0.04090000000000002
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T13:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1377210974228.845,
+          "sharesPerSecond": 0.07513333333333334
+        },
+        "bitaxe2": {
+          "hashrate": 1197675333933.5134,
+          "sharesPerSecond": 0.03770000000000002
+        },
+        "bitaxe3": {
+          "hashrate": 1297182678377.629,
+          "sharesPerSecond": 0.06056666666666667
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T14:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1368998656337.796,
+          "sharesPerSecond": 0.056333333333333346
+        },
+        "bitaxe2": {
+          "hashrate": 1403551657501.4832,
+          "sharesPerSecond": 0.0663
+        },
+        "bitaxe3": {
+          "hashrate": 1155727416620.96,
+          "sharesPerSecond": 0.07103333333333332
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T15:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1333483964320.2617,
+          "sharesPerSecond": 0.07466666666666667
+        },
+        "bitaxe2": {
+          "hashrate": 1458156042909.7622,
+          "sharesPerSecond": 0.05210000000000003
+        },
+        "bitaxe3": {
+          "hashrate": 1279134631747.9548,
+          "sharesPerSecond": 0.04983333333333336
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T16:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1305218734008.1033,
+          "sharesPerSecond": 0.0541
+        },
+        "bitaxe2": {
+          "hashrate": 1282860286076.9937,
+          "sharesPerSecond": 0.06923333333333334
+        },
+        "bitaxe3": {
+          "hashrate": 1344764783371.3208,
+          "sharesPerSecond": 0.07843333333333333
+        }
+      }
+    },
+    {
+      "created": "2025-09-11T17:00:00Z",
+      "workers": {
+        "bitaxe1": {
+          "hashrate": 1230879248803.7703,
+          "sharesPerSecond": 0.06890000000000002
+        },
+        "bitaxe2": {
+          "hashrate": 1376027797511.431,
+          "sharesPerSecond": 0.04356666666666668
+        },
+        "bitaxe3": {
+          "hashrate": 1413221005288.2651,
+          "sharesPerSecond": 0.05566666666666668
+        }
+      }
+    }
+  ],
+  "totalConfirmedBlocks": 0,
+  "totalPendingBlocks": 0
+}
