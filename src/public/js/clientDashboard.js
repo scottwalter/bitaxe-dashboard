@@ -491,12 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const displayVRTemp = `<font color="${getLimitColor(VRTemp, VRTempMap)}"><b>${VRTemp}</b></font>`;
                         const displayFanSpeed = `<font color="${getLimitColor(miner.fanspeed, FanSpeedMap)}"><b>${miner.fanspeed}</b></font>`;
                         // Create one row for each miner with the second column delimited with | for each value.
-                        allPoolsHtml += `<h4>${miner.id} <div class="line-graph-icon chart-button" data-instance-id="${miner.id}" title="View ${miner.id} Statistics">
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                        </div></h4><div class="details-grid">`;
+                        allPoolsHtml += `<h4>${miner.id} <div class="line-graph-icon chart-button" data-instance-id="${miner.id}" title="View ${miner.id} Statistics"></div></h4><div class="details-grid">`;
                         allPoolsHtml += `<strong>Hash (Expected | Current): </strong><span>${formattedExpected} | ${formattedHashrate}</span>`;
                         allPoolsHtml += `<strong>Difficulty (Best | Session): </strong><span>${miner.bestDiff} | ${miner.bestSessionDiff}</span>`;
                         allPoolsHtml += `<strong>Pool (Diff | Shares): </strong><span>${miner.poolDifficulty} | ${miner.sharesAccepted}</span>`;
@@ -606,8 +601,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!existingButton) {
                     const logoutButton = document.createElement('div');
                     logoutButton.id = 'logout-button';
-                    logoutButton.className = 'animated-button';
-                    logoutButton.textContent = 'Logout';
                     logoutButton.title = 'Logout from dashboard';
                     header.appendChild(logoutButton);
 
@@ -650,7 +643,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const configButton = document.createElement('span');
                     configButton.id = 'config-button';
                     configButton.className = 'config-icon';
-                    configButton.innerHTML = '&#x2699;'; // Gear icon
+                    configButton.innerHTML = ''; // Background image provides the icon
                     configButton.title = 'Application Configuration';
                     
                     // Insert before the refresh icon
