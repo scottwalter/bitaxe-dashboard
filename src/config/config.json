@@ -1,0 +1,188 @@
+{
+    "bitaxe_dashboard_version": 2,
+    "disable_authentication": false,
+    "cookie_max_age": 3600,
+    "disable_settings": false,
+    "disable_configurations": false,
+    "web_server_port": 3000,
+    "demo_mode": false,
+    "title": "Bitaxe Dashboard",
+    "bitaxe_instances": [
+        {
+            "Bitaxe1": "http://192.168.7.220"
+        },
+        {
+            "Bitaxe2": "http://192.168.7.122"
+        },
+        {
+            "Bitaxe3": "http://192.168.7.120"
+        }
+    ],
+    "display_fields": [
+        {
+            "Mining Metrics": [
+                {
+                    "hashRate": "Hashrate"
+                },
+                {
+                    "expectedHashrate": "Expect Hashrate"
+                },
+                {
+                    "bestDiff": "Best Difficulty"
+                },
+                {
+                    "bestSessionDiff": "Best Session Difficulty"
+                },
+                {
+                    "poolDifficulty": "Pool Difficulty"
+                },
+                {
+                    "sharesAccepted": "Shares Accepted"
+                },
+                {
+                    "sharesRejected": "Shares Rejected"
+                },
+                {
+                    "sharesRejectedReasons": "Shares Rejected Reasons"
+                },
+                {
+                    "responseTime": "Response Time"
+                }
+            ]
+        },
+        {
+            "General Information": [
+                {
+                    "hostname": "Hostname"
+                },
+                {
+                    "power": "Power"
+                },
+                {
+                    "voltage": "Voltage"
+                },
+                {
+                    "coreVoltageActual": "ASIC Voltage"
+                },
+                {
+                    "frequency": "Frequency"
+                },
+                {
+                    "temp": "ASIC Temp"
+                },
+                {
+                    "vrTemp": "VR Temp"
+                },
+                {
+                    "fanspeed": "Fan Speed"
+                },
+                {
+                    "minFanSpeed": "Min Fan Speed"
+                },
+                {
+                    "fanrpm": "Fan RPM"
+                },
+                {
+                    "temptarget": "Target Temp"
+                },
+                {
+                    "overheat_mode": "Over Heat Mode"
+                },
+                {
+                    "uptimeSeconds": "Uptime"
+                },
+                {
+                    "coreVoltage": "Core Voltage"
+                },
+                {
+                    "current": "Current"
+                },
+                {
+                    "wifiRSSI": "Wifi RSSI"
+                },
+                {
+                    "stratumURL": "Stratum URL"
+                },
+                {
+                    "stratumUser": "Stratum User"
+                },
+                {
+                    "stratumPort": "Stratum Port"
+                },
+                {
+                    "isUsingFallbackStratum": "Using Fallback Stratum"
+                },
+                {
+                    "axeOSVersion": "AxeOS Version"
+                },
+                {
+                    "idfVersion": "IDF Version"
+                },
+                {
+                    "boardVersion": "Board Version"
+                },
+                {
+                    "ASICModel": "ASIC Chip"
+                }
+            ]
+        }
+    ],
+    "mining_core_enabled": true,
+    "mining_core_url": "http:/192.168.7.149:4000",
+    "mining_core_display_fields": [
+        {
+            "Network Status": [
+                {
+                    "networkHashrate": "Network Hashrate"
+                },
+                {
+                    "networkDifficulty": "Network Difficulty"
+                },
+                {
+                    "lastNetworkBlockTime": "Last Block Time"
+                },
+                {
+                    "blockHeight": "Block Height"
+                },
+                {
+                    "connectedPeers": "Connected Peers"
+                },
+                {
+                    "nodeVersion": "Node Version"
+                }
+            ]
+        },
+        {
+            "Miner(s) Status": [
+                {
+                    "connectedMiners": "Connected Miners"
+                },
+                {
+                    "poolHashrate": "Pool Hashrate"
+                }
+            ]
+        },
+        {
+            "Rewards Status": [
+                {
+                    "totalPaid": "Total Paid"
+                },
+                {
+                    "totalBlocks": "Total Blocks"
+                },
+                {
+                    "totalConfirmedBlocks": "Total Confirmed Blocks"
+                },
+                {
+                    "totalPendingBlocks": "Totoal Pending Blocks"
+                },
+                {
+                    "lastPoolBlockTime": "Last Pool Block Time"
+                },
+                {
+                    "blockReward": "Block Reward"
+                }
+            ]
+        }
+    ]
+}
