@@ -138,6 +138,61 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
+     * Attaches event listeners to Restart and Settings buttons in the summary view
+     */
+    function attachRestartAndSettingsButtonEventListeners() {
+        // Restart button event listeners
+        const restartButtons = document.querySelectorAll('.restart-button');
+        restartButtons.forEach(buttonElement => {
+            buttonElement.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const instanceId = buttonElement.getAttribute('data-instance-id');
+                if (instanceId) {
+                    modalService.openConfirmModal(
+                        'Confirm Restart',
+                        `Are you sure you want to restart instance "${instanceId}"?`,
+                        async () => {
+                            try {
+                                const response = await fetch(`/api/instance/service/restart?instanceId=${instanceId}`, {
+                                    method: 'POST'
+                                });
+                                const result = await response.json();
+                                if (response.ok) {
+                                    alert(`Instance "${instanceId}" is restarting.`);
+                                    setTimeout(() => location.reload(), 2000); // Refresh to see updated status
+                                } else {
+                                    alert(`Error restarting instance: ${result.message || 'Unknown error'}`);
+                                }
+                            } catch (error) {
+                                console.error('Restart request failed:', error);
+                                alert('Failed to send restart command. See console for details.');
+                            }
+                        }
+                    );
+                }
+            });
+        });
+
+        // Settings button event listeners
+        const settingsButtons = document.querySelectorAll('.settings-button');
+        settingsButtons.forEach(buttonElement => {
+            buttonElement.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const instanceId = buttonElement.getAttribute('data-instance-id');
+                if (instanceId) {
+                    // Find the miner data for this instance
+                    const selectedData = minerData.find(m => m.id === instanceId);
+                    if (selectedData) {
+                        modalService.openSettingsModal(selectedData);
+                    }
+                }
+            });
+        });
+    }
+
+    /**
      * Saves the collapsed state of a section to localStorage
      */
     function saveSectionState(sectionId, isCollapsed) {
@@ -569,14 +624,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     } else {
                         const formattedHashrate = formatDeviceHashrate(miner.hashRate); // Use the specific device hashrate formatter.
                         const formattedExpected = formatDeviceHashrate(miner.expectedHashrate);
-                        const bestDiff = miner.bestSessionDiff || 'N/A';
                         const AsicTemp = safeToFixed(Number(miner.temp),2);
                         const VRTemp = safeToFixed(Number(miner.vrTemp),2);
                         const displayAsicTemp = `<font color="${getLimitColor(AsicTemp, ASICTempMap)}"><b>${AsicTemp} &deg;C</b></font>`;
                         const displayVRTemp = `<font color="${getLimitColor(VRTemp, VRTempMap)}"><b>${VRTemp} &deg;C</b></font>`;
                         const displayFanSpeed = `<font color="${getLimitColor(miner.fanspeed, FanSpeedMap)}"><b>${miner.fanspeed} %</b></font>`;
                         // Create 5-column layout: Header | Label | Value | Label | Value
-                        allPoolsHtml += `<h4>${miner.id} <div class="line-graph-icon chart-button" data-instance-id="${miner.id}" title="View ${miner.id} Statistics"></div></h4><div class="details-grid-five-columns">`;
+                        allPoolsHtml += `<h4>${miner.id} <div class="line-graph-icon chart-button" data-instance-id="${miner.id}" title="View ${miner.id} Statistics"></div>`;
+                        // Add restart and settings icons if settings are enabled
+                        if(!disableSettings){
+                            allPoolsHtml += ` <img src="/public/icon/icons8-rotate-right-64-white.png" class="restart-button restart-icon-hover" data-instance-id="${miner.id}" title="Restart Instance" style="width: 20px; height: 20px; margin-left: 8px; vertical-align: middle; cursor: pointer;">`;
+                            allPoolsHtml += ` <img src="/public/icon/icons8-audio-65-white.png" class="settings-button settings-icon-hover" data-instance-id="${miner.id}" title="Edit Settings" style="width: 20px; height: 20px; margin-left: 8px; vertical-align: middle; cursor: pointer;">`;
+                        }
+                        allPoolsHtml += `</h4><div class="details-grid-five-columns">`;
                         // Hash row: Hash | Expected: | Value | Current: | Value
                         allPoolsHtml += `<div class="category-header">Hashrate</div><strong>Expected:</strong><span>${formattedExpected}</span><strong>Current:</strong><span>${formattedHashrate}</span>`;
                         // Difficulty row: Difficulty | Best: | Value | Session: | Value
@@ -855,6 +915,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Add event listeners to Chart buttons
                 attachChartButtonEventListeners();
+
+                // Add event listeners to Restart and Settings buttons
+                attachRestartAndSettingsButtonEventListeners();
 
                 // Add event listeners to Collapse buttons
                 attachCollapseButtonEventListeners();
