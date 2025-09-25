@@ -17,25 +17,17 @@
     </header>
    
     <div class="main-container">
-        <nav class="menu-pane">
-            <div class="menu-header">
-                <h2>Devices</h2>
-                <span id="refresh-icon" class="refresh-icon" title="Refresh Dashboard"></span>
-                
-            </div>
-            <ul id="device-menu">
-                <li id="summary-menu-item" class="menu-item">Summary</li>
-                <!-- Device menu items will be injected here by client-side JS -->
-                <li>Loading devices...</li>
-            </ul>
-        </nav>
-        <main class="details-pane" id="details-pane">
-            <div id="mining-core-details" style="display: none;">
-                <h2>Mining Summary</h2>
-                    <!-- Mining Core data will be displayed here by client-side JS -->
+        <main class="dashboard-panel" id="dashboard-panel">
+            <div class="dashboard-header">
+                <h2>Mining Dashboard</h2>
+                <div class="dashboard-controls">
+                    <span id="config-icon" class="config-icon" title="Configuration"></span>
+                    <span id="refresh-icon" class="refresh-icon" title="Refresh Dashboard"></span>
                 </div>
-            <!-- Details for the selected device will be displayed here by client-side JS -->
-            <p>Select a device from the left menu to view its details.</p>
+            </div>
+            <div id="mining-core-details">
+                <!-- Mining Core data will be displayed here by client-side JS -->
+            </div>
         </main>
     </div>
 

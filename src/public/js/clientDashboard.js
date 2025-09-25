@@ -30,12 +30,10 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    const deviceMenu = document.getElementById('device-menu');
-    const detailsPane = document.getElementById('details-pane');
     const timestampSpan = document.getElementById('timestamp');
-    const summaryMenuItem = document.getElementById('summary-menu-item');
     const miningCoreDetailsDiv = document.getElementById('mining-core-details');
     const refreshIcon = document.getElementById('refresh-icon');
+    const configIcon = document.getElementById('config-icon');
 
 
     let minerData = [];
@@ -70,6 +68,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    if (configIcon) {
+        configIcon.addEventListener('click', () => {
+            modalService.openConfigModal();
+        });
+    }
+
     // Configuration button will be added after data is loaded and we know the disable_configurations setting
 
     // --- Retrieve and Parse Data via Fetch ---
@@ -79,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // If the response is not OK (e.g., 404, 500), throw an error.
                 const errorMessage = `HTTP error! Status: ${response.status} - ${response.statusText}`;
                 console.error(errorMessage);
-                detailsPane.innerHTML = `<p style="color: red;">Error loading device data: ${errorMessage}. Please check the server and refresh.</p>`;
+                miningCoreDetailsDiv.innerHTML = `<p style="color: red;">Error loading device data: ${errorMessage}. Please check the server and refresh.</p>`;
                 throw new Error(errorMessage); // Propagate error to the catch block
             }
             return response.json(); // Parse the response body as JSON.
@@ -104,17 +108,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Add logout button based on disable_authentication setting
             addLogoutButton();
             
-            // Add configuration button based on disable_configurations setting
-            addConfigurationButton();
+            // Configuration icon is now part of the header
 
             // Initialize the dashboard after data is successfully fetched
-            populateMenu();
+            displayDashboard();
         })
         .catch(error => {
             console.error('Error fetching or parsing embedded data:', error);
             // Display a user-friendly error message if fetch fails or JSON parsing fails.
-            if (!detailsPane.innerHTML.includes('Error loading device data')) { // Avoid duplicate error messages
-                detailsPane.innerHTML = `<p style="color: red;">Failed to load device data: ${error.message}. Please refresh the page.</p>`;
+            if (!miningCoreDetailsDiv.innerHTML.includes('Error loading device data')) { // Avoid duplicate error messages
+                miningCoreDetailsDiv.innerHTML = `<p style="color: red;">Failed to load device data: ${error.message}. Please refresh the page.</p>`;
             }
         });
 
@@ -138,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Attaches event listeners to Restart and Settings buttons in the summary view
+     * Attaches event listeners to Restart, Settings, and Info buttons in the summary view
      */
     function attachRestartAndSettingsButtonEventListeners() {
         // Restart button event listeners
@@ -189,6 +192,55 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             });
+        });
+
+        // Info button event listeners
+        const infoButtons = document.querySelectorAll('.info-button');
+        infoButtons.forEach(buttonElement => {
+            buttonElement.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const instanceId = buttonElement.getAttribute('data-instance-id');
+                if (instanceId) {
+                    // Find the miner data for this instance
+                    const selectedData = minerData.find(m => m.id === instanceId);
+                    if (selectedData) {
+                        openMinerInfoModal(selectedData);
+                    }
+                }
+            });
+        });
+    }
+
+    /**
+     * Opens a modal displaying detailed information for a specific miner
+     * @param {object} minerData - The miner data object
+     */
+    function openMinerInfoModal(minerData) {
+        const existingModal = document.getElementById('miner-info-modal');
+        if (existingModal) existingModal.remove();
+
+        // Generate detailed HTML using the same formatting as device details
+        const detailsHtml = generateDeviceDetailsHtml(minerData);
+
+        const modalHtml = `
+            <div id="miner-info-modal" class="modal">
+                <div class="modal-content" style="max-width: 800px; max-height: 80vh; overflow-y: auto;">
+                    <span class="close-button">&times;</span>
+                    <div class="miner-info-content">
+                        ${detailsHtml}
+                    </div>
+                </div>
+            </div>`;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        const modal = document.getElementById('miner-info-modal');
+        const closeModal = () => modal.remove();
+
+        modal.querySelector('.close-button').addEventListener('click', closeModal);
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) closeModal();
         });
     }
 
@@ -594,13 +646,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function generateMiningCoreDetailsHtml(data, displayFields) {
         // If we have no miners at all, show an appropriate message
         if (!minerData || minerData.length === 0) {
-            return '<p>No miner data available. Please check your configuration.</p>';
+            return '<p>Loading Mining Dashboard Data. Please wait.</p>';
         }
 
-        // Set appropriate title based on whether mining core data is available
-        let allPoolsHtml = data && data.length > 0 
-            ? '<h2>Mining Summary</h2>' 
-            : '<h2>Miners Summary</h2>'; // Overall heading
+        // Start with no title, just the content
+        let allPoolsHtml = '';
         //Show date / time of last update
          allPoolsHtml += `<div class="mining-pool-summary-card">`; 
         allPoolsHtml += '<h3>Status Timestamp</h3>';
@@ -620,7 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 minerData.forEach(miner => {
                     if (miner.status === 'Error') {
                         // Display the miner's name and its error status.
-                        allPoolsHtml += `<h4>${miner.id}: <span style="color: #dc3545; font-weight: bold;">Error</span></h4>`;
+                        allPoolsHtml += `<h4><span class="status-indicator status-error" style="margin-right: 8px;"></span>${miner.id}: <span style="color: #dc3545; font-weight: bold;">Miner Unreachable</span></h4>`;
                     } else {
                         const formattedHashrate = formatDeviceHashrate(miner.hashRate); // Use the specific device hashrate formatter.
                         const formattedExpected = formatDeviceHashrate(miner.expectedHashrate);
@@ -630,12 +680,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         const displayVRTemp = `<font color="${getLimitColor(VRTemp, VRTempMap)}"><b>${VRTemp} &deg;C</b></font>`;
                         const displayFanSpeed = `<font color="${getLimitColor(miner.fanspeed, FanSpeedMap)}"><b>${miner.fanspeed} %</b></font>`;
                         // Create 5-column layout: Header | Label | Value | Label | Value
-                        allPoolsHtml += `<h4>${miner.id} <div class="line-graph-icon chart-button" data-instance-id="${miner.id}" title="View ${miner.id} Statistics"></div>`;
+                        allPoolsHtml += `<h4><span class="status-indicator status-online" style="margin-right: 8px;"></span>${miner.id} <div class="line-graph-icon chart-button" data-instance-id="${miner.id}" title="View ${miner.id} Statistics"></div>`;
                         // Add restart and settings icons if settings are enabled
                         if(!disableSettings){
                             allPoolsHtml += ` <img src="/public/icon/icons8-rotate-right-64-white.png" class="restart-button restart-icon-hover" data-instance-id="${miner.id}" title="Restart Instance" style="width: 20px; height: 20px; margin-left: 8px; vertical-align: middle; cursor: pointer;">`;
                             allPoolsHtml += ` <img src="/public/icon/icons8-audio-65-white.png" class="settings-button settings-icon-hover" data-instance-id="${miner.id}" title="Edit Settings" style="width: 20px; height: 20px; margin-left: 8px; vertical-align: middle; cursor: pointer;">`;
                         }
+                        // Add information icon (always visible)
+                        allPoolsHtml += ` <img src="/public/icon/icons8-information-64-white.png" class="info-button info-icon-hover" data-instance-id="${miner.id}" title="View Detailed Information" style="width: 20px; height: 20px; margin-left: 8px; vertical-align: middle; cursor: pointer;">`;
                         allPoolsHtml += `</h4><div class="details-grid-five-columns">`;
                         // Hash row: Hash | Expected: | Value | Current: | Value
                         allPoolsHtml += `<div class="category-header">Hashrate</div><strong>Expected:</strong><span>${formattedExpected}</span><strong>Current:</strong><span>${formattedHashrate}</span>`;
@@ -728,6 +780,15 @@ document.addEventListener('DOMContentLoaded', () => {
             allPoolsHtml += `</div>`; // Close collapsible-content
             allPoolsHtml += `</div>`; // Close mining-pool-summary-card
             });
+        } else {
+            // Show message when mining core is unreachable
+            allPoolsHtml += `<div class="mining-pool-summary-card">`;
+            allPoolsHtml += `<h3>Mining Core Status</h3>`;
+            allPoolsHtml += `<div class="details-grid">`;
+            allPoolsHtml += `<strong>Status:</strong> <span style="color: #dc3545; font-weight: bold;">Mining Core Unreachable</span>`;
+            allPoolsHtml += `<strong>Note:</strong> <span>Mining core data is not available, but individual miners are still monitored.</span>`;
+            allPoolsHtml += `</div>`;
+            allPoolsHtml += `</div>`;
         }
         return allPoolsHtml;
     }
@@ -750,13 +811,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         }
 
-        let html = `<h2>${ data.id || 'Unknown Device'}`;
-        //Decide is restart icon should show up based on disable_settings config.
-        if(!disableSettings){
-            html += ` <img src="/public/icon/icons8-rotate-right-64-white.png" class="restart-button restart-icon-hover" data-instance-id="${data.id}" title="Restart Instance" style="width: 35px; height: 35px; margin-left: 8px; vertical-align: middle; cursor: pointer;">`;
-            html += ` <img src="/public/icon/icons8-audio-65-white.png" class="settings-button settings-icon-hover" data-instance-id="${data.id}" title="Edit Settings" style="width: 40px; height: 40px; margin-left: 8px; vertical-align: middle; cursor: pointer;">`;
-        }
-        html += `</h2>`;
+        let html = `<h2>${ data.id || 'Unknown Device'}</h2>`;
 
         displayFieldsConfig.forEach(categoryObj => {
             const categoryName = Object.keys(categoryObj)[0];
@@ -819,233 +874,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /**
-     * Adds the configuration button to the menu header if configurations are enabled.
-     */
-    function addConfigurationButton() {
-        // Only add the configuration button if configurations are enabled
-        if (!disableConfigurations) {
-            const menuHeader = document.querySelector('.menu-header');
-            const refreshIcon = document.getElementById('refresh-icon');
-            
-            if (menuHeader && refreshIcon) {
-                // Check if button already exists to avoid duplicates
-                const existingButton = document.getElementById('config-button');
-                if (!existingButton) {
-                    const configButton = document.createElement('span');
-                    configButton.id = 'config-button';
-                    configButton.className = 'config-icon';
-                    configButton.innerHTML = ''; // Background image provides the icon
-                    configButton.title = 'Application Configuration';
-                    
-                    // Insert before the refresh icon
-                    menuHeader.insertBefore(configButton, refreshIcon);
-
-                    configButton.addEventListener('click', () => {
-                        modalService.openConfigModal();
-                    });
-                }
-            }
-        }
-    }
 
     /**
-     * Populates the left-hand device menu, dynamically adjusting its width
-     * to fit the content, and attaches click handlers.
+     * Displays the mining dashboard content (formerly the summary view)
      */
-    function populateMenu() {
-        deviceMenu.innerHTML = ''; // Clear existing menu items
-
-        let maxMenuWidth = 0; // To store the maximum calculated width for dynamic resizing.
-
-        /**
-         * Measures the pixel width of a given text string using a canvas.
-         * Caches the canvas element for performance.
-         * @param {string} text The text to measure.
-         * @param {string} font The CSS font string to use for measurement.
-         * @returns {number} The width of the text in pixels.
-         */
-        function measureTextWidth(text, font) {
-            // Use a static canvas to avoid creating a new one on each call.
-            const canvas = measureTextWidth.canvas || (measureTextWidth.canvas = document.createElement("canvas"));
-            const context = canvas.getContext("2d");
-            context.font = font || '0.95em \'Segoe UI\', Tahoma, Geneva, Verdana, sans-serif'; // Match .menu-pane li font.
-            return context.measureText(text).width;
+    function displayDashboard() {
+        // Hide/show configuration icon based on disable_configurations setting
+        if (configIcon) {
+            configIcon.style.display = disableConfigurations ? 'none' : 'inline-block';
         }
 
-        // Get current computed style for menu items to ensure accurate width measurement.
-        const tempListItem = document.createElement('li');
-        tempListItem.style.visibility = 'hidden';
-        tempListItem.style.position = 'absolute';
-        tempListItem.style.whiteSpace = 'nowrap';
-        document.body.appendChild(tempListItem);
-        const computedStyle = window.getComputedStyle(tempListItem);
-        const listItemFont = computedStyle.font;
-        const listItemPaddingHorizontal = parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
-        document.body.removeChild(tempListItem);
+        // Display the mining core summary directly in the dashboard
+        miningCoreDetailsDiv.innerHTML = generateMiningCoreDetailsHtml(miningCoreData, miningCoreDisplayFields);
 
-        const indicatorWidth = 18; // Approx. width of status indicator (10px) + margin (8px).
+        // Add event listeners to Chart buttons
+        attachChartButtonEventListeners();
 
-        // First, add and measure the "Summary" menu item if it exists.
-        if (summaryMenuItem) {
-            const summaryText = summaryMenuItem.textContent;
-            summaryMenuItem.innerHTML = ''; // Clear existing text to rebuild
+        // Add event listeners to Restart and Settings buttons
+        attachRestartAndSettingsButtonEventListeners();
 
-            const statusIndicator = document.createElement('span');
-            statusIndicator.classList.add('status-indicator', 'status-online');
-            statusIndicator.title = 'Summary';
+        // Add event listeners to Collapse buttons
+        attachCollapseButtonEventListeners();
 
-            const textNode = document.createTextNode(' ' + summaryText);
-
-            summaryMenuItem.appendChild(statusIndicator);
-            summaryMenuItem.appendChild(textNode);
-
-            maxMenuWidth = Math.max(maxMenuWidth, measureTextWidth(summaryText, listItemFont) + listItemPaddingHorizontal + indicatorWidth);
-            deviceMenu.appendChild(summaryMenuItem);
-            summaryMenuItem.addEventListener('click', () => {
-                // Deactivate all other menu items.
-                document.querySelectorAll('#device-menu li').forEach(item => {
-                    item.classList.remove('active');
-                });
-                // Activate the clicked item.
-                summaryMenuItem.classList.add('active');
-
-                // Display the mining core summary in the details pane.
-                detailsPane.innerHTML = generateMiningCoreDetailsHtml(miningCoreData, miningCoreDisplayFields);
-
-                // Add event listeners to Chart buttons
-                attachChartButtonEventListeners();
-
-                // Add event listeners to Restart and Settings buttons
-                attachRestartAndSettingsButtonEventListeners();
-
-                // Add event listeners to Collapse buttons
-                attachCollapseButtonEventListeners();
-
-                // Restore saved section states
-                restoreSavedSectionStates();
-            });
-        }
-
-        if (minerData.length === 0) {
-            // If no devices, and summary is not present or enabled, show message
-            if (!summaryMenuItem) {
-                deviceMenu.innerHTML = '<li>No devices configured or found.</li>';
-            }
-            // If summary is present, it will already be there.
-            // Apply initial width if only summary is present or no devices are found.
-            const menuPane = document.querySelector('.menu-pane');
-            if (menuPane && window.innerWidth > 768) { // Only apply on larger screens.
-                menuPane.style.flexBasis = `${maxMenuWidth + 40}px`; // Add buffer for padding/margin
-                menuPane.style.width = `${maxMenuWidth + 40}px`;
-            }
-            return;
-        }
-
-        minerData.forEach(data => {
-            const listItem = document.createElement('li');
-            listItem.dataset.deviceId = data.id; // Store unique ID for lookup
-
-            // Create a status indicator (green for online, red for error).
-            const statusIndicator = document.createElement('span');
-            statusIndicator.classList.add('status-indicator');
-            if (data.status === 'Error') {
-                statusIndicator.classList.add('status-error');
-                listItem.title = `Error: ${data.message || 'Unknown error'}`; // Add a tooltip for the error details.
-            } else {
-                statusIndicator.classList.add('status-online');
-                listItem.title = 'Online';
-            }
-
-            // Display the device's name (ID from config) and attach the status indicator.
-            const deviceName = data.id || 'Unnamed Device';
-            listItem.appendChild(statusIndicator);
-            listItem.appendChild(document.createTextNode(' ' + deviceName));
-            deviceMenu.appendChild(listItem);
-
-            // Update the max width based on this item's content.
-            maxMenuWidth = Math.max(maxMenuWidth, measureTextWidth(deviceName, listItemFont) + listItemPaddingHorizontal + indicatorWidth);
-
-            listItem.addEventListener('click', () => {
-                // Deactivate all other menu items.
-                document.querySelectorAll('#device-menu li').forEach(item => {
-                    item.classList.remove('active');
-                });
-                // Activate the clicked item.
-                listItem.classList.add('active');
-
-                // Hide mining core details, show device details
-                miningCoreDetailsDiv.style.display = 'none';
-                detailsPane.style.display = 'block';
-
-                // Find the corresponding data and display it in the details pane
-                const selectedData = minerData.find(m => m.id === listItem.dataset.deviceId);
-                if (selectedData) {
-                    detailsPane.innerHTML = generateDeviceDetailsHtml(selectedData);
-
-                    // --- Attach Event Listeners to Dynamically Created Buttons ---
-                    const restartButton = detailsPane.querySelector('.restart-button');
-                    if (restartButton) {
-                        restartButton.addEventListener('click', (e) => {
-                            const instanceId = e.target.dataset.instanceId;
-                            modalService.openConfirmModal(
-                                'Confirm Restart',
-                                `Are you sure you want to restart instance "${instanceId}"?`,
-                                async () => {
-                                    try {
-                                        const response = await fetch(`/api/instance/service/restart?instanceId=${instanceId}`, {
-                                            method: 'POST'
-                                        });
-                                        const result = await response.json();
-                                        if (response.ok) {
-                                            alert(`Instance "${instanceId}" is restarting.`);
-                                            setTimeout(() => location.reload(), 2000); // Refresh to see updated status
-                                        } else {
-                                            alert(`Error restarting instance: ${result.message || 'Unknown error'}`);
-                                        }
-                                    } catch (error) {
-                                        console.error('Restart request failed:', error);
-                                        alert('Failed to send restart command. See console for details.');
-                                    }
-                                }
-                            );
-                        });
-                    }
-
-                    const settingsButton = detailsPane.querySelector('.settings-button');
-                    if (settingsButton) {
-                        settingsButton.addEventListener('click', (e) => {
-                            modalService.openSettingsModal(selectedData);
-                        });
-                    }
-                } else {
-                    detailsPane.innerHTML = '<p style="color: red;">Error: Data for this device not found.</p>';
-                }
-            });
-        });
-
-        // After all items are measured, apply the calculated max width to the menu pane.
-        const menuPane = document.querySelector('.menu-pane');
-        if (menuPane && window.innerWidth > 768) { // Only apply on larger screens.
-            menuPane.style.flexBasis = `${maxMenuWidth + 40}px`; // Add buffer for padding, margin, and active border.
-            menuPane.style.width = `${maxMenuWidth + 40}px`;
-        }
-
-        // Automatically select and display details for the first item on page load.
-        if (summaryMenuItem && minerData.length > 0) {
-            summaryMenuItem.click(); // Prioritize the summary view if miners are available.
-        } else if (minerData.length > 0) { // Check if minerData exists before trying to click first element
-            // If there are devices, click the first one
-            const firstDeviceListItem = deviceMenu.querySelector('li[data-device-id]');
-            if (firstDeviceListItem) {
-                firstDeviceListItem.click();
-            }
-        } else {
-            detailsPane.innerHTML = '<p>No devices or summary data to display. Check your configuration.</p>';
-        }
+        // Restore saved section states
+        restoreSavedSectionStates();
     }
 
     // Initialize the dashboard
-    populateMenu();
+    displayDashboard();
 
 });

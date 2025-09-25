@@ -38,6 +38,34 @@
             background-color: #1e1e1e; /* Dark container background */
         }
 
+        .dashboard-panel {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #ff1744; /* Red accent border */
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .dashboard-header h2 {
+            color: #f5f5f5; /* Light heading text */
+            font-size: 1.8em;
+            margin: 0;
+        }
+
+        .dashboard-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .menu-pane {
             flex: 0 0 280px;
             background-color: #252525; /* Dark menu background */
@@ -554,6 +582,10 @@
             content: url('/public/icon/icons8-audio-65-red.png');
         }
 
+        .info-icon-hover:hover {
+            content: url('/public/icon/icons8-information-64-red.png');
+        }
+
         .settings-icon .slider {
             position: absolute;
             width: 3px;
@@ -656,70 +688,33 @@
                 font-size: 0.7rem;
             }
             .main-container {
-                flex-direction: column;
                 margin: 0.5rem; /* Reduce margin for smaller screens */
                 border-radius: 8px;
             }
-            .menu-pane {
-                flex: none; /* No fixed width */
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid #333;
+            .dashboard-panel {
                 padding: 1rem; /* Adjust padding for mobile */
             }
-            .menu-pane h2 {
-                font-size: 1.1em;
-            }
-            .menu-pane ul {
-                display: flex; /* Make menu items horizontal on small screens */
-                overflow-x: auto;
-                white-space: nowrap;
-                padding-bottom: 15px; /* Extra space for scrollbar */
-                -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-                scrollbar-width: thin; /* For Firefox */
-                scrollbar-color: #555 #252525;
-            }
-            /* Style the scrollbar for Webkit browsers (Chrome, Safari) */
-            .menu-pane ul::-webkit-scrollbar {
-                height: 8px;
-            }
-            .menu-pane ul::-webkit-scrollbar-track {
-                background: #252525;
-            }
-            .menu-pane ul::-webkit-scrollbar-thumb {
-                background-color: #555;
-                border-radius: 4px;
-            }
-            .menu-pane li {
-                flex: 0 0 auto;
-                margin-right: 10px;
-                border: 1px solid #444;
-                border-radius: 5px;
-                padding: 0.7rem 1rem; /* Increase padding for better touch targets */
-                font-size: 0.9rem;
-            }
-            .menu-pane li.active {
-                /* Override desktop active style for horizontal menu */
-                background-color: #3a3a3a; /* Use a more subtle background */
-                border-left: none; /* Remove left border highlight */
-                border: 2px solid #ff1744; /* Use red border for highlight */
-                padding: calc(0.7rem - 1px) calc(1rem - 1px); /* Adjust padding to account for border */
-            }
-            .details-pane h2 {
+            .dashboard-header h2 {
                 font-size: 1.4em;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
+                flex-shrink: 1;
+                min-width: 0;
             }
-            .details-pane h3 {
+            .dashboard-header {
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .dashboard-controls {
+                flex-shrink: 0;
+            }
+            .dashboard-panel h2 {
+                font-size: 1.4em;
+            }
+            .dashboard-panel h3 {
                 font-size: 1.1em;
             }
-            .details-pane {
+            .dashboard-panel {
                 padding: 1.5rem 1rem; /* Adjust padding for mobile */
-            }
-            .menu-header {
-                justify-content: flex-start; /* Align items to the left on mobile */
-                gap: 0.5rem; /* Add space between header text and icons */
             }
             .details-grid,
             .details-grid-four-columns {
