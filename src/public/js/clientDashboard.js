@@ -682,6 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const displayAsicTemp = `<font color="${getLimitColor(AsicTemp, ASICTempMap)}"><b>${AsicTemp} &deg;C</b></font>`;
                         const displayVRTemp = `<font color="${getLimitColor(VRTemp, VRTempMap)}"><b>${VRTemp} &deg;C</b></font>`;
                         const displayFanSpeed = `<font color="${getLimitColor(miner.fanspeed, FanSpeedMap)}"><b>${miner.fanspeed} %</b></font>`;
+                        const formattedUpTime = formatUptime(miner.uptimeSeconds);
                         // Create 5-column layout: Header | Label | Value | Label | Value
                         allPoolsHtml += `<h4><span class="status-indicator status-online" style="margin-right: 8px;"></span>${miner.id} <div class="line-graph-icon chart-button" data-instance-id="${miner.id}" title="View ${miner.id} Statistics"></div>`;
                         // Add restart and settings icons if settings are enabled
@@ -698,10 +699,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         allPoolsHtml += `<div class="category-header">Difficulty</div><strong>Best:</strong><span>${miner.bestDiff}</span><strong>Session:</strong><span>${miner.bestSessionDiff}</span>`;
                         // Pool row: Pool | Diff: | Value | Shares: | Value
                         allPoolsHtml += `<div class="category-header">Pool</div><strong>Diff:</strong><span>${miner.poolDifficulty}</span><strong>Shares:</strong><span>${miner.sharesAccepted}</span>`;
+                        //Response Time and Shares Rejected Count
+                        allPoolsHtml += `<div class="category-header">Status</div><strong>Response Time:</strong><span>${miner.responseTime} ms</span><strong>Shares Rejected:</strong><span>${miner.sharesRejected}</span>`;
                         // Temp row: Temp | ASIC: | Value | VR: | Value
                         allPoolsHtml += `<div class="category-header">Temperature</div><strong>ASIC:</strong><span>${displayAsicTemp}</span><strong>Voltage Regulator:</strong><span>${displayVRTemp}</span>`;
                         // Fan row: Fan | Speed: | Value | RPM: | Value
                         allPoolsHtml += `<div class="category-header">Fan</div><strong>Speed:</strong><span>${displayFanSpeed}</span><strong>RPM:</strong><span>${miner.fanrpm}</span>`;
+                        //Uptime
+                        allPoolsHtml += `<div class="category-header">General</div><strong>Frequency:</strong><span>${miner.frequency}</span><strong>Up Time:</strong><span>${formattedUpTime}</span>`;
                         allPoolsHtml += `</div>`; // Close details-grid-five-columns for individual miner status
                         allPoolsHtml += '</div>'; // Close miner-card
                     }
