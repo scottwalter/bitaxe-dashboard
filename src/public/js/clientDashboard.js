@@ -223,10 +223,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (hashrate < 1) { // Less than 1 GH/s, show as MH/s
-            return `${(hashrate * 1000).toFixed(2)} MH/s`;
+            return `${(hashrate * 1000).toFixed(2)} Mh/s`;
         }
 
-        const units = ['GH/s', 'TH/s', 'PH/s', 'EH/s', 'ZH/s'];
+        const units = ['Gh/s', 'Th/s', 'Ph/s', 'Eh/s', 'Zh/s'];
         let i = 0;
         while (hashrate >= 1000 && i < units.length - 1) {
             hashrate /= 1000;
@@ -426,7 +426,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleString();
             case 'sharesRejectedReasons':
                 if (Array.isArray(value) && value.length > 0) {
-                    return value.map(reason => `${reason.message}: ${reason.count}`).join(', ');
+                    return value.map(reason => {
+                        const message = reason.message === 'unknown' ? 'Duplicate' : reason.message;
+                        return `${message}: ${reason.count}`;
+                    }).join(', ');
                 }
                 return 'N/A';
             default:
@@ -472,9 +475,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         // Show each individual miner's status, regardless of whether they are part of a pool.
-        allPoolsHtml += `<div class="mining-pool-summary-card">`; // Container for individual miner status
+       // allPoolsHtml += `<div class="mining-pool-summary-card">`; // Container for individual miner status
+        allPoolsHtml += `<div class="individual-miner-summary-card">`; // Container for individual miner status
         allPoolsHtml += '<h3>Individual Miner Status</h3>';
-        //allPoolsHtml += `<div class="details-grid">`; // Grid for individual miner status
         // Loop through each miner's data and generate HTML.
             if ( minerData && minerData.length > 0) {
                 minerData.forEach(miner => {
@@ -487,17 +490,22 @@ document.addEventListener('DOMContentLoaded', () => {
                         const bestDiff = miner.bestSessionDiff || 'N/A';
                         const AsicTemp = safeToFixed(Number(miner.temp),2);
                         const VRTemp = safeToFixed(Number(miner.vrTemp),2);
-                        const displayAsicTemp = `<font color="${getLimitColor(AsicTemp, ASICTempMap)}"><b>${AsicTemp}</b></font>`;
-                        const displayVRTemp = `<font color="${getLimitColor(VRTemp, VRTempMap)}"><b>${VRTemp}</b></font>`;
-                        const displayFanSpeed = `<font color="${getLimitColor(miner.fanspeed, FanSpeedMap)}"><b>${miner.fanspeed}</b></font>`;
-                        // Create one row for each miner with the second column delimited with | for each value.
-                        allPoolsHtml += `<h4>${miner.id} <div class="line-graph-icon chart-button" data-instance-id="${miner.id}" title="View ${miner.id} Statistics"></div></h4><div class="details-grid">`;
-                        allPoolsHtml += `<strong>Hash (Expected | Current): </strong><span>${formattedExpected} | ${formattedHashrate}</span>`;
-                        allPoolsHtml += `<strong>Difficulty (Best | Session): </strong><span>${miner.bestDiff} | ${miner.bestSessionDiff}</span>`;
-                        allPoolsHtml += `<strong>Pool (Diff | Shares): </strong><span>${miner.poolDifficulty} | ${miner.sharesAccepted}</span>`;
-                        allPoolsHtml += `<strong>Temp (ASIC | VR): </strong><span>${displayAsicTemp} | ${displayVRTemp}</span>`;
-                        allPoolsHtml += `<strong>Fan (Speed | RPM): </strong><span>${displayFanSpeed} | ${miner.fanrpm}</span>`;
-                        allPoolsHtml += `</div>`; // Close details-grid for individual miner status
+                        const displayAsicTemp = `<font color="${getLimitColor(AsicTemp, ASICTempMap)}"><b>${AsicTemp} &deg;C</b></font>`;
+                        const displayVRTemp = `<font color="${getLimitColor(VRTemp, VRTempMap)}"><b>${VRTemp} &deg;C</b></font>`;
+                        const displayFanSpeed = `<font color="${getLimitColor(miner.fanspeed, FanSpeedMap)}"><b>${miner.fanspeed} %</b></font>`;
+                        // Create 5-column layout: Header | Label | Value | Label | Value
+                        allPoolsHtml += `<h4>${miner.id} <div class="line-graph-icon chart-button" data-instance-id="${miner.id}" title="View ${miner.id} Statistics"></div></h4><div class="details-grid-five-columns">`;
+                        // Hash row: Hash | Expected: | Value | Current: | Value
+                        allPoolsHtml += `<div class="category-header">Hashrate</div><strong>Expected:</strong><span>${formattedExpected}</span><strong>Current:</strong><span>${formattedHashrate}</span>`;
+                        // Difficulty row: Difficulty | Best: | Value | Session: | Value
+                        allPoolsHtml += `<div class="category-header">Difficulty</div><strong>Best:</strong><span>${miner.bestDiff}</span><strong>Session:</strong><span>${miner.bestSessionDiff}</span>`;
+                        // Pool row: Pool | Diff: | Value | Shares: | Value
+                        allPoolsHtml += `<div class="category-header">Pool</div><strong>Diff:</strong><span>${miner.poolDifficulty}</span><strong>Shares:</strong><span>${miner.sharesAccepted}</span>`;
+                        // Temp row: Temp | ASIC: | Value | VR: | Value
+                        allPoolsHtml += `<div class="category-header">Temperature</div><strong>ASIC:</strong><span>${displayAsicTemp}</span><strong>Voltage Regulator:</strong><span>${displayVRTemp}</span>`;
+                        // Fan row: Fan | Speed: | Value | RPM: | Value
+                        allPoolsHtml += `<div class="category-header">Fan</div><strong>Speed:</strong><span>${displayFanSpeed}</span><strong>RPM:</strong><span>${miner.fanrpm}</span>`;
+                        allPoolsHtml += `</div>`; // Close details-grid-five-columns for individual miner status
                     }
                 });
             }

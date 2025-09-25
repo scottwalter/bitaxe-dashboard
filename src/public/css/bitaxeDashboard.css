@@ -174,7 +174,62 @@
             border: 1px solid #333; /* Darker border */
         }
 
-        .details-grid strong {
+        .details-grid-four-columns {
+            display: grid;
+            grid-template-columns: auto auto;
+            gap: 0.4rem 1.5rem;
+            background-color: #2c2c2c; /* Dark grid background */
+            padding: 1.2rem;
+            border-radius: 8px;
+            border: 1px solid #333; /* Darker border */
+            justify-content: start;
+        }
+
+        .details-grid-four-columns strong {
+            margin-right: 0.3rem;
+        }
+
+        .details-grid-five-columns {
+            display: grid;
+            grid-template-columns: auto auto auto auto auto;
+            gap: 0.4rem 0.5rem;
+            background-color: #2c2c2c; /* Dark grid background */
+            padding: 1.2rem;
+            border-radius: 8px;
+            border: 1px solid #333; /* Darker border */
+            justify-content: start;
+        }
+
+        .details-grid-five-columns strong {
+            margin-right: 0.3rem;
+        }
+
+        .category-header {
+            color: #ff1744; /* Red accent color to match theme */
+            font-weight: bold;
+            font-size: 0.95em;
+            grid-column: 1 / -1; /* Span all columns */
+            margin-top: 0.8rem;
+            margin-bottom: 0.2rem;
+            border-bottom: 1px solid #444;
+            padding-bottom: 0.2rem;
+        }
+
+        .category-header:first-child {
+            margin-top: 0; /* Remove top margin from first header */
+        }
+
+        .details-grid-five-columns .category-header {
+            grid-column: unset; /* Don't span columns in 5-column layout */
+            margin-top: 0;
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+            align-self: center;
+        }
+
+        .details-grid strong,
+        .details-grid-four-columns strong {
             color: #f0f0f0; /* Light blue for keys */
             font-weight: 600;
         }
@@ -630,12 +685,35 @@
             .details-pane {
                 padding: 1.5rem 1rem; /* Adjust padding for mobile */
             }
-            .details-grid {
-                grid-template-columns: 1fr; /* Stack grid items vertically */
-                gap: 0.8rem; /* Set a gap for the single column layout */
+            .menu-header {
+                justify-content: flex-start; /* Align items to the left on mobile */
+                gap: 0.5rem; /* Add space between header text and icons */
+            }
+            .details-grid,
+            .details-grid-four-columns {
+                grid-template-columns: auto 1fr; /* Keep label and value on same line */
+                gap: 0.4rem 0.5rem; /* Smaller gaps for mobile */
+            }
+            .details-grid-five-columns {
+                grid-template-columns: 1fr 1fr; /* Two columns on mobile: label:value | label:value */
+                gap: 0.4rem 0.5rem;
+            }
+            .details-grid-five-columns .category-header {
+                grid-column: 1 / -1; /* Span both columns on mobile */
+                margin-top: 0.8rem;
+                margin-bottom: 0.2rem;
+                border-bottom: 1px solid #444;
+                padding-bottom: 0.2rem;
+            }
+            .details-grid-five-columns .category-header:first-child {
+                margin-top: 0;
             }
             .details-grid strong,
-            .details-grid span {
+            .details-grid span,
+            .details-grid-four-columns strong,
+            .details-grid-four-columns span,
+            .details-grid-five-columns strong,
+            .details-grid-five-columns span {
                 font-size: 0.9em; /* Smaller font for grid content */
             }
             footer p {
