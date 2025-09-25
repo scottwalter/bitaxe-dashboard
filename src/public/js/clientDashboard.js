@@ -138,6 +138,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
+     * Saves the collapsed state of a section to localStorage
+     */
+    function saveSectionState(sectionId, isCollapsed) {
+        try {
+            const savedStates = JSON.parse(localStorage.getItem('bitaxe-section-states') || '{}');
+            savedStates[sectionId] = isCollapsed;
+            localStorage.setItem('bitaxe-section-states', JSON.stringify(savedStates));
+        } catch (error) {
+            console.warn('Failed to save section state:', error);
+        }
+    }
+
+    /**
+     * Gets the saved collapsed state of a section from localStorage
+     */
+    function getSectionState(sectionId) {
+        try {
+            const savedStates = JSON.parse(localStorage.getItem('bitaxe-section-states') || '{}');
+            return savedStates[sectionId] || false; // Default to expanded (false)
+        } catch (error) {
+            console.warn('Failed to get section state:', error);
+            return false; // Default to expanded
+        }
+    }
+
+    /**
+     * Restores saved collapsed states for all sections
+     */
+    function restoreSavedSectionStates() {
+        const collapseButtons = document.querySelectorAll('.collapse-button');
+        collapseButtons.forEach(button => {
+            const targetId = button.getAttribute('data-target');
+            const targetElement = document.getElementById(targetId);
+
+            if (targetElement) {
+                const isCollapsed = getSectionState(targetId);
+
+                if (isCollapsed) {
+                    targetElement.classList.add('collapsed');
+                    button.textContent = '+';
+                } else {
+                    targetElement.classList.remove('collapsed');
+                    button.textContent = '−';
+                }
+            }
+        });
+    }
+
+    /**
      * Attaches event listeners to collapse/expand buttons
      */
     function attachCollapseButtonEventListeners() {
@@ -157,10 +206,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Expand
                         targetElement.classList.remove('collapsed');
                         button.textContent = '−';
+                        saveSectionState(targetId, false);
                     } else {
                         // Collapse
                         targetElement.classList.add('collapsed');
                         button.textContent = '+';
+                        saveSectionState(targetId, true);
                     }
                 }
             });
@@ -807,6 +858,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Add event listeners to Collapse buttons
                 attachCollapseButtonEventListeners();
+
+                // Restore saved section states
+                restoreSavedSectionStates();
             });
         }
 
