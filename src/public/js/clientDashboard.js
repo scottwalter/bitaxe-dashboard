@@ -138,6 +138,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
+     * Attaches event listeners to collapse/expand buttons
+     */
+    function attachCollapseButtonEventListeners() {
+        const collapseButtons = document.querySelectorAll('.collapse-button');
+        collapseButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const targetId = button.getAttribute('data-target');
+                const targetElement = document.getElementById(targetId);
+
+                if (targetElement) {
+                    const isCollapsed = targetElement.classList.contains('collapsed');
+
+                    if (isCollapsed) {
+                        // Expand
+                        targetElement.classList.remove('collapsed');
+                        button.textContent = '−';
+                    } else {
+                        // Collapse
+                        targetElement.classList.add('collapsed');
+                        button.textContent = '+';
+                    }
+                }
+            });
+        });
+    }
+
+    /**
      * Safely retrieves a value from the nested structure of the mining core pool data.
      * It checks networkStats, poolStats, and the top-level of the pool object.
      * @param {string} fieldKey The key of the value to retrieve.
@@ -477,7 +507,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show each individual miner's status, regardless of whether they are part of a pool.
        // allPoolsHtml += `<div class="mining-pool-summary-card">`; // Container for individual miner status
         allPoolsHtml += `<div class="individual-miner-summary-card">`; // Container for individual miner status
-        allPoolsHtml += '<h3>Individual Miner Status</h3>';
+        allPoolsHtml += '<h3><span class="collapse-button" data-target="individual-miner-content">−</span> Individual Miner Status</h3>';
+        allPoolsHtml += '<div id="individual-miner-content" class="collapsible-content">';
         // Loop through each miner's data and generate HTML.
             if ( minerData && minerData.length > 0) {
                 minerData.forEach(miner => {
@@ -509,20 +540,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
             }
-       
+
+        allPoolsHtml += `</div>`; // Close collapsible-content
         allPoolsHtml += `</div>`; // Close individual miner status card
         
         // Only show pool data if mining core data is available    
         if (data && data.length > 0) {
-            data.forEach(poolData => { // Loop through each pool
+            data.forEach((poolData, index) => { // Loop through each pool
             allPoolsHtml += `<div class="mining-pool-summary-card">`; // Container for each pool's details
-            allPoolsHtml += `<h3>Pool: ${poolData.id.toUpperCase()} (${poolData.coin.symbol} - ${poolData.paymentProcessing.payoutScheme})</h3>`; // Pool specific heading
+            allPoolsHtml += `<h3><span class="collapse-button" data-target="pool-content-${index}">−</span> Pool: ${poolData.id.toUpperCase()} (${poolData.coin.symbol} - ${poolData.paymentProcessing.payoutScheme})</h3>`; // Pool specific heading
+            allPoolsHtml += `<div id="pool-content-${index}" class="collapsible-content">`;
 
             displayFields.forEach(categoryObj => {
                 const categoryName = Object.keys(categoryObj)[0];
                 const fieldsArray = categoryObj[categoryName];
 
-                allPoolsHtml += `<h4>${categoryName}</h4><div class="details-grid">`;
+                // Create field data mapping for easier access
+                const fieldData = {};
                 fieldsArray.forEach(fieldObj => {
                     let fieldKey = Object.keys(fieldObj)[0];
                     const fieldLabel = fieldObj[fieldKey];
@@ -534,14 +568,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const displayValue = getNestedMiningCoreValue(fieldKey, poolData);
                     const formattedValue = formatFieldValue(fieldKey, displayValue);
-
-                    allPoolsHtml += `<strong>${fieldLabel}:</strong> <span>${formattedValue}</span>`;
+                    fieldData[fieldKey] = { label: fieldLabel, value: formattedValue };
                 });
 
-                
+                // Generate custom 5-column layouts based on category
+                if (categoryName === 'Network Status') {
+                    allPoolsHtml += `<h4>${categoryName}</h4><div class="details-grid-five-columns">`;
+                    // Network row
+                    allPoolsHtml += `<div class="category-header">Network</div><strong>Difficulty:</strong><span>${fieldData.networkDifficulty?.value || 'N/A'}</span><strong>Hashrate:</strong><span>${fieldData.networkHashrate?.value || 'N/A'}</span>`;
+                    // Block row
+                    allPoolsHtml += `<div class="category-header">Block</div><strong>Height:</strong><span>${fieldData.blockHeight?.value || 'N/A'}</span><strong>Last Block Time:</strong><span>${fieldData.lastNetworkBlockTime?.value || 'N/A'}</span>`;
+                    // General row
+                    allPoolsHtml += `<div class="category-header">General</div><strong>Connected Peers:</strong><span>${fieldData.connectedPeers?.value || 'N/A'}</span><strong>Node Version:</strong><span>${fieldData.nodeVersion?.value || 'N/A'}</span>`;
+                    allPoolsHtml += `</div>`;
+                } else if (categoryName === 'Miner(s) Status') {
+                    allPoolsHtml += `<h4>${categoryName}</h4><div class="details-grid-five-columns">`;
+                    // Status row
+                    allPoolsHtml += `<div class="category-header">Status</div><strong>Connected Miners:</strong><span>${fieldData.connectedMiners?.value || 'N/A'}</span><strong>Pool Hashrate:</strong><span>${fieldData.poolHashrate?.value || 'N/A'}</span>`;
+                    allPoolsHtml += `</div>`;
+                } else if (categoryName === 'Rewards' || categoryName === 'Rewards Status') {
+                    allPoolsHtml += `<h4>${categoryName}</h4><div class="details-grid-five-columns">`;
+                    // Total row (Paid and Blocks)
+                    allPoolsHtml += `<div class="category-header">Total</div><strong>Paid:</strong><span>${fieldData.totalPaid?.value || 'N/A'}</span><strong>Blocks:</strong><span>${fieldData.totalBlocks?.value || 'N/A'}</span>`;
+                    // Total row (Confirmed and Pending Blocks)
+                    allPoolsHtml += `<div class="category-header">Total</div><strong>Confirmed Blocks:</strong><span>${fieldData.totalConfirmedBlocks?.value || 'N/A'}</span><strong>Pending Blocks:</strong><span>${fieldData.totalPendingBlocks?.value || 'N/A'}</span>`;
+                    // Reward row
+                    allPoolsHtml += `<div class="category-header">Reward</div><strong>Block Reward:</strong><span>${fieldData.blockReward?.value || 'N/A'}</span><strong>Pool Block Time:</strong><span>${fieldData.lastPoolBlockTime?.value || 'N/A'}</span>`;
+                    allPoolsHtml += `</div>`;
+                } else {
+                    // Fallback to original layout for unknown categories
+                    allPoolsHtml += `<h4>${categoryName}</h4><div class="details-grid">`;
+                    fieldsArray.forEach(fieldObj => {
+                        let fieldKey = Object.keys(fieldObj)[0];
+                        const fieldLabel = fieldObj[fieldKey];
 
-                allPoolsHtml += `</div>`;
+                        if (fieldKey === 'lasNetworkBlockTime') {
+                            fieldKey = 'lastNetworkBlockTime';
+                        }
+
+                        const displayValue = getNestedMiningCoreValue(fieldKey, poolData);
+                        const formattedValue = formatFieldValue(fieldKey, displayValue);
+
+                        allPoolsHtml += `<strong>${fieldLabel}:</strong> <span>${formattedValue}</span>`;
+                    });
+                    allPoolsHtml += `</div>`;
+                }
             });
+            allPoolsHtml += `</div>`; // Close collapsible-content
             allPoolsHtml += `</div>`; // Close mining-pool-summary-card
             });
         }
@@ -728,9 +801,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Display the mining core summary in the details pane.
                 detailsPane.innerHTML = generateMiningCoreDetailsHtml(miningCoreData, miningCoreDisplayFields);
-                
+
                 // Add event listeners to Chart buttons
                 attachChartButtonEventListeners();
+
+                // Add event listeners to Collapse buttons
+                attachCollapseButtonEventListeners();
             });
         }
 
