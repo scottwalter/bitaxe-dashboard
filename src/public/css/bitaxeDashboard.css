@@ -66,6 +66,53 @@
             gap: 10px;
         }
 
+        /* Responsive Miner Cards Layout */
+        .miner-cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .miner-card {
+            flex: 1 1 auto;
+            min-width: 420px;
+            max-width: none;
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .miner-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .miner-card h4 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #f5f5f5;
+            border-bottom: 1px solid #444;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Ensure grid content doesn't wrap in cards */
+        .miner-card .details-grid-five-columns {
+            grid-template-columns: minmax(80px, auto) minmax(60px, auto) minmax(80px, auto) minmax(60px, auto) minmax(80px, auto);
+            gap: 0.5rem 0.8rem;
+            white-space: nowrap;
+        }
+
+        .miner-card .details-grid-five-columns strong {
+            font-size: 0.9rem;
+        }
+
+        .miner-card .details-grid-five-columns span {
+            font-size: 0.9rem;
+        }
+
         .menu-pane {
             flex: 0 0 280px;
             background-color: #252525; /* Dark menu background */
@@ -715,6 +762,21 @@
             }
             .dashboard-panel {
                 padding: 1.5rem 1rem; /* Adjust padding for mobile */
+            }
+            /* Mobile adjustments for miner cards */
+            .miner-cards-container {
+                gap: 1rem;
+                flex-direction: column;
+            }
+            .miner-card {
+                min-width: unset;
+                max-width: none;
+                flex: none;
+            }
+            /* Override the no-wrap on mobile to allow wrapping */
+            .miner-card .details-grid-five-columns {
+                white-space: normal;
+                grid-template-columns: 1fr 1fr;
             }
             .details-grid,
             .details-grid-four-columns {

@@ -665,12 +665,15 @@ document.addEventListener('DOMContentLoaded', () => {
         allPoolsHtml += `<div class="individual-miner-summary-card">`; // Container for individual miner status
         allPoolsHtml += '<h3><span class="collapse-button" data-target="individual-miner-content">−</span> Individual Miner Status</h3>';
         allPoolsHtml += '<div id="individual-miner-content" class="collapsible-content">';
+        allPoolsHtml += '<div class="miner-cards-container">'; // New container for responsive card layout
         // Loop through each miner's data and generate HTML.
             if ( minerData && minerData.length > 0) {
                 minerData.forEach(miner => {
+                    allPoolsHtml += '<div class="miner-card">'; // Individual card wrapper
                     if (miner.status === 'Error') {
                         // Display the miner's name and its error status.
                         allPoolsHtml += `<h4><span class="status-indicator status-error" style="margin-right: 8px;"></span>${miner.id}: <span style="color: #dc3545; font-weight: bold;">Miner Unreachable</span></h4>`;
+                        allPoolsHtml += '</div>'; // Close miner-card
                     } else {
                         const formattedHashrate = formatDeviceHashrate(miner.hashRate); // Use the specific device hashrate formatter.
                         const formattedExpected = formatDeviceHashrate(miner.expectedHashrate);
@@ -700,10 +703,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Fan row: Fan | Speed: | Value | RPM: | Value
                         allPoolsHtml += `<div class="category-header">Fan</div><strong>Speed:</strong><span>${displayFanSpeed}</span><strong>RPM:</strong><span>${miner.fanrpm}</span>`;
                         allPoolsHtml += `</div>`; // Close details-grid-five-columns for individual miner status
+                        allPoolsHtml += '</div>'; // Close miner-card
                     }
                 });
             }
 
+        allPoolsHtml += '</div>'; // Close miner-cards-container
         allPoolsHtml += `</div>`; // Close collapsible-content
         allPoolsHtml += `</div>`; // Close individual miner status card
         
