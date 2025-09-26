@@ -66,9 +66,9 @@ async function callRPCService(config, method, params = []) {
     });
 }
 async function tester() {
-    const rpcHost = '192.168.7.149'; 
-    const rpcPort = 9001; 
-    const rpcAuth = 'digiuser:digipoolpass'; 
+    const rpcHost = ''; 
+    const rpcPort = ''; 
+    const rpcAuth = ''; 
     const config = {
         "rpcHost": rpcHost,
         "rpcPort": rpcPort,
