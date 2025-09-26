@@ -89,18 +89,35 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
 
-        /* Pool Section Content Areas (Network Status, Miner(s) Status, Rewards Status) */
-        .mining-pool-summary-card .details-grid,
-        .mining-pool-summary-card .details-grid-four-columns,
-        .mining-pool-summary-card .details-grid-five-columns {
-            width: 650px;
-            max-width: 650px;
+        /* Pool Cards Container Layout (similar to miner cards) */
+        .pool-cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 1rem;
         }
 
-        /* Pool Section h4 headers for subsections */
-        .mining-pool-summary-card h4 {
-            width: 650px;
-            max-width: 650px;
+        .pool-card {
+            flex: 0 0 660px;
+            width: 660px;
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.2s ease;
+        }
+
+        .pool-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .pool-card h4 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #f5f5f5;
+            border-bottom: 1px solid #444;
+            padding-bottom: 0.5rem;
         }
 
         .miner-card h4 {
@@ -787,13 +804,16 @@
                 min-width: unset;
                 max-width: none;
             }
-            /* Mobile adjustments for Pool section content areas only */
-            .mining-pool-summary-card .details-grid,
-            .mining-pool-summary-card .details-grid-four-columns,
-            .mining-pool-summary-card .details-grid-five-columns,
-            .mining-pool-summary-card h4 {
+            /* Mobile adjustments for pool cards */
+            .pool-cards-container {
+                gap: 1rem;
+                flex-direction: column;
+            }
+            .pool-card {
+                flex: 1 1 auto;
                 width: 100%;
-                max-width: 100%;
+                min-width: unset;
+                max-width: none;
             }
             /* Override the no-wrap on mobile to allow wrapping */
             .miner-card .details-grid-five-columns {

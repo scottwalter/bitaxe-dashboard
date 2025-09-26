@@ -717,12 +717,17 @@ document.addEventListener('DOMContentLoaded', () => {
         allPoolsHtml += `</div>`; // Close collapsible-content
         allPoolsHtml += `</div>`; // Close individual miner status card
         
-        // Only show pool data if mining core data is available    
+        // Only show pool data if mining core data is available
         if (data && data.length > 0) {
+            // Create Mining Pool Status wrapper section
+            allPoolsHtml += `<div class="mining-pool-status-section">`;
+            allPoolsHtml += '<h3><span class="collapse-button" data-target="mining-pool-content">−</span> Mining Pool Status</h3>';
+            allPoolsHtml += '<div id="mining-pool-content" class="collapsible-content">';
+            allPoolsHtml += '<div class="pool-cards-container">'; // New container for responsive pool card layout
+
             data.forEach((poolData, index) => { // Loop through each pool
-            allPoolsHtml += `<div class="mining-pool-summary-card">`; // Container for each pool's details
-            allPoolsHtml += `<h3><span class="collapse-button" data-target="pool-content-${index}">−</span> Pool: ${poolData.id.toUpperCase()} (${poolData.coin.symbol} - ${poolData.paymentProcessing.payoutScheme})</h3>`; // Pool specific heading
-            allPoolsHtml += `<div id="pool-content-${index}" class="collapsible-content">`;
+            allPoolsHtml += `<div class="pool-card">`; // Individual pool card wrapper
+            allPoolsHtml += `<h4>${poolData.id.toUpperCase()} (${poolData.coin.symbol} - ${poolData.paymentProcessing.payoutScheme})</h4>`; // Pool specific heading
 
             displayFields.forEach(categoryObj => {
                 const categoryName = Object.keys(categoryObj)[0];
@@ -787,13 +792,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     allPoolsHtml += `</div>`;
                 }
             });
-            allPoolsHtml += `</div>`; // Close collapsible-content
-            allPoolsHtml += `</div>`; // Close mining-pool-summary-card
+            allPoolsHtml += `</div>`; // Close pool-card
             });
+
+            allPoolsHtml += '</div>'; // Close pool-cards-container
+            allPoolsHtml += `</div>`; // Close collapsible-content
+            allPoolsHtml += `</div>`; // Close mining-pool-status-section
         } else {
             // Show message when mining core is unreachable
-            allPoolsHtml += `<div class="mining-pool-summary-card">`;
-            allPoolsHtml += `<h3>Mining Core Status</h3>`;
+            allPoolsHtml += `<div class="mining-pool-status-section">`;
+            allPoolsHtml += `<h3>Mining Pool Status</h3>`;
             allPoolsHtml += `<div class="details-grid">`;
             allPoolsHtml += `<strong>Status:</strong> <span style="color: #dc3545; font-weight: bold;">Mining Core Unreachable</span>`;
             allPoolsHtml += `<strong>Note:</strong> <span>Mining core data is not available, but individual miners are still monitored.</span>`;
