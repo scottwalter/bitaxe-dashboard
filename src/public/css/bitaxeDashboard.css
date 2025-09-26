@@ -89,6 +89,20 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
 
+        /* Pool Section Content Areas (Network Status, Miner(s) Status, Rewards Status) */
+        .mining-pool-summary-card .details-grid,
+        .mining-pool-summary-card .details-grid-four-columns,
+        .mining-pool-summary-card .details-grid-five-columns {
+            width: 650px;
+            max-width: 650px;
+        }
+
+        /* Pool Section h4 headers for subsections */
+        .mining-pool-summary-card h4 {
+            width: 650px;
+            max-width: 650px;
+        }
+
         .miner-card h4 {
             margin-top: 0;
             margin-bottom: 1rem;
@@ -772,6 +786,14 @@
                 width: 100%;
                 min-width: unset;
                 max-width: none;
+            }
+            /* Mobile adjustments for Pool section content areas only */
+            .mining-pool-summary-card .details-grid,
+            .mining-pool-summary-card .details-grid-four-columns,
+            .mining-pool-summary-card .details-grid-five-columns,
+            .mining-pool-summary-card h4 {
+                width: 100%;
+                max-width: 100%;
             }
             /* Override the no-wrap on mobile to allow wrapping */
             .miner-card .details-grid-five-columns {
