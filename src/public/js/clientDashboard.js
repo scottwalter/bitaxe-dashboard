@@ -467,9 +467,10 @@ document.addEventListener('DOMContentLoaded', () => {
      * Applies specific formatting based on the field key.
      * @param {string} fieldKey - The key of the field (e.g., 'hashRate', 'uptimeSeconds').
      * @param {*} value - The raw value of the field.
+     * @param {object} [data] - Optional full data object for fields that need access to other fields.
      * @returns {string} The formatted value.
      */
-    function formatFieldValue(fieldKey, value) {
+    function formatFieldValue(fieldKey, value, data) {
         if (value === undefined || value === null || value === '') {
             return 'N/A';
         }
@@ -612,6 +613,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const date = new Date(value); // The server provides a standard ISO 8601 string.
                 // Check if the date is valid before attempting to format it.
                 return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleString();
+            case 'sharesRejected':
+                if (data && typeof data.sharesAccepted === 'number' && data.sharesAccepted > 0) {
+                    const percentage = ((value / data.sharesAccepted) * 100).toFixed(2);
+                    return `${value} (${percentage}%)`;
+                }
+                return String(value);
             case 'sharesRejectedReasons':
                 if (Array.isArray(value) && value.length > 0) {
                     return value.map(reason => {
@@ -700,7 +707,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Pool row: Pool | Diff: | Value | Shares: | Value
                         allPoolsHtml += `<div class="category-header">Pool</div><strong>Diff:</strong><span>${miner.poolDifficulty}</span><strong>Shares:</strong><span>${miner.sharesAccepted}</span>`;
                         //Response Time and Shares Rejected Count
-                        allPoolsHtml += `<div class="category-header">Status</div><strong>Response Time:</strong><span>${miner.responseTime} ms</span><strong>Shares Rejected:</strong><span>${miner.sharesRejected}</span>`;
+                        const formattedSharesRejected = formatFieldValue('sharesRejected', miner.sharesRejected, miner);
+                        allPoolsHtml += `<div class="category-header">Status</div><strong>Response Time:</strong><span>${miner.responseTime} ms</span><strong>Shares Rejected:</strong><span>${formattedSharesRejected}</span>`;
                         // Temp row: Temp | ASIC: | Value | VR: | Value
                         allPoolsHtml += `<div class="category-header">Temperature</div><strong>ASIC:</strong><span>${displayAsicTemp}</span><strong>Voltage Regulator:</strong><span>${displayVRTemp}</span>`;
                         // Fan row: Fan | Speed: | Value | RPM: | Value
@@ -840,7 +848,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const fieldKey = Object.keys(fieldObj)[0];
                 const fieldLabel = fieldObj[fieldKey];
                 const displayValue = data[fieldKey];
-                const formattedValue = formatFieldValue(fieldKey, displayValue);
+                const formattedValue = formatFieldValue(fieldKey, displayValue, data);
 
                 html += `<strong>${fieldLabel}:</strong> <span>${formattedValue}</span>`;
             });
