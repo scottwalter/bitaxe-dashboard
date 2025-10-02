@@ -66,9 +66,9 @@ async function callRPCService(config, method, params = []) {
     });
 }
 async function tester() {
-    const rpcHost = ''; 
-    const rpcPort = ''; 
-    const rpcAuth = ''; 
+    const rpcHost = '192.168.7.149'; 
+    const rpcPort = '000'; 
+    const rpcAuth = 'xx:zz'; 
     const config = {
         "rpcHost": rpcHost,
         "rpcPort": rpcPort,
