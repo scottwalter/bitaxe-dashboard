@@ -133,7 +133,7 @@ dist
 **/.DS_Store
 
 #NodeJS stuff - no need to send the package-lock.json
-package-lock.json
+/package-lock.json
 
 #sensitive stuff
 rpcConfig.json
