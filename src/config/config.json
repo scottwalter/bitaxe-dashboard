@@ -1,6 +1,6 @@
 {
     "bitaxe_dashboard_version": 3,
-    "disable_authentication": false,
+    "disable_authentication": true,
     "cookie_max_age": 3600,
     "disable_settings": false,
     "disable_configurations": false,
@@ -113,10 +113,11 @@
                     {"subversion":"Subversion"},
                     {"protocolversion":"Protocol"},
                     {"networkactive":"Active"},
+                    {"warnings":"Warnings"},
                     {"connections":"Connections"},
                     {"connections_in":"In"},
-                    {"connections_out":"Out"},
-                    {"warnings":"Warnings"}
+                    {"connections_out":"Out"}
+                    
                 ]
             },
             {
@@ -125,11 +126,12 @@
                     {"totalbytesrecv":"Received"},
                     {"totalbytessent":"Sent"},
                     {"bytes_left_in_cycle":"Bytes Left"},
+                    {"timemillis":"Updated"},
                     {"target_reached":"Target Reached"},
                     {"serve_historical_blocks":"Historicals"},
                     {"timeframe":"Cycle Time"},
-                    {"time_left_in_cycle":"Time Left"},
-                    {"timemillis":"Updated"}
+                    {"time_left_in_cycle":"Time Left"}
+                    
                 ] 
             },
             {
