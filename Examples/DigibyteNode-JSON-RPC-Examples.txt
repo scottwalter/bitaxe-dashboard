@@ -1,0 +1,224 @@
+scottwalter@Scotts-Mac-Studio services % node rpcService.js tester
+
+--- Testing getblockchaininfo ---
+Sending RPC payload for method 'getblockchaininfo': {"jsonrpc":"2.0","id":"bitaxe-dashboard","method":"getblockchaininfo","params":[]}
+RESPONSE: {
+  "chain": "main",
+  "blocks": 22204300,
+  "headers": 22204300,
+  "bestblockhash": "0000000000000004632319a06ce89b9c64352e630536222cd3b42a85eac2e534",
+  "mediantime": 1759516777,
+  "verificationprogress": 1,
+  "initialblockdownload": false,
+  "chainwork": "0000000000000000000000000000000000000000001a20d895532f314839ec4c",
+  "size_on_disk": 34336898318,
+  "pruned": false,
+  "difficulties": {
+    "sha256d": 704086834.9397525,
+    "scrypt": 210256.6023291836,
+    "skein": 26287353.57337541,
+    "qubit": 1451681.49016232,
+    "odo": 171751.3345445803
+  },
+  "softforks": {
+    "bip34": {
+      "type": "buried",
+      "active": true,
+      "height": 4394880
+    },
+    "bip66": {
+      "type": "buried",
+      "active": true,
+      "height": 4394880
+    },
+    "bip65": {
+      "type": "buried",
+      "active": true,
+      "height": 4394880
+    },
+    "csv": {
+      "type": "buried",
+      "active": true,
+      "height": 4394880
+    },
+    "segwit": {
+      "type": "buried",
+      "active": true,
+      "height": 4394880
+    },
+    "testdummy": {
+      "type": "bip9",
+      "bip9": {
+        "status": "failed",
+        "start_time": 1199145601,
+        "timeout": 1230767999,
+        "since": 80640,
+        "min_activation_height": 0
+      },
+      "active": false
+    },
+    "odo": {
+      "type": "buried",
+      "active": true,
+      "height": 9112320
+    },
+    "taproot": {
+      "type": "bip9",
+      "bip9": {
+        "status": "active",
+        "start_time": 1736510438,
+        "timeout": 1799582438,
+        "since": 21168000,
+        "min_activation_height": 0
+      },
+      "height": 21168000,
+      "active": true
+    }
+  },
+  "warnings": ""
+}
+
+--- Testing getnetworkinfo ---
+Sending RPC payload for method 'getnetworkinfo': {"jsonrpc":"2.0","id":"bitaxe-dashboard","method":"getnetworkinfo","params":[]}
+RESPONSE: {
+  "version": 82202,
+  "subversion": "/DigiByte:8.22.2/",
+  "protocolversion": 70018,
+  "localservices": "0000000000000409",
+  "localservicesnames": [
+    "NETWORK",
+    "WITNESS",
+    "NETWORK_LIMITED"
+  ],
+  "localrelay": false,
+  "timeoffset": 0,
+  "networkactive": true,
+  "connections": 22,
+  "connections_in": 11,
+  "connections_out": 11,
+  "networks": [
+    {
+      "name": "ipv4",
+      "limited": false,
+      "reachable": true,
+      "proxy": "",
+      "proxy_randomize_credentials": false
+    },
+    {
+      "name": "ipv6",
+      "limited": false,
+      "reachable": true,
+      "proxy": "",
+      "proxy_randomize_credentials": false
+    },
+    {
+      "name": "onion",
+      "limited": true,
+      "reachable": false,
+      "proxy": "",
+      "proxy_randomize_credentials": false
+    },
+    {
+      "name": "i2p",
+      "limited": true,
+      "reachable": false,
+      "proxy": "",
+      "proxy_randomize_credentials": false
+    }
+  ],
+  "relayfee": 0.001,
+  "incrementalfee": 0.0001,
+  "localaddresses": [],
+  "warnings": ""
+}
+
+--- Testing getmininginfo ---
+Sending RPC payload for method 'getmininginfo': {"jsonrpc":"2.0","id":"bitaxe-dashboard","method":"getmininginfo","params":[]}
+RESPONSE: {
+  "blocks": 22204300,
+  "currentblockweight": 4000,
+  "currentblocktx": 0,
+  "pow_algo_id": 0,
+  "pow_algo": "sha256d",
+  "difficulty": 704086834.9397525,
+  "difficulties": {
+    "sha256d": 704086834.9397525,
+    "scrypt": 210256.6023291836,
+    "skein": 26287353.57337541,
+    "qubit": 1451681.49016232,
+    "odo": 171751.3345445803
+  },
+  "networkhashps": 58518206819913700,
+  "networkhashesps": {
+    "sha256d": 58518206819913700,
+    "scrypt": 21852803412512.14,
+    "skein": 1667831574643932,
+    "qubit": 104258753133217.5,
+    "odo": 16806979783377.46
+  },
+  "pooledtx": 0,
+  "chain": "main",
+  "warnings": ""
+}
+
+--- Testing getblockcount ---
+Sending RPC payload for method 'getblockcount': {"jsonrpc":"2.0","id":"bitaxe-dashboard","method":"getblockcount","params":[]}
+RESPONSE: 22204300
+
+--- Testing getbestblockhash ---
+Sending RPC payload for method 'getbestblockhash': {"jsonrpc":"2.0","id":"bitaxe-dashboard","method":"getbestblockhash","params":[]}
+RESPONSE: "0000000000000004632319a06ce89b9c64352e630536222cd3b42a85eac2e534"
+
+--- Testing getconnectioncount ---
+Sending RPC payload for method 'getconnectioncount': {"jsonrpc":"2.0","id":"bitaxe-dashboard","method":"getconnectioncount","params":[]}
+RESPONSE: 22
+
+--- Testing getmempoolinfo ---
+Sending RPC payload for method 'getmempoolinfo': {"jsonrpc":"2.0","id":"bitaxe-dashboard","method":"getmempoolinfo","params":[]}
+RESPONSE: {
+  "loaded": true,
+  "size": 0,
+  "bytes": 0,
+  "usage": 64,
+  "total_fee": 0,
+  "maxmempool": 1000000000,
+  "mempoolminfee": 0.001,
+  "minrelaytxfee": 0.001,
+  "unbroadcastcount": 0
+}
+
+--- Testing getdifficulty ---
+Sending RPC payload for method 'getdifficulty': {"jsonrpc":"2.0","id":"bitaxe-dashboard","method":"getdifficulty","params":[]}
+RESPONSE: {
+  "difficulties": {
+    "sha256d": 704086834.9397525,
+    "scrypt": 210256.6023291836,
+    "skein": 26287353.57337541,
+    "qubit": 1451681.49016232,
+    "odo": 171751.3345445803
+  }
+}
+
+--- Testing getnettotals ---
+Sending RPC payload for method 'getnettotals': {"jsonrpc":"2.0","id":"bitaxe-dashboard","method":"getnettotals","params":[]}
+RESPONSE: {
+  "totalbytesrecv": 37780319,
+  "totalbytessent": 469040698,
+  "timemillis": 1759516814985,
+  "uploadtarget": {
+    "timeframe": 86400,
+    "target": 524288000,
+    "target_reached": false,
+    "serve_historical_blocks": true,
+    "bytes_left_in_cycle": 55247302,
+    "time_left_in_cycle": 8314
+  }
+}
+
+--- Testing getrawmempool ---
+Sending RPC payload for method 'getrawmempool': {"jsonrpc":"2.0","id":"bitaxe-dashboard","method":"getrawmempool","params":[]}
+RESPONSE: []
+
+--- Testing getbalance ---
+Sending RPC payload for method 'getbalance': {"jsonrpc":"2.0","id":"bitaxe-dashboard","method":"getbalance","params":[]}
+RESPONSE: 1.06163487

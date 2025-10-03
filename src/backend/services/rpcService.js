@@ -14,7 +14,7 @@ async function callRPCService(config, method, params = []) {
     return new Promise((resolve, reject) => {
         const postData = JSON.stringify({
             jsonrpc: '2.0',
-            id: 'SlimStratumSolo',
+            id: 'bitaxe-dashboard',
             method: method,
             params: params,
         });
@@ -67,8 +67,8 @@ async function callRPCService(config, method, params = []) {
 }
 async function tester() {
     const rpcHost = '192.168.7.149'; 
-    const rpcPort = '000'; 
-    const rpcAuth = 'xx:zz'; 
+    const rpcPort = 'x001'; 
+    const rpcAuth = 'xx:xx'; 
     const config = {
         "rpcHost": rpcHost,
         "rpcPort": rpcPort,
@@ -96,8 +96,8 @@ async function tester() {
         try {
             console.log(`\n--- Testing ${call.method} ---`);
             const result = await callRPCService(config, call.method, call.params);
-            //console.log(JSON.stringify(result, null, 2));
-            console.log('Result:', result);
+            console.log(`RESPONSE: ${JSON.stringify(result, null, 2)}`);
+            //console.log('Result:', result);
         } catch (error) {
             console.error(`Error calling ${call.method}:`, error.message);
         }

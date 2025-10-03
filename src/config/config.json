@@ -8,34 +8,18 @@
     "demo_mode": false,
     "title": "Bitaxe Dashboard",
     "bitaxe_instances": [
-        {
-            "Bitaxe1": "http://192.168.7.220"
-        },
-        {
-            "Bitaxe2": "http://192.168.7.122"
-        },
-        {
-            "Bitaxe3": "http://192.168.7.120"
-        }
+        {"Bitaxe1": "http://192.168.7.220"},
+        {"Bitaxe2": "http://192.168.7.122"},
+        {"Bitaxe3": "http://192.168.7.120"}
     ],
     "display_fields": [
         {
             "Mining Metrics": [
-                {
-                    "hashRate": "Hashrate"
-                },
-                {
-                    "expectedHashrate": "Expect Hashrate"
-                },
-                {
-                    "bestDiff": "Best Difficulty"
-                },
-                {
-                    "bestSessionDiff": "Best Session Difficulty"
-                },
-                {
-                    "poolDifficulty": "Pool Difficulty"
-                },
+                {"hashRate": "Hashrate"},
+                {"expectedHashrate": "Expect Hashrate"},
+                {"bestDiff": "Best Difficulty"},
+                {"bestSessionDiff": "Best Session Difficulty"},
+                {"poolDifficulty": "Pool Difficulty"},
                 {
                     "sharesAccepted": "Shares Accepted"
                 },
