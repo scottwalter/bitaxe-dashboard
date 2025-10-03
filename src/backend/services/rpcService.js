@@ -1,17 +1,64 @@
 const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+// Load RPC configuration on module initialization
+const RPC_CONFIG_PATH = path.join(__dirname, '..', '..', 'config', 'rpcConfig.json');
+let rpcConfig = null;
 
 /**
- * Makes an RPC call to the DigiByte Core server.
- * @param {Object} config - Configuration object containing RPC connection details
- * @param {string} config.rpcHost - RPC server hostname 
- * @param {number} config.rpcPort - RPC server port
- * @param {string} config.rpcAuth - RPC authentication credentials (user:pass format)
+ * Loads the RPC configuration from rpcConfig.json
+ * @returns {Object} The parsed RPC configuration
+ * @throws {Error} If the config file cannot be read or parsed
+ */
+function loadRPCConfig() {
+    try {
+        const configData = fs.readFileSync(RPC_CONFIG_PATH, 'utf8');
+        return JSON.parse(configData);
+    } catch (error) {
+        throw new Error(`Failed to load RPC config from ${RPC_CONFIG_PATH}: ${error.message}`);
+    }
+}
+
+/**
+ * Gets RPC connection details for a specific node ID
+ * @param {string} nodeId - The node identifier (e.g., 'dgb1')
+ * @returns {Object} Connection details {rpcHost, rpcPort, rpcAuth}
+ * @throws {Error} If the node ID is not found in rpcConfig.json
+ */
+function getRPCConnectionDetails(nodeId) {
+    if (!rpcConfig) {
+        rpcConfig = loadRPCConfig();
+    }
+
+    const node = rpcConfig.cryptoNodes.find(n => n.NodeId === nodeId);
+    if (!node) {
+        throw new Error(`Node ID '${nodeId}' not found in rpcConfig.json`);
+    }
+
+    return {
+        rpcHost: node.NodeRPCAddress,
+        rpcPort: node.NodeRPCPort,
+        rpcAuth: node.NodeRPAuth
+    };
+}
+
+/**
+ * Makes an RPC call to a cryptocurrency node server.
+ * @param {string|Object} nodeId - Either a nodeId string to lookup in rpcConfig.json
  * @param {string} method - The RPC method to call (e.g., 'getblocktemplate', 'submitblock')
  * @param {Array} [params=[]] - Array of parameters for the RPC method
  * @returns {Promise<any>} Promise that resolves with the RPC result or rejects with an error
  */
-async function callRPCService(config, method, params = []) {
+async function callRPCService(nodeId, method, params = []) {
     return new Promise((resolve, reject) => {
+        let connectionDetails;
+        try {
+             connectionDetails = getRPCConnectionDetails(nodeId);
+        } catch (error) {
+                return reject(error);
+        }
+        
         const postData = JSON.stringify({
             jsonrpc: '2.0',
             id: 'bitaxe-dashboard',
@@ -21,11 +68,11 @@ async function callRPCService(config, method, params = []) {
 
         console.log(`Sending RPC payload for method '${method}':`, postData);
 
-        const auth = 'Basic ' + Buffer.from(config.rpcAuth).toString('base64');
+        const auth = 'Basic ' + Buffer.from(connectionDetails.rpcAuth).toString('base64');
 
         const options = {
-            hostname: config.rpcHost,
-            port: config.rpcPort,
+            hostname: connectionDetails.rpcHost,
+            port: connectionDetails.rpcPort,
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -43,7 +90,7 @@ async function callRPCService(config, method, params = []) {
                 try {
                     if (!rawData) {
                         // The server closed the connection without sending data. This is often an auth failure.
-                        throw new Error(`Empty response from RPC server. Check RPC credentials (rpcauth) and rpcallowip in digibyte.conf. Status: ${res.statusCode}`);
+                        throw new Error(`Empty response from RPC server. Check RPC credentials (rpcauth) and rpcallowip in node config. Status: ${res.statusCode}`);
                     }
                     const parsedData = JSON.parse(rawData);
                     if (parsedData.error) {
@@ -58,7 +105,7 @@ async function callRPCService(config, method, params = []) {
         });
 
         req.on('error', (e) => {
-            reject(new Error(`RPC request error to Digibyte Core: ${e.message}`));
+            reject(new Error(`RPC request error: ${e.message}`));
         });
 
         req.write(postData);
@@ -66,14 +113,6 @@ async function callRPCService(config, method, params = []) {
     });
 }
 async function tester() {
-    const rpcHost = '192.168.7.149'; 
-    const rpcPort = 'x001'; 
-    const rpcAuth = 'xx:xx'; 
-    const config = {
-        "rpcHost": rpcHost,
-        "rpcPort": rpcPort,
-        "rpcAuth": rpcAuth,
-    }
     
     const testCalls = [
         { method: 'getblockchaininfo', params: [] },
@@ -95,7 +134,7 @@ async function tester() {
     for (const call of testCalls) {
         try {
             console.log(`\n--- Testing ${call.method} ---`);
-            const result = await callRPCService(config, call.method, call.params);
+            const result = await callRPCService('dgb1', call.method, call.params);
             console.log(`RESPONSE: ${JSON.stringify(result, null, 2)}`);
             //console.log('Result:', result);
         } catch (error) {
@@ -121,5 +160,7 @@ if (require.main === module) {
 }
 module.exports = {
     callRPCService,
+    getRPCConnectionDetails,
+    loadRPCConfig,
     tester
 };

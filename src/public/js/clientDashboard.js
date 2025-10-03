@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let displayFieldsConfig = []; // Stores the display_fields from config.json for miners.
     let miningCoreData = null; // Stores the data for the Mining Core instance.
     let miningCoreDisplayFields = []; // Stores the display_fields from config.json for Mining Core.
+    let cryptoNodeData = null; // Stores the data for Crypto Nodes.
     let disableSettings=true;
     let disableConfigurations=true;
     let disableAuthentication=false;
@@ -93,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
             displayFieldsConfig = embedded.displayFields || [];
             miningCoreData = embedded.miningCoreData;
             miningCoreDisplayFields = embedded.miningCoreDisplayFields || [];
+            cryptoNodeData = embedded.cryptoNodeData;
             disableSettings = embedded.disable_settings;
             disableConfigurations = embedded.disable_configurations;
             disableAuthentication = embedded.disable_authentication;
@@ -816,7 +818,257 @@ document.addEventListener('DOMContentLoaded', () => {
             allPoolsHtml += `</div>`;
             allPoolsHtml += `</div>`;
         }
+
+        // Add Crypto Node Status section
+        allPoolsHtml += generateCryptoNodeStatusHtml(cryptoNodeData);
+
         return allPoolsHtml;
+    }
+
+    /**
+     * Generates the HTML for the Crypto Node Status section
+     * @param {Array} cryptoNodes - Array of crypto node data objects
+     * @returns {string} The HTML string for the crypto node status
+     */
+    function generateCryptoNodeStatusHtml(cryptoNodes) {
+        let html = '';
+
+        // Only render if crypto node data exists and is not empty
+        if (!cryptoNodes || cryptoNodes.length === 0) {
+            return html;
+        }
+
+        // Create Crypto Node Status wrapper section
+        html += `<div class="crypto-node-status-section">`;
+        html += '<h3><span class="collapse-button" data-target="crypto-node-content">−</span> Crypto Node Status</h3>';
+        html += '<div id="crypto-node-content" class="collapsible-content">';
+        html += '<div class="crypto-node-cards-container">'; // Container for responsive node card layout
+
+        cryptoNodes.forEach((nodeData) => {
+            html += `<div class="crypto-node-card">`; // Individual node card wrapper
+
+            if (nodeData.status === 'Error') {
+                // Display error state
+                html += `<h4><span class="status-indicator status-error" style="margin-right: 8px;"></span>${nodeData.id}: <span style="color: #dc3545; font-weight: bold;">Node Unreachable</span></h4>`;
+                html += `<div class="details-grid">`;
+                html += `<strong>Status:</strong> <span style="color: #dc3545;">Error</span>`;
+                html += `<strong>Message:</strong> <span>${nodeData.message || 'Could not connect to node'}</span>`;
+                html += `</div>`;
+            } else {
+                // Display node name with online indicator
+                html += `<h4><span class="status-indicator status-online" style="margin-right: 8px;"></span>${nodeData.id} (${nodeData.nodeType.toUpperCase()})</h4>`;
+
+                // Render all display fields in a single 10-column grid
+                if (nodeData.displayFields && Array.isArray(nodeData.displayFields)) {
+                    html += `<div class="details-grid-ten-columns">`;
+
+                    nodeData.displayFields.forEach(categoryObj => {
+                        const categoryName = Object.keys(categoryObj)[0];
+                        const fieldsArray = categoryObj[categoryName];
+
+                        // Add category header as h4 (spans full width)
+                        html += `<h4>${categoryName}</h4>`;
+
+                        // Process fields in groups of 5 for the ten-column layout (5 label/value pairs = 10 columns)
+                        for (let i = 0; i < fieldsArray.length; i += 5) {
+                            // Add up to 5 fields per row
+                            for (let j = 0; j < 5; j++) {
+                                const field = fieldsArray[i + j];
+
+                                if (field) {
+                                    const fieldKey = Object.keys(field)[0];
+                                    const fieldLabel = field[fieldKey];
+                                    const displayValue = getCryptoNodeValue(fieldKey, nodeData);
+                                    const formattedValue = formatCryptoNodeValue(fieldKey, displayValue);
+
+                                    html += `<strong>${fieldLabel}:</strong><span>${formattedValue}</span>`;
+                                } else {
+                                    // Fill empty cells if we don't have 5 fields
+                                    html += `<div></div><div></div>`;
+                                }
+                            }
+                        }
+                    });
+
+                    html += `</div>`; // Close details-grid-ten-columns
+                }
+            }
+
+            html += `</div>`; // Close crypto-node-card
+        });
+
+        html += '</div>'; // Close crypto-node-cards-container
+        html += `</div>`; // Close collapsible-content
+        html += `</div>`; // Close crypto-node-status-section
+
+        return html;
+    }
+
+    /**
+     * Retrieves a value from crypto node data based on field key
+     * @param {string} fieldKey - The field key to look up (supports nested paths with '/' separator)
+     * @param {object} nodeData - The crypto node data object
+     * @returns {*} The value or 'N/A' if not found
+     */
+    function getCryptoNodeValue(fieldKey, nodeData) {
+        // Handle nested paths (e.g., "difficulties/sha256d")
+        if (fieldKey.includes('/')) {
+            const parts = fieldKey.split('/');
+            const parentKey = parts[0];
+            const childKey = parts[1];
+
+            // Check blockchainInfo for nested values
+            if (nodeData.blockchainInfo && parentKey in nodeData.blockchainInfo) {
+                const parentValue = nodeData.blockchainInfo[parentKey];
+                if (parentValue && typeof parentValue === 'object' && childKey in parentValue) {
+                    return parentValue[childKey];
+                }
+            }
+
+            // Check networkTotals for nested values
+            if (nodeData.networkTotals && parentKey in nodeData.networkTotals) {
+                const parentValue = nodeData.networkTotals[parentKey];
+                if (parentValue && typeof parentValue === 'object' && childKey in parentValue) {
+                    return parentValue[childKey];
+                }
+            }
+
+            // Check networkInfo for nested values
+            if (nodeData.networkInfo && parentKey in nodeData.networkInfo) {
+                const parentValue = nodeData.networkInfo[parentKey];
+                if (parentValue && typeof parentValue === 'object' && childKey in parentValue) {
+                    return parentValue[childKey];
+                }
+            }
+
+            return 'N/A';
+        }
+
+        // Check blockchainInfo
+        if (nodeData.blockchainInfo && fieldKey in nodeData.blockchainInfo) {
+            return nodeData.blockchainInfo[fieldKey];
+        }
+
+        // Check networkInfo
+        if (nodeData.networkInfo && fieldKey in nodeData.networkInfo) {
+            return nodeData.networkInfo[fieldKey];
+        }
+
+        // Check networkTotals
+        if (nodeData.networkTotals && fieldKey in nodeData.networkTotals) {
+            return nodeData.networkTotals[fieldKey];
+        }
+
+        // Check uploadtarget (nested in networkTotals)
+        if (nodeData.networkTotals && nodeData.networkTotals.uploadtarget && fieldKey in nodeData.networkTotals.uploadtarget) {
+            return nodeData.networkTotals.uploadtarget[fieldKey];
+        }
+
+        // Check balance (direct value)
+        if (fieldKey === 'balance' && nodeData.balance !== undefined) {
+            return nodeData.balance;
+        }
+
+        return 'N/A';
+    }
+
+    /**
+     * Formats crypto node values for display
+     * @param {string} fieldKey - The field key
+     * @param {*} value - The raw value
+     * @returns {string} Formatted value string
+     */
+    function formatCryptoNodeValue(fieldKey, value) {
+        if (value === null || value === undefined || value === 'N/A') {
+            return 'N/A';
+        }
+
+        // Handle nested paths for formatting (e.g., "difficulties/sha256d")
+        if (fieldKey.includes('/')) {
+            const parts = fieldKey.split('/');
+            const childKey = parts[1];
+
+            // Format difficulty values
+            if (parts[0] === 'difficulties' || childKey.includes('difficulty')) {
+                return formatLargeNumber(value);
+            }
+        }
+
+        // Format based on field type
+        switch (fieldKey) {
+            case 'balance':
+                return safeToFixed(value, 8) + ' DGB';
+
+            case 'sha256d':
+            case 'difficulty':
+                return formatLargeNumber(value);
+
+            case 'size_on_disk':
+            case 'totalbytesrecv':
+            case 'totalbytessent':
+            case 'bytes_left_in_cycle':
+                return formatBytes(value);
+
+            case 'verificationprogress':
+                return (value * 100).toFixed(2) + '%';
+
+            case 'mediantime':
+                return new Date(value * 1000).toLocaleString();
+
+            case 'timemillis':
+                return new Date(value).toLocaleString();
+
+            case 'time_left_in_cycle':
+            case 'timeframe':
+                return formatSeconds(value);
+
+            case 'initialblockdownload':
+            case 'pruned':
+            case 'networkactive':
+            case 'target_reached':
+            case 'serve_historical_blocks':
+                return value ? 'Yes' : 'No';
+
+            case 'warnings':
+                if (typeof value === 'string' && value.trim() === '') {
+                    return 'None';
+                }
+                return value || 'None';
+            case 'target':
+                return formatBytes(value);
+                
+            default:
+                // Return as-is for other fields
+                if (typeof value === 'object') {
+                    return JSON.stringify(value);
+                }
+                return String(value);
+        }
+    }
+
+    /**
+     * Formats bytes to human-readable format
+     * @param {number} bytes - Number of bytes
+     * @returns {string} Formatted byte string
+     */
+    function formatBytes(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    /**
+     * Formats seconds to human-readable time
+     * @param {number} seconds - Number of seconds
+     * @returns {string} Formatted time string
+     */
+    function formatSeconds(seconds) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${hours}h ${minutes}m ${secs}s`;
     }
 
     /**

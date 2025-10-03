@@ -6,6 +6,7 @@
 
 // Dynamic import for node-fetch 3.x will be used inline
 const apiPath = require('./services/apiMapService');
+const cryptoNodeService = require('./services/cryptoNodeService');
 
 
 
@@ -76,6 +77,7 @@ async function display(req, res, config) {
             displayFields: config.display_fields || [],
             miningCoreData: null, // Initialize as null; will be populated if enabled.
             miningCoreDisplayFields: config.mining_core_display_fields || [],
+            cryptoNodeData: null, // Initialize as null; will be populated if enabled.
         };
 
         // Conditionally fetch mining core data
@@ -95,12 +97,23 @@ async function display(req, res, config) {
                 console.error(`Network or JSON parsing error for mining core (${config.mining_core_url}):`, miningCoreError);
             }
         }
+        // Conditionally fetch crypto node data
+        if (config.cryptNodesEnabled) {
+            try {
+                const cryptoNodeData = await cryptoNodeService.fetchAllCryptoNodes(config);
+                embeddedData.cryptoNodeData = cryptoNodeData;
+            } catch (cryptoNodeError) {
+                console.error('Error fetching crypto node data:', cryptoNodeError);
+                embeddedData.cryptoNodeData = [];
+            }
+        }
+
         //Add if settings are enabled for the dashbaord
         embeddedData.disable_settings = config.disable_settings;
         //Add if configurations are enabled for the dashboard
         embeddedData.disable_configurations = config.disable_configurations;
         //Add if authentication is enabled for the dashboard
-        embeddedData.disable_authentication = config.disable_authentication;        
+        embeddedData.disable_authentication = config.disable_authentication;
         // Send the final JSON response
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify(embeddedData, null, 2));

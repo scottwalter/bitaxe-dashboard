@@ -1,5 +1,5 @@
 {
-    "bitaxe_dashboard_version": 2,
+    "bitaxe_dashboard_version": 3,
     "disable_authentication": false,
     "cookie_max_age": 3600,
     "disable_settings": false,
@@ -8,122 +8,50 @@
     "demo_mode": false,
     "title": "Bitaxe Dashboard",
     "bitaxe_instances": [
-        {
-            "Bitaxe1": "http://192.168.7.220"
-        },
-        {
-            "Bitaxe2": "http://192.168.7.122"
-        },
-        {
-            "Bitaxe3": "http://192.168.7.120"
-        }
+        {"Bitaxe1": "http://192.168.7.220"},
+        {"Bitaxe2": "http://192.168.7.122"},
+        {"Bitaxe3": "http://192.168.7.120"}
     ],
     "display_fields": [
         {
             "Mining Metrics": [
-                {
-                    "hashRate": "Hashrate"
-                },
-                {
-                    "expectedHashrate": "Expect Hashrate"
-                },
-                {
-                    "bestDiff": "Best Difficulty"
-                },
-                {
-                    "bestSessionDiff": "Best Session Difficulty"
-                },
-                {
-                    "poolDifficulty": "Pool Difficulty"
-                },
-                {
-                    "sharesAccepted": "Shares Accepted"
-                },
-                {
-                    "sharesRejected": "Shares Rejected"
-                },
-                {
-                    "sharesRejectedReasons": "Shares Rejected Reasons"
-                },
-                {
-                    "responseTime": "Response Time"
-                }
+                {"hashRate": "Hashrate"},
+                {"expectedHashrate": "Expect Hashrate"},
+                {"bestDiff": "Best Difficulty"},
+                {"bestSessionDiff": "Best Session Difficulty"},
+                {"poolDifficulty": "Pool Difficulty"},
+                {"sharesAccepted": "Shares Accepted"},
+                {"sharesRejected": "Shares Rejected"},
+                {"sharesRejectedReasons": "Shares Rejected Reasons"},
+                {"responseTime": "Response Time"}
             ]
         },
         {
             "General Information": [
-                {
-                    "hostname": "Hostname"
-                },
-                {
-                    "power": "Power"
-                },
-                {
-                    "voltage": "Voltage"
-                },
-                {
-                    "coreVoltageActual": "ASIC Voltage"
-                },
-                {
-                    "frequency": "Frequency"
-                },
-                {
-                    "temp": "ASIC Temp"
-                },
-                {
-                    "vrTemp": "VR Temp"
-                },
-                {
-                    "fanspeed": "Fan Speed"
-                },
-                {
-                    "minFanSpeed": "Min Fan Speed"
-                },
-                {
-                    "fanrpm": "Fan RPM"
-                },
-                {
-                    "temptarget": "Target Temp"
-                },
-                {
-                    "overheat_mode": "Over Heat Mode"
-                },
-                {
-                    "uptimeSeconds": "Uptime"
-                },
-                {
-                    "coreVoltage": "Core Voltage"
-                },
-                {
-                    "current": "Current"
-                },
-                {
-                    "wifiRSSI": "Wifi RSSI"
-                },
-                {
-                    "stratumURL": "Stratum URL"
-                },
-                {
-                    "stratumUser": "Stratum User"
-                },
-                {
-                    "stratumPort": "Stratum Port"
-                },
-                {
-                    "isUsingFallbackStratum": "Using Fallback Stratum"
-                },
-                {
-                    "axeOSVersion": "AxeOS Version"
-                },
-                {
-                    "idfVersion": "IDF Version"
-                },
-                {
-                    "boardVersion": "Board Version"
-                },
-                {
-                    "ASICModel": "ASIC Chip"
-                }
+                {"hostname": "Hostname"},
+                {"power": "Power"},
+                {"voltage": "Voltage"},
+                {"coreVoltageActual": "ASIC Voltage"},
+                {"frequency": "Frequency"},
+                {"temp": "ASIC Temp"},
+                {"vrTemp": "VR Temp"},
+                {"fanspeed": "Fan Speed"},
+                {"minFanSpeed": "Min Fan Speed"},
+                {"fanrpm": "Fan RPM"},
+                {"temptarget": "Target Temp"},
+                {"overheat_mode": "Over Heat Mode"},
+                {"uptimeSeconds": "Uptime"},
+                {"coreVoltage": "Core Voltage"},
+                {"current": "Current"},
+                {"wifiRSSI": "Wifi RSSI"},
+                {"stratumURL": "Stratum URL"},
+                {"stratumUser": "Stratum User"},
+                {"stratumPort": "Stratum Port"},
+                {"isUsingFallbackStratum": "Using Fallback Stratum"},
+                {"axeOSVersion": "AxeOS Version"},
+                {"idfVersion": "IDF Version"},
+                {"boardVersion": "Board Version"},
+                {"ASICModel": "ASIC Chip"}
             ]
         }
     ],
@@ -132,57 +60,85 @@
     "mining_core_display_fields": [
         {
             "Network Status": [
-                {
-                    "networkHashrate": "Network Hashrate"
-                },
-                {
-                    "networkDifficulty": "Network Difficulty"
-                },
-                {
-                    "lastNetworkBlockTime": "Last Block Time"
-                },
-                {
-                    "blockHeight": "Block Height"
-                },
-                {
-                    "connectedPeers": "Connected Peers"
-                },
-                {
-                    "nodeVersion": "Node Version"
-                }
+                {"networkHashrate": "Network Hashrate"},
+                {"networkDifficulty": "Network Difficulty"},
+                {"lastNetworkBlockTime": "Last Block Time"},
+                {"blockHeight": "Block Height"},
+                {"connectedPeers": "Connected Peers"},
+                {"nodeVersion": "Node Version"}
             ]
         },
         {
             "Miner(s) Status": [
-                {
-                    "connectedMiners": "Connected Miners"
-                },
-                {
-                    "poolHashrate": "Pool Hashrate"
-                }
+                {"connectedMiners": "Connected Miners"},
+                {"poolHashrate": "Pool Hashrate"}
             ]
         },
         {
             "Rewards Status": [
-                {
-                    "totalPaid": "Total Paid"
-                },
-                {
-                    "totalBlocks": "Total Blocks"
-                },
-                {
-                    "totalConfirmedBlocks": "Total Confirmed Blocks"
-                },
-                {
-                    "totalPendingBlocks": "Totoal Pending Blocks"
-                },
-                {
-                    "lastPoolBlockTime": "Last Pool Block Time"
-                },
-                {
-                    "blockReward": "Block Reward"
-                }
+                {"totalPaid": "Total Paid"},
+                {"totalBlocks": "Total Blocks"},
+                {"totalConfirmedBlocks": "Total Confirmed Blocks"},
+                {"totalPendingBlocks": "Totoal Pending Blocks"},
+                {"lastPoolBlockTime": "Last Pool Block Time"},
+                {"blockReward": "Block Reward"}
             ]
         }
+    ],
+    "cryptNodesEnabled":true,
+  "cryptoNodes": [
+    {
+      "NodeType":"dgb",
+      "NodeName":"DigitByte Node",
+      "NodeId":"dgb1",
+      "NodeAlgo":"sha265d",
+      "NodeDisplayFields": [
+        {
+          "Block Chaing Info":[
+            {"chain":"Chain"},
+            {"sha256d":"Difficulty (sha256d"},
+            {"blocks":"Blocks"},
+            {"headers": "Headers"},
+            {"mediantime":"Median Time"},
+            {"verificationprogress":"Verification Progress"},
+            {"initialblockdownload":"Initial Block Download"},
+            {"pruned":"Pruned"},
+            {"size_on_disk":"Size on Disk"},
+            {"warnings":"Warnings"}
+          ]
+        },
+        {
+          "Network Info":[
+            {"version":"Version"},
+            {"subversion":"Subversion"},
+            {"protocolversion":"Protocol Version"},
+            {"networkactive":"Network Active"},
+            {"connections":"Connections"},
+            {"connections_in":"Connections In"},
+            {"connections_out":"Connections Out"},
+            {"warnings":"Warnings"}
+          ]
+        },
+        {
+         "Network Totals": [
+           {"totalbytesrecv":"Total Bytes Received"},
+           {"totalbytessent":"Total Bytes Sent"},
+           {"timemillis":"Time Milliseconds"},
+           {"timeframe":"Upload Time Frame"},
+           {"target": "Target"},
+           {"target_reached":"Target Reached"},
+           {"serve_historical_blocks":"Server Historical Blocks"},
+           {"bytes_left_in_cycle":"Bytes Left in Cycle"},
+           {"time_left_in_cycle":"Time Left in Cycle"}
+         ] 
+        },
+        {
+          "Wallet Info":[
+            {"balance":"Balance"}
+            ]
+        }
+        ]
+      
+    }
     ]
 }
