@@ -87,26 +87,17 @@ const modalService = (() => {
             ]
         },
         {
-            category: 'Display Fields Configuration',
+            category: 'Crypto Node Integration',
             fields: [
-                { 
-                    key: 'display_fields', 
-                    label: 'Bitaxe Display Fields', 
-                    type: 'display_fields_editor'
-                },
-                { 
-                    key: 'mining_core_display_fields', 
-                    label: 'Mining Core Display Fields', 
-                    type: 'display_fields_editor'
-                },
+                { key: 'cryptNodesEnabled', label: 'Enable Crypto Node', type: 'checkbox', note: 'If enabled, you must configure rpcConfig.json' },
             ]
         },
         {
-            category: 'Bitaxe Instances',
+            category: 'AxeOS Devices',
             fields: [
-                { 
-                    key: 'bitaxe_instances', 
-                    label: 'Device Instances', 
+                {
+                    key: 'bitaxe_instances',
+                    label: '',
                     type: 'bitaxe_instances_table'
                 },
             ]
@@ -126,7 +117,12 @@ const modalService = (() => {
             formHtml += '<div class="form-grid">';
             category.fields.forEach(field => {
                 const currentValue = deviceData[field.key] !== undefined ? deviceData[field.key] : '';
-                formHtml += `<label for="${field.key}">${field.label}:</label>`;
+
+                // Skip label for bitaxe_instances_table type
+                if (field.type !== 'bitaxe_instances_table') {
+                    formHtml += `<label for="${field.key}">${field.label}:</label>`;
+                }
+
                 let fieldHtml = '';
                 switch (field.type) {
                     case 'checkbox':
@@ -150,9 +146,6 @@ const modalService = (() => {
                     case 'bitaxe_instances_table':
                         fieldHtml = generateBitaxeInstancesTable(currentValue);
                         break;
-                    case 'display_fields_editor':
-                        fieldHtml = generateDisplayFieldsEditor(currentValue, field.key);
-                        break;
                     default: // text, number
                         const maxAttr = field.max ? `max="${field.max}"` : '';
                         const minAttr = field.min ? `min="${field.min}"` : '';
@@ -160,7 +153,7 @@ const modalService = (() => {
                         fieldHtml = `<input type="${field.type}" id="${field.key}" name="${field.key}" value="${currentValue}" ${maxAttr} ${minAttr} ${placeholderAttr}>`;
                 }
                 let noteHtml = field.note ? ` <small>(${field.note})</small>` : '';
-                if (field.type === 'bitaxe_instances_table' || field.type === 'display_fields_editor') {
+                if (field.type === 'bitaxe_instances_table') {
                     // For complex editors, span the full width
                     formHtml += `<div class="full-width-field">${fieldHtml}${noteHtml}</div>`;
                 } else {
@@ -312,277 +305,6 @@ const modalService = (() => {
         return instances;
     }
 
-    /**
-     * Generates HTML for the Display Fields editor with add/remove functionality for sections and fields.
-     * @param {Array} displayFields - Array of display field section objects from the configuration.
-     * @param {string} fieldKey - The field key (display_fields or mining_core_display_fields).
-     * @returns {string} The HTML string for the display fields editor.
-     */
-    function generateDisplayFieldsEditor(displayFields, fieldKey) {
-        const fieldsArray = Array.isArray(displayFields) ? displayFields : [];
-        const editorId = `${fieldKey}-editor`;
-        const sectionsId = `${fieldKey}-sections`;
-        
-        let editorHtml = `
-            <div id="${editorId}" class="display-fields-editor">
-                <div class="editor-header">
-                    <h4>Sections and Fields</h4>
-                    <button type="button" class="animated-button add-section-btn" onclick="addDisplayFieldSection('${fieldKey}')">
-                        + Add Section
-                    </button>
-                </div>
-                <div id="${sectionsId}" class="display-sections">`;
-        
-        // Add existing sections
-        fieldsArray.forEach((sectionObj, sectionIndex) => {
-            const sectionName = Object.keys(sectionObj)[0] || '';
-            const sectionFields = sectionObj[sectionName] || [];
-            editorHtml += generateDisplayFieldSection(sectionName, sectionFields, fieldKey, sectionIndex);
-        });
-        
-        // Add at least one empty section if no sections exist
-        if (fieldsArray.length === 0) {
-            editorHtml += generateDisplayFieldSection('', [], fieldKey, 0);
-        }
-        
-        editorHtml += `
-                </div>
-            </div>`;
-        
-        return editorHtml;
-    }
-
-    /**
-     * Generates HTML for a single display field section.
-     * @param {string} sectionName - The name of the section.
-     * @param {Array} fields - Array of field objects in this section.
-     * @param {string} fieldKey - The field key (display_fields or mining_core_display_fields).
-     * @param {number} sectionIndex - The section index.
-     * @returns {string} The HTML string for the section.
-     */
-    function generateDisplayFieldSection(sectionName, fields, fieldKey, sectionIndex) {
-        let sectionHtml = `
-            <div class="display-section" data-field-key="${fieldKey}" data-section-index="${sectionIndex}">
-                <div class="section-header">
-                    <input type="text" class="section-name-input" placeholder="Section Name" value="${sectionName}">
-                    <button type="button" class="animated-button remove-section-btn" onclick="removeDisplayFieldSection('${fieldKey}', ${sectionIndex})">
-                        Remove Section
-                    </button>
-                </div>
-                <div class="section-fields">
-                    <div class="fields-header">
-                        <span>Field Key</span>
-                        <span>Display Name</span>
-                        <span>Actions</span>
-                    </div>
-                    <div class="fields-rows">`;
-        
-        // Add existing fields
-        fields.forEach((fieldObj, fieldIndex) => {
-            const fieldKey = Object.keys(fieldObj)[0] || '';
-            const displayName = fieldObj[fieldKey] || '';
-            sectionHtml += generateDisplayFieldRow(fieldKey, displayName, sectionIndex, fieldIndex);
-        });
-        
-        // Add at least one empty field if no fields exist
-        if (fields.length === 0) {
-            sectionHtml += generateDisplayFieldRow('', '', sectionIndex, 0);
-        }
-        
-        sectionHtml += `
-                    </div>
-                    <button type="button" class="animated-button add-field-btn" onclick="addDisplayField('${fieldKey}', ${sectionIndex})">
-                        + Add Field
-                    </button>
-                </div>
-            </div>`;
-        
-        return sectionHtml;
-    }
-
-    /**
-     * Generates HTML for a single display field row.
-     * @param {string} fieldKey - The field key.
-     * @param {string} displayName - The display name.
-     * @param {number} sectionIndex - The section index.
-     * @param {number} fieldIndex - The field index.
-     * @returns {string} The HTML string for the field row.
-     */
-    function generateDisplayFieldRow(fieldKey, displayName, sectionIndex, fieldIndex) {
-        return `
-            <div class="field-row" data-section-index="${sectionIndex}" data-field-index="${fieldIndex}">
-                <input type="text" class="field-key-input" placeholder="fieldKey" value="${fieldKey}">
-                <input type="text" class="field-display-input" placeholder="Display Name" value="${displayName}">
-                <button type="button" class="animated-button remove-field-btn" onclick="removeDisplayField('${fieldKey}', ${sectionIndex}, ${fieldIndex})">
-                    Remove
-                </button>
-            </div>`;
-    }
-
-    /**
-     * Adds a new empty display field section.
-     * @param {string} fieldKey - The field key (display_fields or mining_core_display_fields).
-     */
-    function addDisplayFieldSection(fieldKey) {
-        const container = document.getElementById(`${fieldKey}-sections`);
-        const newIndex = container.children.length;
-        const newSection = document.createElement('div');
-        newSection.innerHTML = generateDisplayFieldSection('', [], fieldKey, newIndex);
-        container.appendChild(newSection.firstElementChild);
-        
-        // Update indices for all sections
-        updateDisplayFieldIndices(fieldKey);
-    }
-
-    /**
-     * Removes a display field section.
-     * @param {string} fieldKey - The field key.
-     * @param {number} sectionIndex - The index of the section to remove.
-     */
-    function removeDisplayFieldSection(fieldKey, sectionIndex) {
-        const container = document.getElementById(`${fieldKey}-sections`);
-        const sections = container.querySelectorAll('.display-section');
-        
-        // Don't allow removing the last section
-        if (sections.length <= 1) {
-            alert('At least one display field section is required.');
-            return;
-        }
-        
-        const sectionToRemove = container.querySelector(`[data-section-index="${sectionIndex}"]`);
-        if (sectionToRemove) {
-            sectionToRemove.remove();
-            updateDisplayFieldIndices(fieldKey);
-        }
-    }
-
-    /**
-     * Adds a new empty field to a section.
-     * @param {string} fieldKey - The field key.
-     * @param {number} sectionIndex - The section index.
-     */
-    function addDisplayField(fieldKey, sectionIndex) {
-        const section = document.querySelector(`[data-field-key="${fieldKey}"][data-section-index="${sectionIndex}"]`);
-        const fieldsContainer = section.querySelector('.fields-rows');
-        const newFieldIndex = fieldsContainer.children.length;
-        
-        const newRow = document.createElement('div');
-        newRow.innerHTML = generateDisplayFieldRow('', '', sectionIndex, newFieldIndex);
-        fieldsContainer.appendChild(newRow.firstElementChild);
-        
-        // Update indices for all fields in this section
-        updateDisplayFieldIndices(fieldKey);
-    }
-
-    /**
-     * Removes a field from a section.
-     * @param {string} fieldKey - The field key.
-     * @param {number} sectionIndex - The section index.
-     * @param {number} fieldIndex - The field index.
-     */
-    function removeDisplayField(fieldKey, sectionIndex, fieldIndex) {
-        const section = document.querySelector(`[data-field-key="${fieldKey}"][data-section-index="${sectionIndex}"]`);
-        const fieldsContainer = section.querySelector('.fields-rows');
-        const fieldRows = fieldsContainer.querySelectorAll('.field-row');
-        
-        // Don't allow removing the last field
-        if (fieldRows.length <= 1) {
-            alert('At least one field is required per section.');
-            return;
-        }
-        
-        const fieldToRemove = fieldsContainer.querySelector(`[data-field-index="${fieldIndex}"]`);
-        if (fieldToRemove) {
-            fieldToRemove.remove();
-            updateDisplayFieldIndices(fieldKey);
-        }
-    }
-
-    /**
-     * Updates the data-index attributes and onclick handlers for all display field elements.
-     * @param {string} fieldKey - The field key.
-     */
-    function updateDisplayFieldIndices(fieldKey) {
-        const container = document.getElementById(`${fieldKey}-sections`);
-        const sections = container.querySelectorAll('.display-section');
-        
-        sections.forEach((section, sectionIndex) => {
-            section.setAttribute('data-section-index', sectionIndex);
-            
-            // Update remove section button
-            const removeSectionBtn = section.querySelector('.remove-section-btn');
-            if (removeSectionBtn) {
-                removeSectionBtn.setAttribute('onclick', `removeDisplayFieldSection('${fieldKey}', ${sectionIndex})`);
-            }
-            
-            // Update add field button
-            const addFieldBtn = section.querySelector('.add-field-btn');
-            if (addFieldBtn) {
-                addFieldBtn.setAttribute('onclick', `addDisplayField('${fieldKey}', ${sectionIndex})`);
-            }
-            
-            // Update field rows
-            const fieldRows = section.querySelectorAll('.field-row');
-            fieldRows.forEach((row, fieldIndex) => {
-                row.setAttribute('data-section-index', sectionIndex);
-                row.setAttribute('data-field-index', fieldIndex);
-                
-                const removeFieldBtn = row.querySelector('.remove-field-btn');
-                if (removeFieldBtn) {
-                    removeFieldBtn.setAttribute('onclick', `removeDisplayField('${fieldKey}', ${sectionIndex}, ${fieldIndex})`);
-                }
-            });
-        });
-    }
-
-    /**
-     * Collects data from all display field sections and fields.
-     * @param {string} fieldKey - The field key.
-     * @returns {Array} Array of display field section objects.
-     */
-    function collectDisplayFieldsData(fieldKey) {
-        const container = document.getElementById(`${fieldKey}-sections`);
-        if (!container) {
-            console.error(`Display fields container not found for ${fieldKey}`);
-            return [];
-        }
-        
-        const sections = container.querySelectorAll('.display-section');
-        const displayFields = [];
-        
-        
-        sections.forEach((section, sectionIndex) => {
-            const sectionNameInput = section.querySelector('.section-name-input');
-            const sectionName = sectionNameInput ? sectionNameInput.value.trim() : '';
-            
-            if (!sectionName) return; // Skip sections without names
-            
-            const fieldRows = section.querySelectorAll('.field-row');
-            const fields = [];
-            
-            fieldRows.forEach((row, fieldIndex) => {
-                const fieldKeyInput = row.querySelector('.field-key-input');
-                const fieldDisplayInput = row.querySelector('.field-display-input');
-                const fieldKey = fieldKeyInput ? fieldKeyInput.value.trim() : '';
-                const displayName = fieldDisplayInput ? fieldDisplayInput.value.trim() : '';
-                
-                
-                if (fieldKey && displayName) {
-                    const fieldObj = {};
-                    fieldObj[fieldKey] = displayName;
-                    fields.push(fieldObj);
-                }
-            });
-            
-            if (fields.length > 0) {
-                const sectionObj = {};
-                sectionObj[sectionName] = fields;
-                displayFields.push(sectionObj);
-            }
-        });
-        
-        return displayFields;
-    }
 
     /**
      * Handles the submission of the settings form, sending data to the backend.
@@ -677,14 +399,6 @@ const modalService = (() => {
                     value = collectBitaxeInstancesData();
                     if (value.length === 0) {
                         alert('At least one Bitaxe device instance is required.');
-                        return;
-                    }
-                    payload[field.key] = value;
-                } else if (field.type === 'display_fields_editor') {
-                    // Handle display fields specially - no DOM element with name attribute
-                    value = collectDisplayFieldsData(field.key);
-                    if (value.length === 0) {
-                        alert(`At least one section is required for ${field.label}.`);
                         return;
                     }
                     payload[field.key] = value;
@@ -846,12 +560,6 @@ const modalService = (() => {
     // Make instance management functions globally accessible for onclick handlers
     window.addBitaxeInstance = addBitaxeInstance;
     window.removeBitaxeInstance = removeBitaxeInstance;
-    
-    // Make display field management functions globally accessible for onclick handlers
-    window.addDisplayFieldSection = addDisplayFieldSection;
-    window.removeDisplayFieldSection = removeDisplayFieldSection;
-    window.addDisplayField = addDisplayField;
-    window.removeDisplayField = removeDisplayField;
 
     // Expose public functions
     return {
