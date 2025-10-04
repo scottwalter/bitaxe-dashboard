@@ -74,39 +74,9 @@ async function verifyJsonWebToken(token){
 }
 
 /**
- * A test utility function to demonstrate token verification.
- * It creates a test token and then immediately tries to verify it.
- * @returns {Promise<object>} The decoded payload of the test token.
- */
-async function testVerify(){
-    const token = await testCreate(); // create test token to decode
-    const decoded = await verifyJsonWebToken(token);
-    console.log('Decoded Payload:', decoded);
-    return decoded;
-}
-
-/**
- * A test utility function to demonstrate token creation.
- * It generates a token with a sample payload.
- * @returns {Promise<string>} The generated JWT string.
- */
-async function testCreate(){
-    const payload = {
-      userId: 'user123',
-      username: 'exampleuser',
-      role: 'admin'
-    };
-    const token = await createJsonWebToken(payload);
-    console.log(token);
-    return token;
-}
-
-/**
  * Exports the core JWT service functions for use in other modules.
  */
 module.exports = {
     createJsonWebToken,
-    verifyJsonWebToken,
-    testCreate,
-    testVerify
+    verifyJsonWebToken
 }

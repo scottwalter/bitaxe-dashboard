@@ -112,55 +112,9 @@ async function callRPCService(nodeId, method, params = []) {
         req.end();
     });
 }
-async function tester() {
-    
-    const testCalls = [
-        { method: 'getblockchaininfo', params: [] },
-        { method: 'getnetworkinfo', params: [] },
-        { method: 'getmininginfo', params: [] },
-        { method: 'getblockcount', params: [] },
-        { method: 'getbestblockhash', params: [] },
-        { method: 'getconnectioncount', params: [] },
-        { method: 'getmempoolinfo', params: [] },
-        { method: 'getdifficulty', params: [] },
-        { method: 'getnettotals', params: [] },
-        { method: 'getrawmempool', params: [] },
-        { method: 'getbalance', params: [] },
-        
-        
-        
-    ];
-    
-    for (const call of testCalls) {
-        try {
-            console.log(`\n--- Testing ${call.method} ---`);
-            const result = await callRPCService('dgb1', call.method, call.params);
-            console.log(`RESPONSE: ${JSON.stringify(result, null, 2)}`);
-            //console.log('Result:', result);
-        } catch (error) {
-            console.error(`Error calling ${call.method}:`, error.message);
-        }
-    }
-}
-// Handle command line execution
-if (require.main === module) {
-    const args = process.argv.slice(2);
-    const functionName = args[0];
-    
-    if (functionName === 'tester') {
-        tester().then(result => {
-            //console.log('Final result:', result);
-        }).catch(error => {
-            console.error('Error:', error);
-        });
-    } else {
-        console.log('Available functions: tester');
-        console.log('Usage: node rpcService.js tester');
-    }
-}
+
 module.exports = {
     callRPCService,
     getRPCConnectionDetails,
-    loadRPCConfig,
-    tester
+    loadRPCConfig
 };

@@ -497,15 +497,6 @@ async function createConfigFiles(formData) {
     }
 }
 
-/**
- * Generates a suggested JWT key for the form
- * @returns {string} A 32-character alphanumeric string
- */
-function getSuggestedJWTKey() {
-    return generateJWTKey();
-}
-
 module.exports = {
-    createConfigFiles,
-    getSuggestedJWTKey
+    createConfigFiles
 };

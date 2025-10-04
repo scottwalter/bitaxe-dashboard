@@ -1,17 +1,16 @@
 /**
  * @file Configuration Manager - Dynamic configuration management without server restarts.
- * 
+ *
  * This module provides a singleton-based configuration management system that allows
  * for hot-reloading of configuration changes. It handles configuration loading,
  * validation, default value assignment, and runtime updates without requiring
  * server restarts.
- * 
+ *
  * Features:
  * - Dynamic configuration reloading
  * - Configuration validation and defaults
- * - Event-based change notifications
  * - Singleton pattern for global access
- * 
+ *
  * @author Scott Walter
  * @version 2.0.0
  * @since 1.0.0
@@ -20,7 +19,7 @@
 const fs = require('fs').promises;
 const path = require('path');
 
-/** 
+/**
  * Full absolute path to the main configuration file.
  * @constant {string}
  */
@@ -28,18 +27,17 @@ const CONFIG_FILE_PATH = path.join(__dirname, '..', '..', 'config', 'config.json
 
 /**
  * Configuration Manager class - Singleton for dynamic configuration management.
- * 
+ *
  * Manages the application configuration lifecycle including loading from file,
  * applying defaults, and providing hot-reload
  * capabilities without server restart.
- * 
+ *
  * @class ConfigurationManager
  * @since 1.0.0
  */
 class ConfigurationManager {
     constructor() {
         this.config = null;
-        this.listeners = new Set();
     }
 
     /**
@@ -78,10 +76,7 @@ class ConfigurationManager {
 
             this.config = config;
             console.log('Configuration loaded successfully');
-            
-            // Notify all listeners of the configuration change
-            this.notifyListeners(config);
-            
+
             return config;
         } catch (error) {
             console.error('Error loading configuration:', error);
@@ -104,36 +99,6 @@ class ConfigurationManager {
      */
     getConfig() {
         return this.config;
-    }
-
-    /**
-     * Adds a listener function that will be called whenever the configuration is reloaded.
-     * @param {Function} listener - Function to call when config changes.
-     */
-    addListener(listener) {
-        this.listeners.add(listener);
-    }
-
-    /**
-     * Removes a configuration change listener.
-     * @param {Function} listener - The listener function to remove.
-     */
-    removeListener(listener) {
-        this.listeners.delete(listener);
-    }
-
-    /**
-     * Notifies all listeners of a configuration change.
-     * @param {object} newConfig - The new configuration object.
-     */
-    notifyListeners(newConfig) {
-        this.listeners.forEach(listener => {
-            try {
-                listener(newConfig);
-            } catch (error) {
-                console.error('Error in configuration change listener:', error);
-            }
-        });
     }
 }
 
