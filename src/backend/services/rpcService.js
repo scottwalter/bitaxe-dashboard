@@ -66,7 +66,7 @@ async function callRPCService(nodeId, method, params = []) {
             params: params,
         });
 
-        console.log(`Sending RPC payload for method '${method}':`, postData);
+        console.log(`[rpcService] Sending RPC request to ${connectionDetails.rpcHost}:${connectionDetails.rpcPort} - Method: ${method}`);
 
         const auth = 'Basic ' + Buffer.from(connectionDetails.rpcAuth).toString('base64');
 
