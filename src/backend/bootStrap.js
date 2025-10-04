@@ -103,7 +103,7 @@ async function serveBootstrapPage(req, res) {
         
         // Replace placeholders
         htmlContent = htmlContent.replace(/<!-- TITLE -->/g, 'Bitaxe Dashboard - First Time Setup');
-        htmlContent = htmlContent.replace(/<!-- VERSION -->/g, '2.0');
+        htmlContent = htmlContent.replace(/<!-- VERSION -->/g, '3.0');
         htmlContent = htmlContent.replace(/<!-- CURRENT_YEAR -->/g, new Date().getFullYear().toString());
 
         res.writeHead(200, { 'Content-Type': 'text/html' });

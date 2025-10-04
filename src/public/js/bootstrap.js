@@ -75,8 +75,22 @@ document.addEventListener('DOMContentLoaded', function() {
     enableCryptoNodeCheckbox.addEventListener('change', function() {
         if (this.checked) {
             cryptoNodeFields.style.display = 'block';
+            document.getElementById('cryptoNodeType').required = true;
+            document.getElementById('cryptoNodeName').required = true;
+            document.getElementById('cryptoNodeAlgo').required = true;
+            document.getElementById('cryptoNodeId').required = true;
+            document.getElementById('cryptoNodeRpcIp').required = true;
+            document.getElementById('cryptoNodeRpcPort').required = true;
+            document.getElementById('cryptoNodeRpcAuth').required = true;
         } else {
             cryptoNodeFields.style.display = 'none';
+            document.getElementById('cryptoNodeType').required = false;
+            document.getElementById('cryptoNodeName').required = false;
+            document.getElementById('cryptoNodeAlgo').required = false;
+            document.getElementById('cryptoNodeId').required = false;
+            document.getElementById('cryptoNodeRpcIp').required = false;
+            document.getElementById('cryptoNodeRpcPort').required = false;
+            document.getElementById('cryptoNodeRpcAuth').required = false;
         }
     });
 

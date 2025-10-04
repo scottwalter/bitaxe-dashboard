@@ -77,7 +77,6 @@ const modalService = (() => {
                 { key: 'cookie_max_age', label: 'Cookie Max Age (seconds)', type: 'number', min: 300 },
                 { key: 'disable_settings', label: 'Disable Device Settings', type: 'checkbox' },
                 { key: 'disable_configurations', label: 'Disable Configurations', type: 'checkbox' },
-                { key: 'demo_mode', label: 'Demo Mode', type: 'checkbox' },
             ]
         },
         {

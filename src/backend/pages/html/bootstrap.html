@@ -59,14 +59,14 @@
                         <div id="authFields" style="display: none;">
                             <div class="form-group">
                                 <label for="username">Admin Username</label>
-                                <input type="text" id="username" name="username" value="admin" required>
+                                <input type="text" id="username" name="username" value="admin">
                                 <small>Username for administrative access</small>
                             </div>
 
                             <div class="form-group">
                                 <label for="password">Admin Password</label>
                                 <div class="password-input-group">
-                                    <input type="password" id="password" name="password" required>
+                                    <input type="password" id="password" name="password">
                                     <button type="button" class="password-toggle" data-target="password">👁️</button>
                                 </div>
                                 <small>Strong password recommended</small>
@@ -75,7 +75,7 @@
                             <div class="form-group">
                                 <label for="confirmPassword">Confirm Password</label>
                                 <div class="password-input-group">
-                                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                                    <input type="password" id="confirmPassword" name="confirmPassword">
                                     <button type="button" class="password-toggle" data-target="confirmPassword">👁️</button>
                                 </div>
                                 <div id="passwordMatch" class="validation-message" style="display: none;"></div>
@@ -85,7 +85,7 @@
                                 <div class="jwt-input-group">
                                     <label for="jwtKey">JWT Secret Key</label>
                                     <div class="jwt-input-row">
-                                        <input type="text" id="jwtKey" name="jwtKey" required>
+                                        <input type="text" id="jwtKey" name="jwtKey">
                                         <button type="button" id="generateJWT" class="btn-secondary">Generate Key</button>
                                     </div>
                                     <small>32-character secret key for session tokens</small>
@@ -193,8 +193,8 @@
 
                             <div class="form-group">
                                 <label for="cryptoNodeRpcPort">Crypto Node RPC Port</label>
-                                <input type="number" id="cryptoNodeRpcPort" name="cryptoNodeRpcPort" placeholder="9001" min="1" max="65535">
-                                <small>RPC port number</small>
+                                <input type="number" id="cryptoNodeRpcPort" name="cryptoNodeRpcPort" placeholder="14022" min="1" max="65535">
+                                <small>RPC port number (default: 14022)</small>
                             </div>
 
                             <div class="form-group">
