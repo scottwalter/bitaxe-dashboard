@@ -23,7 +23,6 @@ const path = require('path');
 
 const dashboardPage = require('../dashboard');
 const loginPage = require('../loginPage');
-const demoApiRouter = require('./demoApiRouter');
 const apiRouter = require('./apiRouter');
 const jwTokenServices = require('../services/jwTokenServices');
 
@@ -126,14 +125,6 @@ const routes = [
         exactMatch: true,
         requireJWT: true,
         sendUserInfo: true 
-    },
-    {
-        path: '/demo/api/',
-        method: 'GET',
-        handler: demoApiRouter.route,
-        exactMatch: false,
-        requireJWT: false, // Requires a valid sessionToken
-        sendUserInfo: false //Don't Send the user json with request
     },
     // Generic handler for all static assets in the /public/ directory.
     {

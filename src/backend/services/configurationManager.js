@@ -9,7 +9,6 @@
  * Features:
  * - Dynamic configuration reloading
  * - Configuration validation and defaults
- * - Demo mode configuration override
  * - Event-based change notifications
  * - Singleton pattern for global access
  * 
@@ -31,7 +30,7 @@ const CONFIG_FILE_PATH = path.join(__dirname, '..', '..', 'config', 'config.json
  * Configuration Manager class - Singleton for dynamic configuration management.
  * 
  * Manages the application configuration lifecycle including loading from file,
- * applying defaults, handling demo mode overrides, and providing hot-reload
+ * applying defaults, and providing hot-reload
  * capabilities without server restart.
  * 
  * @class ConfigurationManager
@@ -75,15 +74,6 @@ class ConfigurationManager {
                 console.log('"disable_configurations" not found in config, defaulting to true (configurations disabled).');
                 config.disable_configurations = true;
                 config.configuration_outdated = true;
-            }
-
-            // Handle demo mode configuration
-            if (config.demo_mode === true) {
-                config.mining_core_url = `http://127.0.0.1:${config.web_server_port}`;
-                config.title += ' - DEMO MODE';
-                const newEntry1 = {"DemoAxe1": `http://127.0.0.1:${config.web_server_port}`};
-                const newEntry2 = {"DemoAxe2": `http://127.0.1.1:${config.web_server_port}`};
-                config.bitaxe_instances = [newEntry1, newEntry2];
             }
 
             this.config = config;

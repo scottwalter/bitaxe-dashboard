@@ -11,7 +11,6 @@
     "disable_settings",
     "disable_configurations",
     "web_server_port",
-    "demo_mode",
     "title",
     "bitaxe_instances",
     "display_fields"

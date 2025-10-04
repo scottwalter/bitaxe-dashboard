@@ -5,7 +5,6 @@
     "disable_settings": false,
     "disable_configurations": false,
     "web_server_port": 3000,
-    "demo_mode": false,
     "title": "Bitaxe Dashboard",
     "bitaxe_instances": [
         {"Bitaxe1": "http://192.168.7.220"},
