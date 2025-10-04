@@ -16,12 +16,12 @@ If you don't want to mess with the install, follow the quick start guide
 >- You are on either a Mac Apple Silicon or Linux AMD64 device (for Docker, only supports Linux/arm4 and Linux/amd64)
 
 Docker Install (Recommended!): All commands assumed as root or with sudo pre-fixed
-1. Create a local folder for the config.json, access.json & jsonWebToken.json files. (i.e. /data/bitaxe-dashboard/config)
+1. Create a local folder for the config.json, access.json, jsonWebToken.json & rpcConfig.json files. (i.e. /data/bitaxe-dashboard/config)
 2. Copy the config.json, access.json & jsonWebToken.json into the config directory (this is as of Version 2.0)
 3. Configure the config.json to your environment (See below)
 4. Run the following Docker command:
 ```bash
-docker run -d --name bitaxe-dashboard -p 3000:3000/tcp -v {/your/local/config_path}:/app/config scottwalter/bitaxe-dashboard:latest
+docker run -d --name bitaxe-dashboard --network host -v {/your/local/config_path}:/app/config scottwalter/bitaxe-dashboard:latest
 ```
 5. You are done! Go to http://{IP_ADDRESS}:3000 and see your information! Enjoy!
 
@@ -30,13 +30,12 @@ Here is the basic config.json
 
 ```json
 {
-    "bitaxe_dashboard_version":2.0,
+    "bitaxe_dashboard_version":3.0,
     "web_server_port": 3000,
-    "disable_authentication":false,
+    "disable_authentication":true,
     "cookie_max_age":3600,
     "disable_settings":false,
     "disable_configurations": false,
-    "demo_mode":true,
     "title":"Bitaxe Dashboard",
     "bitaxe_instances": [
         {"Bitaxe1":"http://127.0.0.1"},
@@ -105,7 +104,65 @@ Here is the basic config.json
             {"lastPoolBlockTime":"Last Pool Block Time"},
             {"blockReward":"Block Reward"}
         ]}
-    ]
+    ],
+    "cryptNodesEnabled":true,
+    "cryptoNodes": [
+        {
+        "NodeType":"dgb",
+        "NodeName":"DigitByte Node",
+        "NodeId":"dgb1",
+        "NodeAlgo":"sha265d",
+        "NodeDisplayFields": [
+            {
+                "Block Chain Info":[
+                    {"chain":"Chain"},
+                    {"blocks":"Blocks"},
+                    {"headers": "Headers"},
+                    {"size_on_disk":"Size on Disk"},
+                    {"mediantime":"Median Time"},
+                    {"pruned":"Pruned"},
+                    {"verificationprogress":"Verification"},
+                    {"initialblockdownload":"Initializing"},
+                    {"warnings":"Warnings"},
+                    {"difficulties/sha256d":"Difficulty"}
+                ]
+            },
+            {
+                "Network Info":[
+                    {"version":"Version"},
+                    {"subversion":"Subversion"},
+                    {"protocolversion":"Protocol"},
+                    {"networkactive":"Active"},
+                    {"warnings":"Warnings"},
+                    {"connections":"Connections"},
+                    {"connections_in":"In"},
+                    {"connections_out":"Out"}
+                    
+                ]
+            },
+            {
+                "Network Totals": [
+                    {"target": "Target"},
+                    {"totalbytesrecv":"Received"},
+                    {"totalbytessent":"Sent"},
+                    {"bytes_left_in_cycle":"Bytes Left"},
+                    {"timemillis":"Updated"},
+                    {"target_reached":"Target Reached"},
+                    {"serve_historical_blocks":"Historicals"},
+                    {"timeframe":"Cycle Time"},
+                    {"time_left_in_cycle":"Time Left"}
+                    
+                ] 
+            },
+            {
+                "Wallet Info":[
+                    {"balance":"Balance"}
+                ]
+            }
+        ]
+        
+        }
+        ]
 }
 ```
 Basic access.json
@@ -119,6 +176,20 @@ Basic jsonWebToken.json
 { 
     "jsonWebTokenKey":"{YOUR_OWN_Some_Super_Secret_Key}",
     "expiresIn":"1h"
+}
+```
+If you enable Crypto Node Status, you need an rpcConfig.json to hold hte RPC Connect information. This is done separately for security reasons. Digibyte Nodes are the only supported nodes, or at least, the only tested nodes right now.
+Basic rpcConfig.json
+```json
+{
+    "cryptoNodes": [
+        {
+            "NodeId":"dgb1",
+            "NodeRPCAddress":"127.0.0.1",
+            "NodeRPCPort":14022,
+            "NodeRPAuth":"{pooluser:poolpassword}"
+        }
+    ]
 }
 ```
 What can you do with the config.json?
@@ -172,7 +243,7 @@ Fun Facts
 Recommended:
 - You can run this on the public internet and see your Bitaxe information since the application will make the internal calls to your Bitaxe device API.
 > [!WARNING]
-> Placing anything on the internet is risky. I **highly recommend** you front this application with a proxy like Nginx, under SSL, using a username / password.
+> Placing anything on the internet is risky. I **highly recommend** you front this application with a proxy like Nginx, under SSL, using a username / password. OR using a VPN solution, such as tailscale, to gain access to your bitaxe-dashboard without opening ports to the internet!
 
 - Here is a sample Nginx configuration for use as a reverse proxy for the bitaxe-dashboard
 ```nginx
