@@ -1,13 +1,15 @@
 /**
  * @file Statistics Modal Service
  * Handles real-time statistics visualization for individual BitAxe miners
- * Features Chart.js integration with dual Y-axis charts
+ * Features Chart.js integration with dual Y-axis charts (lazy-loaded)
  */
 
 const statisticsModal = (() => {
     let currentChart = null;
     let pollInterval = null;
     let currentInstanceId = null;
+    let chartJsLoaded = false;
+    let chartJsLoading = false;
 
     /**
      * Formats hashrate with appropriate units (MH/s, GH/s, TH/s)
@@ -29,10 +31,60 @@ const statisticsModal = (() => {
     }
 
     /**
+     * Lazy-loads Chart.js library if not already loaded
+     * @returns {Promise} Resolves when Chart.js is loaded
+     */
+    function loadChartJs() {
+        if (chartJsLoaded) {
+            return Promise.resolve();
+        }
+
+        if (chartJsLoading) {
+            // Wait for existing load to complete
+            return new Promise((resolve) => {
+                const checkLoaded = setInterval(() => {
+                    if (chartJsLoaded) {
+                        clearInterval(checkLoaded);
+                        resolve();
+                    }
+                }, 100);
+            });
+        }
+
+        chartJsLoading = true;
+
+        return new Promise((resolve, reject) => {
+            // Load Chart.js
+            const chartScript = document.createElement('script');
+            chartScript.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+            chartScript.onload = () => {
+                // Load date adapter
+                const adapterScript = document.createElement('script');
+                adapterScript.src = 'https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns';
+                adapterScript.onload = () => {
+                    chartJsLoaded = true;
+                    chartJsLoading = false;
+                    resolve();
+                };
+                adapterScript.onerror = () => {
+                    chartJsLoading = false;
+                    reject(new Error('Failed to load Chart.js date adapter'));
+                };
+                document.head.appendChild(adapterScript);
+            };
+            chartScript.onerror = () => {
+                chartJsLoading = false;
+                reject(new Error('Failed to load Chart.js'));
+            };
+            document.head.appendChild(chartScript);
+        });
+    }
+
+    /**
      * Creates and displays the statistics modal for a specific miner instance
      * @param {string} instanceId - The ID of the miner instance to show statistics for
      */
-    function openStatisticsModal(instanceId) {
+    async function openStatisticsModal(instanceId) {
         const existingModal = document.getElementById('statistics-modal');
         if (existingModal) existingModal.remove();
 
@@ -53,13 +105,30 @@ const statisticsModal = (() => {
 
         // Event listeners
         modal.querySelector('.close-button').addEventListener('click', closeModal);
-        window.addEventListener('click', (event) => { 
-            if (event.target === modal) closeModal(); 
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) closeModal();
         });
 
-        // Initialize chart and start data polling
-        initializeChart();
-        startPolling();
+        // Show loading message for chart library
+        const loadingDiv = modal.querySelector('#stats-loading');
+        const loadingSpan = loadingDiv.querySelector('span');
+        loadingSpan.textContent = 'Loading chart library...';
+
+        try {
+            // Lazy-load Chart.js before initializing
+            await loadChartJs();
+
+            // Initialize chart and start data polling
+            initializeChart();
+            startPolling();
+        } catch (error) {
+            console.error('Failed to load Chart.js:', error);
+            const errorDiv = modal.querySelector('#stats-error');
+            const errorMessage = modal.querySelector('#error-message');
+            loadingDiv.style.display = 'none';
+            errorDiv.style.display = 'flex';
+            errorMessage.textContent = error.message;
+        }
     }
 
     /**
