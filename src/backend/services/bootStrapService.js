@@ -99,9 +99,31 @@ async function createConfigFile(formData) {
     template.web_server_port = parseInt(formData.port) || 3000;
     template.disable_authentication = formData.enableAuth !== 'true';
     template.mining_core_enabled = formData.enableMiningCore === 'true';
-    
+
     if (formData.enableMiningCore === 'true') {
         template.mining_core_url = formData.miningCoreUrl || 'http://192.168.1.100:4000';
+    }
+
+    // Add crypto node configuration if enabled
+    template.cryptNodesEnabled = formData.enableCryptoNode === 'true';
+
+    if (formData.enableCryptoNode === 'true') {
+        // Use template's existing cryptoNodes structure and update first entry
+        if (!template.cryptoNodes || !Array.isArray(template.cryptoNodes)) {
+            template.cryptoNodes = [];
+        }
+
+        // Add user's crypto node configuration
+        template.cryptoNodes = [{
+            NodeType: formData.cryptoNodeType || 'dgb',
+            NodeName: formData.cryptoNodeName || 'Crypto Node',
+            NodeId: formData.cryptoNodeId || 'node1',
+            NodeAlgo: formData.cryptoNodeAlgo || 'sha256d',
+            NodeDisplayFields: template.cryptoNodes[0]?.NodeDisplayFields || []
+        }];
+    } else {
+        // If not enabled, set to empty array
+        template.cryptoNodes = [];
     }
 
     // Handle bitaxe instances - start with empty array and add user instances
@@ -280,6 +302,137 @@ async function validateMiningCoreUrl(miningCoreUrl) {
 }
 
 /**
+ * Creates rpcConfig.json for crypto node RPC credentials
+ * @param {object} formData - The form data from the bootstrap page
+ */
+async function createRPCConfigFile(formData) {
+    const rpcConfigPath = path.join(CONFIG_DIR, 'rpcConfig.json');
+
+    // Check if rpcConfig.json already exists
+    let rpcConfig = { cryptoNodes: [] };
+    try {
+        const existingContent = await fs.readFile(rpcConfigPath, 'utf8');
+        rpcConfig = JSON.parse(existingContent);
+        if (!Array.isArray(rpcConfig.cryptoNodes)) {
+            rpcConfig.cryptoNodes = [];
+        }
+    } catch (error) {
+        // File doesn't exist or is invalid, use default structure
+        console.log('Creating new rpcConfig.json file');
+    }
+
+    // Add or update the node entry
+    const nodeEntry = {
+        NodeId: formData.cryptoNodeId || 'node1',
+        NodeRPCAddress: formData.cryptoNodeRpcIp || '127.0.0.1',
+        NodeRPCPort: parseInt(formData.cryptoNodeRpcPort) || 9001,
+        NodeRPAuth: formData.cryptoNodeRpcAuth || 'user:password'
+    };
+
+    // Check if node with this ID already exists
+    const existingIndex = rpcConfig.cryptoNodes.findIndex(n => n.NodeId === nodeEntry.NodeId);
+    if (existingIndex >= 0) {
+        // Update existing entry
+        rpcConfig.cryptoNodes[existingIndex] = nodeEntry;
+    } else {
+        // Add new entry
+        rpcConfig.cryptoNodes.push(nodeEntry);
+    }
+
+    await fs.writeFile(rpcConfigPath, JSON.stringify(rpcConfig, null, 2));
+    console.log(`RPC config file created/updated for node: ${nodeEntry.NodeId}`);
+}
+
+/**
+ * Validates Crypto Node RPC connection
+ * @param {string} rpcIp - The RPC server IP address
+ * @param {number} rpcPort - The RPC server port
+ * @param {string} rpcAuth - The RPC authentication (user:password)
+ * @param {string} nodeId - The node ID for identification
+ * @returns {Promise<object>} Validation result
+ */
+async function validateCryptoNodeRPC(rpcIp, rpcPort, rpcAuth, nodeId) {
+    return new Promise((resolve) => {
+        const postData = JSON.stringify({
+            jsonrpc: '2.0',
+            id: 'bootstrap-test',
+            method: 'getblockchaininfo',
+            params: []
+        });
+
+        const auth = 'Basic ' + Buffer.from(rpcAuth).toString('base64');
+
+        const options = {
+            hostname: rpcIp,
+            port: rpcPort,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(postData),
+                'Authorization': auth,
+            },
+            timeout: 5000
+        };
+
+        const req = http.request(options, (res) => {
+            let rawData = '';
+            res.on('data', (chunk) => {
+                rawData += chunk;
+            });
+            res.on('end', () => {
+                try {
+                    if (!rawData) {
+                        resolve({
+                            success: false,
+                            error: `Empty response from RPC server. Check credentials and rpcallowip settings. Status: ${res.statusCode}`
+                        });
+                        return;
+                    }
+                    const parsedData = JSON.parse(rawData);
+                    if (parsedData.error) {
+                        resolve({
+                            success: false,
+                            error: `RPC error: ${parsedData.error.message || JSON.stringify(parsedData.error)}`
+                        });
+                    } else if (parsedData.result) {
+                        console.log(`Crypto node ${nodeId} RPC validation successful`);
+                        resolve({ success: true });
+                    } else {
+                        resolve({
+                            success: false,
+                            error: 'Unexpected RPC response format'
+                        });
+                    }
+                } catch (e) {
+                    resolve({
+                        success: false,
+                        error: `Failed to parse RPC response: ${e.message}`
+                    });
+                }
+            });
+        });
+
+        req.on('error', (e) => {
+            resolve({
+                success: false,
+                error: `RPC connection error: ${e.message}`
+            });
+        });
+
+        req.on('timeout', () => {
+            req.destroy();
+            resolve({
+                success: false,
+                error: 'RPC connection timeout (5s)'
+            });
+        });
+
+        req.write(postData);
+        req.end();
+    });
+}
+
+/**
  * Main function to create all configuration files
  * @param {object} formData - The form data from the bootstrap page
  * @returns {object} Success/error result
@@ -302,6 +455,22 @@ async function createConfigFiles(formData) {
             }
         }
 
+        // Validate Crypto Node RPC if enabled
+        if (formData.enableCryptoNode === 'true' && formData.cryptoNodeRpcIp) {
+            const rpcValidation = await validateCryptoNodeRPC(
+                formData.cryptoNodeRpcIp,
+                parseInt(formData.cryptoNodeRpcPort),
+                formData.cryptoNodeRpcAuth,
+                formData.cryptoNodeId
+            );
+            if (!rpcValidation.success) {
+                return {
+                    success: false,
+                    error: `Crypto Node RPC at ${formData.cryptoNodeRpcIp}:${formData.cryptoNodeRpcPort} failed validation: ${rpcValidation.error}`
+                };
+            }
+        }
+
         // Ensure config directory exists
         await ensureConfigDir();
 
@@ -309,6 +478,11 @@ async function createConfigFiles(formData) {
         await createConfigFile(formData);
         await createAccessFile(formData);
         await createJWTFile(formData);
+
+        // Create RPC config file if crypto node is enabled
+        if (formData.enableCryptoNode === 'true') {
+            await createRPCConfigFile(formData);
+        }
 
         console.log('Bootstrap configuration files created successfully');
         

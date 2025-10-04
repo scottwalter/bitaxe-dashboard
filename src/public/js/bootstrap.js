@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const authFields = document.getElementById('authFields');
     const enableMiningCoreCheckbox = document.getElementById('enableMiningCore');
     const miningCoreFields = document.getElementById('miningCoreFields');
+    const enableCryptoNodeCheckbox = document.getElementById('enableCryptoNode');
+    const cryptoNodeFields = document.getElementById('cryptoNodeFields');
     const generateJWTButton = document.getElementById('generateJWT');
     const addDeviceButton = document.getElementById('addDevice');
     const bitaxeInstancesContainer = document.getElementById('bitaxeInstances');
@@ -66,6 +68,15 @@ document.addEventListener('DOMContentLoaded', function() {
             miningCoreFields.style.display = 'block';
         } else {
             miningCoreFields.style.display = 'none';
+        }
+    });
+
+    // Toggle crypto node fields
+    enableCryptoNodeCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+            cryptoNodeFields.style.display = 'block';
+        } else {
+            cryptoNodeFields.style.display = 'none';
         }
     });
 
@@ -193,6 +204,18 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.enableMiningCore = document.getElementById('enableMiningCore').checked ? 'true' : 'false';
         if (document.getElementById('enableMiningCore').checked) {
             formData.miningCoreUrl = document.getElementById('miningCoreUrl').value;
+        }
+
+        // Add crypto node settings if enabled
+        formData.enableCryptoNode = document.getElementById('enableCryptoNode').checked ? 'true' : 'false';
+        if (document.getElementById('enableCryptoNode').checked) {
+            formData.cryptoNodeType = document.getElementById('cryptoNodeType').value;
+            formData.cryptoNodeName = document.getElementById('cryptoNodeName').value;
+            formData.cryptoNodeAlgo = document.getElementById('cryptoNodeAlgo').value;
+            formData.cryptoNodeId = document.getElementById('cryptoNodeId').value;
+            formData.cryptoNodeRpcIp = document.getElementById('cryptoNodeRpcIp').value;
+            formData.cryptoNodeRpcPort = document.getElementById('cryptoNodeRpcPort').value;
+            formData.cryptoNodeRpcAuth = document.getElementById('cryptoNodeRpcAuth').value;
         }
 
         return formData;

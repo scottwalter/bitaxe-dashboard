@@ -49,14 +49,14 @@
                         
                         <div class="form-group">
                             <label>
-                                <input type="checkbox" id="enableAuth" name="enableAuth" value="true" checked>
+                                <input type="checkbox" id="enableAuth" name="enableAuth" value="true">
                                 Enable Authentication
                             </label>
-                            <small>Uncheck to disable login requirements (not recommended for production)</small>
+                            <small>Check to enable login (recommended for production use on the internet)</small>
                             <small>Application must be running in HTTPS / SSL if enabled</small>
                         </div>
 
-                        <div id="authFields">
+                        <div id="authFields" style="display: none;">
                             <div class="form-group">
                                 <label for="username">Admin Username</label>
                                 <input type="text" id="username" name="username" value="admin" required>
@@ -130,7 +130,7 @@
                     <!-- Mining Core Settings -->
                     <div class="form-section">
                         <h3>Mining Core Integration (Optional)</h3>
-                        
+
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="enableMiningCore" name="enableMiningCore" value="true">
@@ -144,6 +144,66 @@
                                 <label for="miningCoreUrl">Mining Core API URL</label>
                                 <input type="url" id="miningCoreUrl" name="miningCoreUrl" placeholder="http://192.168.1.100:4000">
                                 <small>URL to your mining core API endpoint</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Crypto Node Settings -->
+                    <div class="form-section">
+                        <h3>Crypto Node Integration (Optional)</h3>
+
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableCryptoNode" name="enableCryptoNode" value="true">
+                                Enable Crypto Node Integration
+                            </label>
+                            <small>Connect to your crypto node using JSON RPC</small>
+                        </div>
+
+                        <div id="cryptoNodeFields" style="display: none;">
+                            <div class="form-group">
+                                <label for="cryptoNodeType">Crypto Node Type</label>
+                                <input type="text" id="cryptoNodeType" name="cryptoNodeType" placeholder="dgb">
+                                <small>Node type (e.g., dgb, btc, ltc)</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cryptoNodeName">Crypto Node Name</label>
+                                <input type="text" id="cryptoNodeName" name="cryptoNodeName" placeholder="DigiByte Node">
+                                <small>Display name for your crypto node</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cryptoNodeAlgo">Crypto Node Algo</label>
+                                <input type="text" id="cryptoNodeAlgo" name="cryptoNodeAlgo" placeholder="sha256d">
+                                <small>Mining algorithm (e.g., sha256d, scrypt)</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cryptoNodeId">Crypto Node ID</label>
+                                <input type="text" id="cryptoNodeId" name="cryptoNodeId" placeholder="dgb1">
+                                <small>Unique identifier for this node</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cryptoNodeRpcIp">Crypto Node RPC IP Address</label>
+                                <input type="text" id="cryptoNodeRpcIp" name="cryptoNodeRpcIp" placeholder="192.168.1.100">
+                                <small>IP address of your crypto node RPC server</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cryptoNodeRpcPort">Crypto Node RPC Port</label>
+                                <input type="number" id="cryptoNodeRpcPort" name="cryptoNodeRpcPort" placeholder="9001" min="1" max="65535">
+                                <small>RPC port number</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cryptoNodeRpcAuth">Crypto Node RPC USER:PASSWORD</label>
+                                <div class="password-input-group">
+                                    <input type="password" id="cryptoNodeRpcAuth" name="cryptoNodeRpcAuth" placeholder="username:password">
+                                    <button type="button" class="password-toggle" data-target="cryptoNodeRpcAuth">👁️</button>
+                                </div>
+                                <small>RPC authentication in format user:password</small>
                             </div>
                         </div>
                     </div>
