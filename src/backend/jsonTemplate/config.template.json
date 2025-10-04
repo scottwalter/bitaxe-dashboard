@@ -92,50 +92,52 @@
       "NodeId":"dgb1",
       "NodeAlgo":"sha265d",
       "NodeDisplayFields": [
-        {
-          "Block Chaing Info":[
-            {"chain":"Chain"},
-            {"sha256d":"Difficulty (sha256d"},
-            {"blocks":"Blocks"},
-            {"headers": "Headers"},
-            {"mediantime":"Median Time"},
-            {"verificationprogress":"Verification Progress"},
-            {"initialblockdownload":"Initial Block Download"},
-            {"pruned":"Pruned"},
-            {"size_on_disk":"Size on Disk"},
-            {"warnings":"Warnings"}
-          ]
-        },
-        {
-          "Network Info":[
-            {"version":"Version"},
-            {"subversion":"Subversion"},
-            {"protocolversion":"Protocol Version"},
-            {"networkactive":"Network Active"},
-            {"connections":"Connections"},
-            {"connections_in":"Connections In"},
-            {"connections_out":"Connections Out"},
-            {"warnings":"Warnings"}
-          ]
-        },
-        {
-         "Network Totals": [
-           {"totalbytesrecv":"Total Bytes Received"},
-           {"totalbytessent":"Total Bytes Sent"},
-           {"timemillis":"Time Milliseconds"},
-           {"timeframe":"Upload Time Frame"},
-           {"target": "Target"},
-           {"target_reached":"Target Reached"},
-           {"serve_historical_blocks":"Server Historical Blocks"},
-           {"bytes_left_in_cycle":"Bytes Left in Cycle"},
-           {"time_left_in_cycle":"Time Left in Cycle"}
-         ] 
-        },
-        {
-          "Wallet Info":[
-            {"balance":"Balance"}
-            ]
-        }
+            {
+                "Block Chain Info":[
+                    {"chain":"Chain"},
+                    {"blocks":"Blocks"},
+                    {"headers": "Headers"},
+                    {"size_on_disk":"Size on Disk"},
+                    {"mediantime":"Median Time"},
+                    {"pruned":"Pruned"},
+                    {"verificationprogress":"Verification"},
+                    {"initialblockdownload":"Initializing"},
+                    {"warnings":"Warnings"},
+                    {"difficulties/sha256d":"Difficulty"}
+                ]
+            },
+            {
+                "Network Info":[
+                    {"version":"Version"},
+                    {"subversion":"Subversion"},
+                    {"protocolversion":"Protocol"},
+                    {"networkactive":"Active"},
+                    {"warnings":"Warnings"},
+                    {"connections":"Connections"},
+                    {"connections_in":"In"},
+                    {"connections_out":"Out"}
+                    
+                ]
+            },
+            {
+                "Network Totals": [
+                    {"target": "Target"},
+                    {"totalbytesrecv":"Received"},
+                    {"totalbytessent":"Sent"},
+                    {"bytes_left_in_cycle":"Bytes Left"},
+                    {"timemillis":"Updated"},
+                    {"target_reached":"Target Reached"},
+                    {"serve_historical_blocks":"Historicals"},
+                    {"timeframe":"Cycle Time"},
+                    {"time_left_in_cycle":"Time Left"}
+                    
+                ] 
+            },
+            {
+                "Wallet Info":[
+                    {"balance":"Balance"}
+                ]
+            }
         ]
       
     }

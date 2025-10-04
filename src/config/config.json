@@ -103,7 +103,7 @@
                     {"verificationprogress":"Verification"},
                     {"initialblockdownload":"Initializing"},
                     {"warnings":"Warnings"},
-                    {"difficulties/sha256d":"Difficulty (sha256d)"}
+                    {"difficulties/sha256d":"Difficulty"}
                 ]
             },
             {

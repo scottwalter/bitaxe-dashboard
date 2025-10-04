@@ -855,8 +855,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 html += `<strong>Message:</strong> <span>${nodeData.message || 'Could not connect to node'}</span>`;
                 html += `</div>`;
             } else {
-                // Display node name with online indicator
-                html += `<h4><span class="status-indicator status-online" style="margin-right: 8px;"></span>${nodeData.id} (${nodeData.nodeType.toUpperCase()})</h4>`;
+                // Display node name with online indicator and algorithm
+                const algoText = nodeData.nodeAlgo ? ` - ${nodeData.nodeAlgo}` : '';
+                html += `<h4><span class="status-indicator status-online" style="margin-right: 8px;"></span>${nodeData.id} (${nodeData.nodeType.toUpperCase()}${algoText})</h4>`;
 
                 // Render all display fields in a single 10-column grid
                 if (nodeData.displayFields && Array.isArray(nodeData.displayFields)) {
