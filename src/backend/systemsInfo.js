@@ -114,6 +114,8 @@ async function display(req, res, config) {
         embeddedData.disable_configurations = config.disable_configurations;
         //Add if authentication is enabled for the dashboard
         embeddedData.disable_authentication = config.disable_authentication;
+        //Add if mining core is enabled
+        embeddedData.mining_core_enabled = config.mining_core_enabled;
         // Send the final JSON response
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
         res.end(JSON.stringify(embeddedData, null, 2));

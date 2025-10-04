@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let disableSettings=true;
     let disableConfigurations=true;
     let disableAuthentication=false;
+    let miningCoreEnabled=false;
     // Define the ASIC Temp, VR Temp and Fan Speed progress bar color limits (green, yellow, red)
     let ASICTempMap = {
         green: 65,
@@ -98,6 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
             disableSettings = embedded.disable_settings;
             disableConfigurations = embedded.disable_configurations;
             disableAuthentication = embedded.disable_authentication;
+            miningCoreEnabled = embedded.mining_core_enabled;
 
             // Sort data by hostname for a consistent and predictable menu order.
             minerData.sort((a, b) => (a.hostname || a.id).localeCompare(b.hostname || b.id));
@@ -726,9 +728,11 @@ document.addEventListener('DOMContentLoaded', () => {
         allPoolsHtml += '</div>'; // Close miner-cards-container
         allPoolsHtml += `</div>`; // Close collapsible-content
         allPoolsHtml += `</div>`; // Close individual miner status card
-        
-        // Only show pool data if mining core data is available
-        if (data && data.length > 0) {
+
+        // Only show pool data if mining core is enabled
+        if (miningCoreEnabled) {
+            // Check if mining core data is available
+            if (data && data.length > 0) {
             // Create Mining Pool Status wrapper section
             allPoolsHtml += `<div class="mining-pool-status-section">`;
             allPoolsHtml += '<h3><span class="collapse-button" data-target="mining-pool-content">−</span> Mining Pool Status</h3>';
@@ -737,7 +741,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             data.forEach((poolData, index) => { // Loop through each pool
             allPoolsHtml += `<div class="pool-card">`; // Individual pool card wrapper
-            allPoolsHtml += `<h4>${poolData.id.toUpperCase()} (${poolData.coin.symbol} - ${poolData.paymentProcessing.payoutScheme})</h4>`; // Pool specific heading
+            allPoolsHtml += `<h4><span class="status-indicator status-online" style="margin-right: 8px;"></span>${poolData.id.toUpperCase()} (${poolData.coin.symbol} - ${poolData.paymentProcessing.payoutScheme})</h4>`; // Pool specific heading
 
             displayFields.forEach(categoryObj => {
                 const categoryName = Object.keys(categoryObj)[0];
@@ -808,15 +812,18 @@ document.addEventListener('DOMContentLoaded', () => {
             allPoolsHtml += '</div>'; // Close pool-cards-container
             allPoolsHtml += `</div>`; // Close collapsible-content
             allPoolsHtml += `</div>`; // Close mining-pool-status-section
-        } else {
-            // Show message when mining core is unreachable
-            allPoolsHtml += `<div class="mining-pool-status-section">`;
-            allPoolsHtml += `<h3>Mining Pool Status</h3>`;
-            allPoolsHtml += `<div class="details-grid">`;
-            allPoolsHtml += `<strong>Status:</strong> <span style="color: #dc3545; font-weight: bold;">Mining Core Unreachable</span>`;
-            allPoolsHtml += `<strong>Note:</strong> <span>Mining core data is not available, but individual miners are still monitored.</span>`;
-            allPoolsHtml += `</div>`;
-            allPoolsHtml += `</div>`;
+            } else {
+                // Show message when mining core is unreachable
+                allPoolsHtml += `<div class="mining-pool-status-section">`;
+                allPoolsHtml += `<h3><span class="collapse-button" data-target="mining-pool-content">−</span> Mining Pool Status</h3>`;
+                allPoolsHtml += '<div id="mining-pool-content" class="collapsible-content">';
+                allPoolsHtml += `<h4><span class="status-indicator status-error" style="margin-right: 8px;"></span><span style="color: #dc3545; font-weight: bold;">Mining Core Unreachable</span></h4>`;
+                allPoolsHtml += `<div class="details-grid">`;
+                allPoolsHtml += `<strong>Note:</strong> <span>Mining core data is not available, but individual miners are still monitored.</span>`;
+                allPoolsHtml += `</div>`;
+                allPoolsHtml += `</div>`;
+                allPoolsHtml += `</div>`;
+            }
         }
 
         // Add Crypto Node Status section
