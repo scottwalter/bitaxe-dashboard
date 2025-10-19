@@ -117,19 +117,31 @@ async function createConfigFile(formData) {
     template.cryptNodesEnabled = formData.enableCryptoNode === 'true';
 
     if (formData.enableCryptoNode === 'true') {
-        // Use template's existing cryptoNodes structure and update first entry
-        if (!template.cryptoNodes || !Array.isArray(template.cryptoNodes)) {
-            template.cryptoNodes = [];
+        // Get NodeDisplayFields from template if available
+        let nodeDisplayFields = [];
+        if (template.cryptoNodes && Array.isArray(template.cryptoNodes)) {
+            const displayFieldsEntry = template.cryptoNodes.find(item => item.NodeDisplayFields);
+            if (displayFieldsEntry) {
+                nodeDisplayFields = displayFieldsEntry.NodeDisplayFields;
+            }
         }
 
-        // Add user's crypto node configuration
-        template.cryptoNodes = [{
-            NodeType: formData.cryptoNodeType || 'dgb',
-            NodeName: formData.cryptoNodeName || 'Crypto Node',
-            NodeId: formData.cryptoNodeId || 'node1',
-            NodeAlgo: formData.cryptoNodeAlgo || 'sha256d',
-            NodeDisplayFields: template.cryptoNodes[0]?.NodeDisplayFields || []
-        }];
+        // Create new structure with Nodes array and NodeDisplayFields
+        template.cryptoNodes = [
+            {
+                Nodes: [
+                    {
+                        NodeType: formData.cryptoNodeType || 'dgb',
+                        NodeName: formData.cryptoNodeName || 'Crypto Node',
+                        NodeId: formData.cryptoNodeId || 'node1',
+                        NodeAlgo: formData.cryptoNodeAlgo || 'sha256d'
+                    }
+                ]
+            },
+            {
+                NodeDisplayFields: nodeDisplayFields
+            }
+        ];
     } else {
         // If not enabled, set to empty array
         template.cryptoNodes = [];

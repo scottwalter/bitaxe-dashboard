@@ -90,23 +90,11 @@
     "cryptNodesEnabled":true,
     "cryptoNodes": [
         {
-          "Nodes": [
-            { 
-            "NodeType":"dgb",
-            "NodeName":"DigitByte Node-148",
-            "NodeId":"dgb1",
-            "NodeAlgo":"sha265d"
-            },
-            { 
-            "NodeType":"dgb",
-            "NodeName":"DigitByte Node-138",
-            "NodeId":"dgb2",
-            "NodeAlgo":"sha265d"
-            }
-          ]
-        },
-        {
-           "NodeDisplayFields": [
+        "NodeType":"dgb",
+        "NodeName":"DigitByte Node",
+        "NodeId":"dgb1",
+        "NodeAlgo":"sha265d",
+        "NodeDisplayFields": [
             {
                 "Block Chain Info":[
                     {"chain":"Chain"},

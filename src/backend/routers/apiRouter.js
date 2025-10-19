@@ -12,6 +12,7 @@ const instanceServices = require('../services/instanceServices');
 const authController = require('../authController');
 const configurationServices = require('../services/configurationServices');
 const statisticsServices = require('../services/statisticsServices');
+const migrationController = require('../controllers/migrationController');
 
 /**
  * Defines the routing map for all internal API endpoints. Each route object specifies:
@@ -63,9 +64,21 @@ const routes = [
         method: 'GET',
         handler: statisticsServices.route,
         exactMatch: false
+    },
+    {
+        path: '/api/migration/status',
+        method: 'GET',
+        handler: migrationController.getMigrationStatus,
+        exactMatch: true
+    },
+    {
+        path: '/api/migration/clear',
+        method: 'POST',
+        handler: migrationController.clearMigrationStatus,
+        exactMatch: true
     }
     // Add more routes here as your application grows
-    
+
 ]
 
 /**

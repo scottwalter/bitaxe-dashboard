@@ -68,13 +68,17 @@ async function startServer() {
     let isBootstrapMode = false;
     let router = null;
     let configurationManager = null;
-    
+
     if (!configFilesExist) {
         console.log('Configuration files missing. Starting in bootstrap mode...');
         isBootstrapMode = true;
         config = { web_server_port: DEFAULT_WEB_SERVER_PORT };
     } else {
         try {
+            // Run configuration migration before loading config
+            const configMigrationService = require('./backend/services/configMigrationService');
+            await configMigrationService.migrateConfig();
+
             // Only require these modules if not in bootstrap mode
             router = require('./backend/routers/router');
             configurationManager = require('./backend/services/configurationManager');
@@ -100,12 +104,16 @@ async function startServer() {
         try {
             console.log('Bootstrap complete. Switching to normal mode...');
             isBootstrapMode = false;
-            
+
+            // Run configuration migration before loading config
+            const configMigrationService = require('./backend/services/configMigrationService');
+            await configMigrationService.migrateConfig();
+
             // Load the required modules
             router = require('./backend/routers/router');
             configurationManager = require('./backend/services/configurationManager');
             config = await configurationManager.loadConfig();
-            
+
             console.log('Successfully switched to normal mode. Application ready!');
         } catch (error) {
             console.error('Failed to switch to normal mode:', error);

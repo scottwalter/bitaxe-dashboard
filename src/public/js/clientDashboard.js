@@ -76,6 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Check for configuration migration on page load
+    checkConfigurationMigration();
+
     // Configuration button will be added after data is loaded and we know the disable_configurations setting
 
     // --- Retrieve and Parse Data via Fetch ---
@@ -719,6 +722,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         allPoolsHtml += `<div class="category-header">Fan</div><strong>Speed:</strong><span>${displayFanSpeed}</span><strong>RPM:</strong><span>${miner.fanrpm}</span>`;
                         //Uptime
                         allPoolsHtml += `<div class="category-header">General</div><strong>Frequency:</strong><span>${miner.frequency}</span><strong>Up Time:</strong><span>${formattedUpTime}</span>`;
+                        allPoolsHtml += `<div class="category-header">Stratum</div><strong>Host:</strong><span>${miner.stratumURL}</span><strong>Port:</strong><span>${miner.stratumPort}</span>`;
                         allPoolsHtml += `</div>`; // Close details-grid-five-columns for individual miner status
                         allPoolsHtml += '</div>'; // Close miner-card
                     }
@@ -1212,6 +1216,77 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Restore saved section states
         restoreSavedSectionStates();
+    }
+
+    /**
+     * Checks if a configuration migration was performed and shows a notification modal
+     */
+    async function checkConfigurationMigration() {
+        try {
+            const response = await fetch('/api/migration/status');
+            const result = await response.json();
+
+            if (result.success && result.data && result.data.migrated) {
+                showMigrationNotification(result.data);
+            }
+        } catch (error) {
+            console.error('Error checking migration status:', error);
+        }
+    }
+
+    /**
+     * Shows a modal notification about the configuration migration
+     * @param {object} migrationData - Migration status data
+     */
+    function showMigrationNotification(migrationData) {
+        const existingModal = document.getElementById('migration-modal');
+        if (existingModal) existingModal.remove();
+
+        let migrationsHtml = '<ul style="text-align: left; margin: 10px 0;">';
+        migrationData.migrations.forEach(migration => {
+            migrationsHtml += `<li>${migration}</li>`;
+        });
+        migrationsHtml += '</ul>';
+
+        const modalHtml = `
+            <div id="migration-modal" class="modal">
+                <div class="modal-content" style="max-width: 600px;">
+                    <h2 style="color: #4CAF50;">Configuration Updated</h2>
+                    <p style="font-size: 1.1em; margin: 20px 0;">
+                        Your configuration has been automatically migrated to the latest format.
+                    </p>
+                    <p style="margin: 10px 0;">
+                        <strong>Changes applied:</strong>
+                    </p>
+                    ${migrationsHtml}
+                    <p style="margin: 20px 0; font-size: 0.95em; color: #aaa;">
+                        No action is required. Your settings have been preserved.
+                    </p>
+                    <div class="modal-actions">
+                        <button type="button" class="animated-button confirm-button" id="migration-ok-btn">OK</button>
+                    </div>
+                </div>
+            </div>`;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        const modal = document.getElementById('migration-modal');
+        const okButton = document.getElementById('migration-ok-btn');
+
+        const closeModal = async () => {
+            // Clear the migration status on the backend
+            try {
+                await fetch('/api/migration/clear', { method: 'POST' });
+            } catch (error) {
+                console.error('Error clearing migration status:', error);
+            }
+            modal.remove();
+        };
+
+        okButton.addEventListener('click', closeModal);
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) closeModal();
+        });
     }
 
     // Initialize the dashboard

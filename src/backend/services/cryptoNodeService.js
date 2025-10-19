@@ -117,8 +117,33 @@ async function fetchAllCryptoNodes(config) {
         return [];
     }
 
+    // Parse the new configuration structure
+    let nodes = [];
+    let displayFields = [];
+
+    // Find the Nodes and NodeDisplayFields in the cryptoNodes array
+    config.cryptoNodes.forEach(item => {
+        if (item.Nodes && Array.isArray(item.Nodes)) {
+            nodes = item.Nodes;
+        }
+        if (item.NodeDisplayFields && Array.isArray(item.NodeDisplayFields)) {
+            displayFields = item.NodeDisplayFields;
+        }
+    });
+
+    // If nodes array is empty, return empty array
+    if (nodes.length === 0) {
+        return [];
+    }
+
+    // Add the common displayFields to each node configuration
+    const nodeConfigsWithDisplayFields = nodes.map(node => ({
+        ...node,
+        NodeDisplayFields: displayFields
+    }));
+
     // Fetch data for all nodes concurrently
-    const nodePromises = config.cryptoNodes.map(nodeConfig =>
+    const nodePromises = nodeConfigsWithDisplayFields.map(nodeConfig =>
         fetchCryptoNodeData(nodeConfig)
     );
 
