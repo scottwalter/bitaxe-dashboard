@@ -3,7 +3,7 @@ WORKDIR /app
 COPY src/package*.json ./
 
 # Install all dependencies (including dev deps for build)
-RUN npm install -g npm@11.6.1
+# Skip npm upgrade to avoid QEMU issues on ARM64 builds
 RUN npm ci && npm cache clean --force
 
 COPY src/ ./
