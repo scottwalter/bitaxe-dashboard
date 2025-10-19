@@ -55,7 +55,10 @@
         }
     ],
     "mining_core_enabled": true,
-    "mining_core_url": "http:/192.168.7.149:4000",
+    "mining_core_url": [ 
+        {"Mining Core 149":"http:/192.168.7.149:4000"},
+        {"Mining Core 138":"http:/192.168.7.138:4000"}
+    ],
     "mining_core_display_fields": [
         {
             "Network Status": [

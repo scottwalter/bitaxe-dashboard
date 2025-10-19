@@ -136,15 +136,27 @@
                                 <input type="checkbox" id="enableMiningCore" name="enableMiningCore" value="true">
                                 Enable Mining Core Integration
                             </label>
-                            <small>Connect to a mining pool server for additional statistics</small>
+                            <small>Connect to mining pool servers for additional statistics</small>
                         </div>
 
                         <div id="miningCoreFields" style="display: none;">
-                            <div class="form-group">
-                                <label for="miningCoreUrl">Mining Core API URL</label>
-                                <input type="url" id="miningCoreUrl" name="miningCoreUrl" placeholder="http://192.168.1.100:4000">
-                                <small>URL to your mining core API endpoint</small>
+                            <p>Add your Mining Core instance URLs below. You can add more later through the configuration menu.</p>
+
+                            <div id="miningCoreInstances">
+                                <div class="mining-core-instance">
+                                    <div class="form-group">
+                                        <label>Instance Name</label>
+                                        <input type="text" name="miningCoreName" placeholder="Mining Core 149">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Mining Core URL</label>
+                                        <input type="url" name="miningCoreUrl" placeholder="http://192.168.1.100:4000">
+                                    </div>
+                                    <button type="button" class="remove-mining-core btn-danger" style="display: none;">Remove</button>
+                                </div>
                             </div>
+
+                            <button type="button" id="addMiningCore" class="btn-secondary">Add Another Mining Core</button>
                         </div>
                     </div>
 

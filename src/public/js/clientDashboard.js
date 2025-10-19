@@ -650,7 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     /**
      * Generates the detailed HTML for mining core summary in the right pane.
-     * @param {object} data - The mining core data object (now an array of pools).
+     * @param {Array} data - The mining core data array (array of instances, each with pools).
      * @param {Array<object>} displayFields - The display_fields configuration for mining core.
      * @returns {string} The HTML string for the mining core details.
      */
@@ -663,11 +663,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Start with no title, just the content
         let allPoolsHtml = '';
         //Show date / time of last update
-         allPoolsHtml += `<div class="mining-pool-summary-card">`; 
+         allPoolsHtml += `<div class="mining-pool-summary-card">`;
         allPoolsHtml += '<h3>Status Timestamp</h3>';
-        allPoolsHtml += `<div class="details-grid">`; 
+        allPoolsHtml += `<div class="details-grid">`;
         allPoolsHtml += `<strong>Last Updated:</strong> <span>${new Date().toLocaleString()}</span>`;
-        allPoolsHtml += `</div>`; // Close details-grid for timestamp  
+        allPoolsHtml += `</div>`; // Close details-grid for timestamp
         allPoolsHtml += `</div>`; // Close mining-pool-summary-card for timestamp
 
 
@@ -733,93 +733,121 @@ document.addEventListener('DOMContentLoaded', () => {
         if (miningCoreEnabled) {
             // Check if mining core data is available
             if (data && data.length > 0) {
-            // Create Mining Pool Status wrapper section
-            allPoolsHtml += `<div class="mining-pool-status-section">`;
-            allPoolsHtml += '<h3><span class="collapse-button" data-target="mining-pool-content">−</span> Mining Pool Status</h3>';
-            allPoolsHtml += '<div id="mining-pool-content" class="collapsible-content">';
-            allPoolsHtml += '<div class="pool-cards-container">'; // New container for responsive pool card layout
+                // Create single Mining Pool Status wrapper section
+                allPoolsHtml += `<div class="mining-pool-status-section">`;
+                allPoolsHtml += '<h3><span class="collapse-button" data-target="mining-pool-content">−</span> Mining Pool Status</h3>';
+                allPoolsHtml += '<div id="mining-pool-content" class="collapsible-content">';
+                allPoolsHtml += '<div class="pool-cards-container">'; // New container for responsive pool card layout
 
-            data.forEach((poolData, index) => { // Loop through each pool
-            allPoolsHtml += `<div class="pool-card">`; // Individual pool card wrapper
-            allPoolsHtml += `<h4><span class="status-indicator status-online" style="margin-right: 8px;"></span>${poolData.id.toUpperCase()} (${poolData.coin.symbol} - ${poolData.paymentProcessing.payoutScheme})</h4>`; // Pool specific heading
+                // Loop through each mining core instance
+                data.forEach((miningCoreInstance) => {
+                    const instanceName = miningCoreInstance.instanceName;
+                    const instanceStatus = miningCoreInstance.status;
+                    const pools = miningCoreInstance.pools || [];
 
-            displayFields.forEach(categoryObj => {
-                const categoryName = Object.keys(categoryObj)[0];
-                const fieldsArray = categoryObj[categoryName];
+                    if (instanceStatus === 'Error') {
+                        // Show error state for this instance as a card
+                        allPoolsHtml += `<div class="pool-card">`;
+                        allPoolsHtml += `<h4><span class="status-indicator status-error" style="margin-right: 8px;"></span>${instanceName}: <span style="color: #dc3545; font-weight: bold;">Mining Core Unreachable</span></h4>`;
+                        allPoolsHtml += `<div class="details-grid">`;
+                        allPoolsHtml += `<strong>Message:</strong> <span>${miningCoreInstance.message || 'Could not connect to mining core'}</span>`;
+                        allPoolsHtml += `<strong>Note:</strong> <span>Mining core data is not available, but individual miners are still monitored.</span>`;
+                        allPoolsHtml += `</div>`;
+                        allPoolsHtml += `</div>`; // Close pool-card
+                    } else if (pools.length > 0) {
+                        // Show pools for this instance
+                        pools.forEach((poolData) => { // Loop through each pool in this instance
+                            allPoolsHtml += `<div class="pool-card">`; // Individual pool card wrapper
+                            allPoolsHtml += `<h4><span class="status-indicator status-online" style="margin-right: 8px;"></span>${poolData.id.toUpperCase()} (${poolData.coin.symbol} - ${poolData.paymentProcessing.payoutScheme})</h4>`; // Pool specific heading
 
-                // Create field data mapping for easier access
-                const fieldData = {};
-                fieldsArray.forEach(fieldObj => {
-                    let fieldKey = Object.keys(fieldObj)[0];
-                    const fieldLabel = fieldObj[fieldKey];
+                            displayFields.forEach(categoryObj => {
+                                const categoryName = Object.keys(categoryObj)[0];
+                                const fieldsArray = categoryObj[categoryName];
 
-                    // Correct the typo from the config file for 'lasNetworkBlockTime'.
-                    if (fieldKey === 'lasNetworkBlockTime') {
-                        fieldKey = 'lastNetworkBlockTime';
+                                // Create field data mapping for easier access
+                                const fieldData = {};
+                                fieldsArray.forEach(fieldObj => {
+                                    let fieldKey = Object.keys(fieldObj)[0];
+                                    const fieldLabel = fieldObj[fieldKey];
+
+                                    // Correct the typo from the config file for 'lasNetworkBlockTime'.
+                                    if (fieldKey === 'lasNetworkBlockTime') {
+                                        fieldKey = 'lastNetworkBlockTime';
+                                    }
+
+                                    const displayValue = getNestedMiningCoreValue(fieldKey, poolData);
+                                    const formattedValue = formatFieldValue(fieldKey, displayValue);
+                                    fieldData[fieldKey] = { label: fieldLabel, value: formattedValue };
+                                });
+
+                                // Generate custom 5-column layouts based on category
+                                if (categoryName === 'Network Status') {
+                                    // Add instance name to Network Status header
+                                    allPoolsHtml += `<h4>${categoryName} - ${instanceName}</h4><div class="details-grid-five-columns">`;
+                                    // Network row
+                                    allPoolsHtml += `<div class="category-header">Network</div><strong>Difficulty:</strong><span>${fieldData.networkDifficulty?.value || 'N/A'}</span><strong>Hashrate:</strong><span>${fieldData.networkHashrate?.value || 'N/A'}</span>`;
+                                    // Block row
+                                    allPoolsHtml += `<div class="category-header">Block</div><strong>Height:</strong><span>${fieldData.blockHeight?.value || 'N/A'}</span><strong>Last Block Time:</strong><span>${fieldData.lastNetworkBlockTime?.value || 'N/A'}</span>`;
+                                    // General row
+                                    allPoolsHtml += `<div class="category-header">General</div><strong>Connected Peers:</strong><span>${fieldData.connectedPeers?.value || 'N/A'}</span><strong>Node Version:</strong><span>${fieldData.nodeVersion?.value || 'N/A'}</span>`;
+                                    allPoolsHtml += `</div>`;
+                                } else if (categoryName === 'Miner(s) Status') {
+                                    allPoolsHtml += `<h4>${categoryName}</h4><div class="details-grid-five-columns">`;
+                                    // Status row
+                                    allPoolsHtml += `<div class="category-header">Status</div><strong>Connected Miners:</strong><span>${fieldData.connectedMiners?.value || 'N/A'}</span><strong>Pool Hashrate:</strong><span>${fieldData.poolHashrate?.value || 'N/A'}</span>`;
+                                    allPoolsHtml += `</div>`;
+                                } else if (categoryName === 'Rewards' || categoryName === 'Rewards Status') {
+                                    allPoolsHtml += `<h4>${categoryName}</h4><div class="details-grid-five-columns">`;
+                                    // Total row (Paid and Blocks)
+                                    allPoolsHtml += `<div class="category-header">Total</div><strong>Paid:</strong><span>${fieldData.totalPaid?.value || 'N/A'}</span><strong>Blocks:</strong><span>${fieldData.totalBlocks?.value || 'N/A'}</span>`;
+                                    // Total row (Confirmed and Pending Blocks)
+                                    allPoolsHtml += `<div class="category-header">Total</div><strong>Confirmed Blocks:</strong><span>${fieldData.totalConfirmedBlocks?.value || 'N/A'}</span><strong>Pending Blocks:</strong><span>${fieldData.totalPendingBlocks?.value || 'N/A'}</span>`;
+                                    // Reward row
+                                    allPoolsHtml += `<div class="category-header">Reward</div><strong>Block Reward:</strong><span>${fieldData.blockReward?.value || 'N/A'}</span><strong>Pool Block Time:</strong><span>${fieldData.lastPoolBlockTime?.value || 'N/A'}</span>`;
+                                    allPoolsHtml += `</div>`;
+                                } else {
+                                    // Fallback to original layout for unknown categories
+                                    allPoolsHtml += `<h4>${categoryName}</h4><div class="details-grid">`;
+                                    fieldsArray.forEach(fieldObj => {
+                                        let fieldKey = Object.keys(fieldObj)[0];
+                                        const fieldLabel = fieldObj[fieldKey];
+
+                                        if (fieldKey === 'lasNetworkBlockTime') {
+                                            fieldKey = 'lastNetworkBlockTime';
+                                        }
+
+                                        const displayValue = getNestedMiningCoreValue(fieldKey, poolData);
+                                        const formattedValue = formatFieldValue(fieldKey, displayValue);
+
+                                        allPoolsHtml += `<strong>${fieldLabel}:</strong> <span>${formattedValue}</span>`;
+                                    });
+                                    allPoolsHtml += `</div>`;
+                                }
+                            });
+                            allPoolsHtml += `</div>`; // Close pool-card
+                        });
+                    } else if (instanceStatus === 'OK') {
+                        // No pools available for this instance but it's reachable
+                        allPoolsHtml += `<div class="pool-card">`;
+                        allPoolsHtml += `<h4><span class="status-indicator status-online" style="margin-right: 8px;"></span>${instanceName}</h4>`;
+                        allPoolsHtml += `<div class="details-grid">`;
+                        allPoolsHtml += `<strong>Note:</strong> <span>No pools configured for this mining core instance.</span>`;
+                        allPoolsHtml += `</div>`;
+                        allPoolsHtml += `</div>`; // Close pool-card
                     }
-
-                    const displayValue = getNestedMiningCoreValue(fieldKey, poolData);
-                    const formattedValue = formatFieldValue(fieldKey, displayValue);
-                    fieldData[fieldKey] = { label: fieldLabel, value: formattedValue };
                 });
 
-                // Generate custom 5-column layouts based on category
-                if (categoryName === 'Network Status') {
-                    allPoolsHtml += `<h4>${categoryName}</h4><div class="details-grid-five-columns">`;
-                    // Network row
-                    allPoolsHtml += `<div class="category-header">Network</div><strong>Difficulty:</strong><span>${fieldData.networkDifficulty?.value || 'N/A'}</span><strong>Hashrate:</strong><span>${fieldData.networkHashrate?.value || 'N/A'}</span>`;
-                    // Block row
-                    allPoolsHtml += `<div class="category-header">Block</div><strong>Height:</strong><span>${fieldData.blockHeight?.value || 'N/A'}</span><strong>Last Block Time:</strong><span>${fieldData.lastNetworkBlockTime?.value || 'N/A'}</span>`;
-                    // General row
-                    allPoolsHtml += `<div class="category-header">General</div><strong>Connected Peers:</strong><span>${fieldData.connectedPeers?.value || 'N/A'}</span><strong>Node Version:</strong><span>${fieldData.nodeVersion?.value || 'N/A'}</span>`;
-                    allPoolsHtml += `</div>`;
-                } else if (categoryName === 'Miner(s) Status') {
-                    allPoolsHtml += `<h4>${categoryName}</h4><div class="details-grid-five-columns">`;
-                    // Status row
-                    allPoolsHtml += `<div class="category-header">Status</div><strong>Connected Miners:</strong><span>${fieldData.connectedMiners?.value || 'N/A'}</span><strong>Pool Hashrate:</strong><span>${fieldData.poolHashrate?.value || 'N/A'}</span>`;
-                    allPoolsHtml += `</div>`;
-                } else if (categoryName === 'Rewards' || categoryName === 'Rewards Status') {
-                    allPoolsHtml += `<h4>${categoryName}</h4><div class="details-grid-five-columns">`;
-                    // Total row (Paid and Blocks)
-                    allPoolsHtml += `<div class="category-header">Total</div><strong>Paid:</strong><span>${fieldData.totalPaid?.value || 'N/A'}</span><strong>Blocks:</strong><span>${fieldData.totalBlocks?.value || 'N/A'}</span>`;
-                    // Total row (Confirmed and Pending Blocks)
-                    allPoolsHtml += `<div class="category-header">Total</div><strong>Confirmed Blocks:</strong><span>${fieldData.totalConfirmedBlocks?.value || 'N/A'}</span><strong>Pending Blocks:</strong><span>${fieldData.totalPendingBlocks?.value || 'N/A'}</span>`;
-                    // Reward row
-                    allPoolsHtml += `<div class="category-header">Reward</div><strong>Block Reward:</strong><span>${fieldData.blockReward?.value || 'N/A'}</span><strong>Pool Block Time:</strong><span>${fieldData.lastPoolBlockTime?.value || 'N/A'}</span>`;
-                    allPoolsHtml += `</div>`;
-                } else {
-                    // Fallback to original layout for unknown categories
-                    allPoolsHtml += `<h4>${categoryName}</h4><div class="details-grid">`;
-                    fieldsArray.forEach(fieldObj => {
-                        let fieldKey = Object.keys(fieldObj)[0];
-                        const fieldLabel = fieldObj[fieldKey];
-
-                        if (fieldKey === 'lasNetworkBlockTime') {
-                            fieldKey = 'lastNetworkBlockTime';
-                        }
-
-                        const displayValue = getNestedMiningCoreValue(fieldKey, poolData);
-                        const formattedValue = formatFieldValue(fieldKey, displayValue);
-
-                        allPoolsHtml += `<strong>${fieldLabel}:</strong> <span>${formattedValue}</span>`;
-                    });
-                    allPoolsHtml += `</div>`;
-                }
-            });
-            allPoolsHtml += `</div>`; // Close pool-card
-            });
-
-            allPoolsHtml += '</div>'; // Close pool-cards-container
-            allPoolsHtml += `</div>`; // Close collapsible-content
-            allPoolsHtml += `</div>`; // Close mining-pool-status-section
+                allPoolsHtml += '</div>'; // Close pool-cards-container
+                allPoolsHtml += `</div>`; // Close collapsible-content
+                allPoolsHtml += `</div>`; // Close mining-pool-status-section
             } else {
-                // Show message when mining core is unreachable
+                // Show message when no mining core instances are configured
                 allPoolsHtml += `<div class="mining-pool-status-section">`;
                 allPoolsHtml += `<h3><span class="collapse-button" data-target="mining-pool-content">−</span> Mining Pool Status</h3>`;
                 allPoolsHtml += '<div id="mining-pool-content" class="collapsible-content">';
-                allPoolsHtml += `<h4><span class="status-indicator status-error" style="margin-right: 8px;"></span><span style="color: #dc3545; font-weight: bold;">Mining Core Unreachable</span></h4>`;
+                allPoolsHtml += `<h4><span class="status-indicator status-error" style="margin-right: 8px;"></span><span style="color: #dc3545; font-weight: bold;">No Mining Core Instances Configured</span></h4>`;
                 allPoolsHtml += `<div class="details-grid">`;
-                allPoolsHtml += `<strong>Note:</strong> <span>Mining core data is not available, but individual miners are still monitored.</span>`;
+                allPoolsHtml += `<strong>Note:</strong> <span>Mining core is enabled but no instances are configured.</span>`;
                 allPoolsHtml += `</div>`;
                 allPoolsHtml += `</div>`;
                 allPoolsHtml += `</div>`;

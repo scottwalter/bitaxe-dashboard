@@ -83,7 +83,11 @@ const modalService = (() => {
             category: 'Mining Core Integration',
             fields: [
                 { key: 'mining_core_enabled', label: 'Enable Mining Core', type: 'checkbox' },
-                { key: 'mining_core_url', label: 'Mining Core URL', type: 'text', placeholder: 'http://192.168.1.100:4000' },
+                {
+                    key: 'mining_core_url',
+                    label: '',
+                    type: 'mining_core_instances_table'
+                },
             ]
         },
         {
@@ -118,8 +122,8 @@ const modalService = (() => {
             category.fields.forEach(field => {
                 const currentValue = deviceData[field.key] !== undefined ? deviceData[field.key] : '';
 
-                // Skip label for bitaxe_instances_table type
-                if (field.type !== 'bitaxe_instances_table') {
+                // Skip label for table types
+                if (field.type !== 'bitaxe_instances_table' && field.type !== 'mining_core_instances_table') {
                     formHtml += `<label for="${field.key}">${field.label}:</label>`;
                 }
 
@@ -146,6 +150,9 @@ const modalService = (() => {
                     case 'bitaxe_instances_table':
                         fieldHtml = generateBitaxeInstancesTable(currentValue);
                         break;
+                    case 'mining_core_instances_table':
+                        fieldHtml = generateMiningCoreInstancesTable(currentValue);
+                        break;
                     default: // text, number
                         const maxAttr = field.max ? `max="${field.max}"` : '';
                         const minAttr = field.min ? `min="${field.min}"` : '';
@@ -153,7 +160,7 @@ const modalService = (() => {
                         fieldHtml = `<input type="${field.type}" id="${field.key}" name="${field.key}" value="${currentValue}" ${maxAttr} ${minAttr} ${placeholderAttr}>`;
                 }
                 let noteHtml = field.note ? ` <small>(${field.note})</small>` : '';
-                if (field.type === 'bitaxe_instances_table') {
+                if (field.type === 'bitaxe_instances_table' || field.type === 'mining_core_instances_table') {
                     // For complex editors, span the full width
                     formHtml += `<div class="full-width-field">${fieldHtml}${noteHtml}</div>`;
                 } else {
@@ -283,25 +290,170 @@ const modalService = (() => {
             console.error('Bitaxe instances container not found');
             return [];
         }
-        
+
         const rows = container.querySelectorAll('.instance-row');
         const instances = [];
-        
-        
+
+
         rows.forEach((row, index) => {
             const nameInput = row.querySelector('.instance-name');
             const urlInput = row.querySelector('.instance-url');
             const name = nameInput ? nameInput.value.trim() : '';
             const url = urlInput ? urlInput.value.trim() : '';
-            
-            
+
+
             if (name && url) {
                 const instance = {};
                 instance[name] = url;
                 instances.push(instance);
             }
         });
-        
+
+        return instances;
+    }
+
+    /**
+     * Generates HTML for the Mining Core instances table with add/remove functionality.
+     * @param {Array} instances - Array of instance objects from the configuration.
+     * @returns {string} The HTML string for the instances table.
+     */
+    function generateMiningCoreInstancesTable(instances) {
+        const instancesArray = Array.isArray(instances) ? instances : [];
+
+        let tableHtml = `
+            <div id="mining-core-instances-container">
+                <div class="mining-core-table-header">
+                    <span>Instance Name</span>
+                    <span>URL</span>
+                    <span>Actions</span>
+                </div>
+                <div id="mining-core-instances-rows">`;
+
+        // Add existing instances
+        instancesArray.forEach((instance, index) => {
+            const instanceName = Object.keys(instance)[0] || '';
+            const instanceUrl = instance[instanceName] || '';
+            tableHtml += generateMiningCoreInstanceRow(instanceName, instanceUrl, index);
+        });
+
+        // Add at least one empty row if no instances exist
+        if (instancesArray.length === 0) {
+            tableHtml += generateMiningCoreInstanceRow('', '', 0);
+        }
+
+        tableHtml += `
+                </div>
+                <button type="button" class="animated-button add-instance-btn" onclick="addMiningCoreInstance()">
+                    + Add Mining Core Instance
+                </button>
+            </div>`;
+
+        return tableHtml;
+    }
+
+    /**
+     * Generates HTML for a single Mining Core instance row.
+     * @param {string} name - The instance name.
+     * @param {string} url - The instance URL.
+     * @param {number} index - The row index.
+     * @returns {string} The HTML string for the instance row.
+     */
+    function generateMiningCoreInstanceRow(name, url, index) {
+        return `
+            <div class="mining-core-instance-row" data-index="${index}">
+                <input type="text" class="mining-core-instance-name" placeholder="Mining Core 149" value="${name}">
+                <input type="text" class="mining-core-instance-url" placeholder="http://192.168.1.100:4000" value="${url}">
+                <button type="button" class="animated-button remove-instance-btn" onclick="removeMiningCoreInstance(${index})">
+                    Remove
+                </button>
+            </div>`;
+    }
+
+    /**
+     * Adds a new empty Mining Core instance row.
+     */
+    function addMiningCoreInstance() {
+        const container = document.getElementById('mining-core-instances-rows');
+        const newIndex = container.children.length;
+        const newRow = document.createElement('div');
+        newRow.innerHTML = generateMiningCoreInstanceRow('', '', newIndex);
+        container.appendChild(newRow.firstElementChild);
+
+        // Update indices for all rows
+        updateMiningCoreInstanceIndices();
+    }
+
+    /**
+     * Removes a Mining Core instance row.
+     * @param {number} index - The index of the row to remove.
+     */
+    function removeMiningCoreInstance(index) {
+        const container = document.getElementById('mining-core-instances-rows');
+        const rows = container.querySelectorAll('.mining-core-instance-row');
+
+        // Allow removing all rows for mining core (it's optional)
+        if (rows.length <= 1) {
+            // Clear the last row instead of removing it
+            const lastRow = container.querySelector(`[data-index="${index}"]`);
+            if (lastRow) {
+                const nameInput = lastRow.querySelector('.mining-core-instance-name');
+                const urlInput = lastRow.querySelector('.mining-core-instance-url');
+                if (nameInput) nameInput.value = '';
+                if (urlInput) urlInput.value = '';
+            }
+            return;
+        }
+
+        const rowToRemove = container.querySelector(`[data-index="${index}"]`);
+        if (rowToRemove) {
+            rowToRemove.remove();
+            updateMiningCoreInstanceIndices();
+        }
+    }
+
+    /**
+     * Updates the data-index attributes and onclick handlers for all Mining Core instance rows.
+     */
+    function updateMiningCoreInstanceIndices() {
+        const container = document.getElementById('mining-core-instances-rows');
+        const rows = container.querySelectorAll('.mining-core-instance-row');
+
+        rows.forEach((row, index) => {
+            row.setAttribute('data-index', index);
+            const removeBtn = row.querySelector('.remove-instance-btn');
+            if (removeBtn) {
+                removeBtn.setAttribute('onclick', `removeMiningCoreInstance(${index})`);
+            }
+        });
+    }
+
+    /**
+     * Collects data from all Mining Core instance rows.
+     * @returns {Array} Array of instance objects.
+     */
+    function collectMiningCoreInstancesData() {
+        const container = document.getElementById('mining-core-instances-rows');
+        if (!container) {
+            console.error('Mining Core instances container not found');
+            return [];
+        }
+
+        const rows = container.querySelectorAll('.mining-core-instance-row');
+        const instances = [];
+
+        rows.forEach((row) => {
+            const nameInput = row.querySelector('.mining-core-instance-name');
+            const urlInput = row.querySelector('.mining-core-instance-url');
+            const name = nameInput ? nameInput.value.trim() : '';
+            const url = urlInput ? urlInput.value.trim() : '';
+
+            if (name && url) {
+                const instance = {};
+                instance[name] = url;
+                instances.push(instance);
+            }
+        });
+
         return instances;
     }
 
@@ -393,7 +545,7 @@ const modalService = (() => {
         configFormConfig.forEach(category => {
             category.fields.forEach(field => {
                 let value;
-                
+
                 if (field.type === 'bitaxe_instances_table') {
                     // Handle bitaxe instances specially - no DOM element with name attribute
                     value = collectBitaxeInstancesData();
@@ -401,6 +553,11 @@ const modalService = (() => {
                         alert('At least one Bitaxe device instance is required.');
                         return;
                     }
+                    payload[field.key] = value;
+                } else if (field.type === 'mining_core_instances_table') {
+                    // Handle mining core instances specially - no DOM element with name attribute
+                    value = collectMiningCoreInstancesData();
+                    // Mining core instances are optional, so empty array is OK
                     payload[field.key] = value;
                 } else {
                     // Handle all other field types normally
@@ -560,6 +717,8 @@ const modalService = (() => {
     // Make instance management functions globally accessible for onclick handlers
     window.addBitaxeInstance = addBitaxeInstance;
     window.removeBitaxeInstance = removeBitaxeInstance;
+    window.addMiningCoreInstance = addMiningCoreInstance;
+    window.removeMiningCoreInstance = removeMiningCoreInstance;
 
     // Expose public functions
     return {
@@ -568,6 +727,9 @@ const modalService = (() => {
         openConfigModal,
         addBitaxeInstance,
         removeBitaxeInstance,
-        collectBitaxeInstancesData
+        collectBitaxeInstancesData,
+        addMiningCoreInstance,
+        removeMiningCoreInstance,
+        collectMiningCoreInstancesData
     };
 })();

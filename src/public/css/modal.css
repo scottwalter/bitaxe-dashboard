@@ -239,3 +239,55 @@
 .add-instance-btn::before {
     background-color: #218838 !important;
 }
+
+/* Mining Core Instances Table Styling */
+#mining-core-instances-container {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.mining-core-table-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr 100px;
+    gap: 10px;
+    padding: 10px;
+    background-color: #444;
+    border-radius: 4px 4px 0 0;
+    font-weight: bold;
+    color: #f0f0f0;
+    border-bottom: 1px solid #555;
+}
+
+#mining-core-instances-rows {
+    background-color: #3a3a3a;
+    border-radius: 0 0 4px 4px;
+    border: 1px solid #555;
+    border-top: none;
+}
+
+.mining-core-instance-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 100px;
+    gap: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #555;
+}
+
+.mining-core-instance-row:last-child {
+    border-bottom: none;
+}
+
+.mining-core-instance-row input[type="text"] {
+    background-color: #2c2c2c;
+    color: #e0e0e0;
+    border: 1px solid #666;
+    padding: 8px;
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease-in-out;
+}
+
+.mining-core-instance-row input[type="text"]:focus {
+    border-color: #ff1744;
+    outline: none;
+}

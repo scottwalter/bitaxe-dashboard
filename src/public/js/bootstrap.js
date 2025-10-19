@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const generateJWTButton = document.getElementById('generateJWT');
     const addDeviceButton = document.getElementById('addDevice');
     const bitaxeInstancesContainer = document.getElementById('bitaxeInstances');
+    const addMiningCoreButton = document.getElementById('addMiningCore');
+    const miningCoreInstancesContainer = document.getElementById('miningCoreInstances');
     const messageDiv = document.getElementById('bootstrap-message');
     const passwordField = document.getElementById('password');
     const confirmPasswordField = document.getElementById('confirmPassword');
@@ -113,14 +115,20 @@ document.addEventListener('DOMContentLoaded', function() {
         addDeviceInstance();
     });
 
+    // Add mining core button
+    addMiningCoreButton.addEventListener('click', function() {
+        addMiningCoreInstance();
+    });
+
     // Form submission
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         await submitBootstrapForm();
     });
 
-    // Set up initial remove button handler
+    // Set up initial remove button handlers
     updateRemoveButtonHandlers();
+    updateRemoveMiningCoreButtonHandlers();
 
     /**
      * Generates a random 32-character alphanumeric string for JWT key
@@ -165,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const removeButtons = document.querySelectorAll('.remove-device');
         const deviceInstances = document.querySelectorAll('.device-instance');
 
-        removeButtons.forEach((button, index) => {
+        removeButtons.forEach((button) => {
             // Show/hide remove buttons based on device count
             if (deviceInstances.length > 1) {
                 button.style.display = 'inline-block';
@@ -178,6 +186,61 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (deviceInstances.length > 1) {
                     button.parentElement.remove();
                     updateRemoveButtonHandlers();
+                }
+            };
+        });
+    }
+
+    /**
+     * Adds a new mining core instance to the form
+     */
+    function addMiningCoreInstance() {
+        const instanceCount = miningCoreInstancesContainer.children.length;
+        const miningCoreInstance = document.createElement('div');
+        miningCoreInstance.className = 'mining-core-instance';
+
+        miningCoreInstance.innerHTML = `
+            <div class="form-group">
+                <label>Instance Name</label>
+                <input type="text" name="miningCoreName" placeholder="Mining Core ${instanceCount + 1}">
+            </div>
+            <div class="form-group">
+                <label>Mining Core URL</label>
+                <input type="url" name="miningCoreUrl" placeholder="http://192.168.1.10${instanceCount}:4000">
+            </div>
+            <button type="button" class="remove-mining-core btn-danger">Remove</button>
+        `;
+
+        miningCoreInstancesContainer.appendChild(miningCoreInstance);
+        updateRemoveMiningCoreButtonHandlers();
+    }
+
+    /**
+     * Updates event handlers for remove mining core buttons
+     */
+    function updateRemoveMiningCoreButtonHandlers() {
+        const removeButtons = document.querySelectorAll('.remove-mining-core');
+        const miningCoreInstances = document.querySelectorAll('.mining-core-instance');
+
+        removeButtons.forEach((button) => {
+            // Show/hide remove buttons based on instance count
+            if (miningCoreInstances.length > 1) {
+                button.style.display = 'inline-block';
+            } else {
+                button.style.display = 'none';
+            }
+
+            // Add click handler
+            button.onclick = function() {
+                if (miningCoreInstances.length > 1) {
+                    button.parentElement.remove();
+                    updateRemoveMiningCoreButtonHandlers();
+                } else {
+                    // Clear the last instance instead of removing
+                    const nameInput = button.parentElement.querySelector('input[name="miningCoreName"]');
+                    const urlInput = button.parentElement.querySelector('input[name="miningCoreUrl"]');
+                    if (nameInput) nameInput.value = '';
+                    if (urlInput) urlInput.value = '';
                 }
             };
         });
@@ -217,7 +280,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add mining core settings if enabled
         formData.enableMiningCore = document.getElementById('enableMiningCore').checked ? 'true' : 'false';
         if (document.getElementById('enableMiningCore').checked) {
-            formData.miningCoreUrl = document.getElementById('miningCoreUrl').value;
+            // Collect Mining Core instances
+            const miningCoreInstances = document.querySelectorAll('.mining-core-instance');
+            formData.miningCoreInstances = [];
+
+            miningCoreInstances.forEach(instance => {
+                const name = instance.querySelector('input[name="miningCoreName"]').value;
+                const url = instance.querySelector('input[name="miningCoreUrl"]').value;
+
+                if (name && url) {
+                    formData.miningCoreInstances.push({ name, url });
+                }
+            });
         }
 
         // Add crypto node settings if enabled

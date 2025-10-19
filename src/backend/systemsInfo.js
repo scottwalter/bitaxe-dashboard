@@ -80,21 +80,55 @@ async function display(req, res, config) {
             cryptoNodeData: null, // Initialize as null; will be populated if enabled.
         };
 
-        // Conditionally fetch mining core data
+        // Conditionally fetch mining core data from multiple instances
         if (config.mining_core_enabled && config.mining_core_url) {
             try {
-                // Use dynamic import for node-fetch 3.x compatibility
-                const { default: fetch } = await import('node-fetch');
-                
-                const miningCoreResponse = await fetch(config.mining_core_url + MINING_CORE_API_PATH);
-                if (!miningCoreResponse.ok) {
-                    console.error(`Error fetching mining core data from ${config.mining_core_url}: ${miningCoreResponse.status} ${miningCoreResponse.statusText}`);
-                } else {
-                    const miningCoreJson = await miningCoreResponse.json();
-                    embeddedData.miningCoreData = miningCoreJson.pools;
-                }
-            } catch (miningCoreError) {
-                console.error(`Network or JSON parsing error for mining core (${config.mining_core_url}):`, miningCoreError);
+                // Ensure mining_core_url is a valid array; otherwise, use an empty array.
+                const miningCoreInstances = Array.isArray(config.mining_core_url) ? config.mining_core_url : [];
+
+                // Create an array of promises to fetch data from all mining core instances concurrently.
+                const miningCorePromises = miningCoreInstances.map(async (instance) => {
+                    // The instance object is expected to be in the format: { "InstanceName": "http://instance.url" }
+                    const instanceName = Object.keys(instance)[0];
+                    const instanceUrl = instance[instanceName];
+
+                    try {
+                        // Use dynamic import for node-fetch 3.x compatibility
+                        const { default: fetch } = await import('node-fetch');
+
+                        const miningCoreResponse = await fetch(instanceUrl + MINING_CORE_API_PATH);
+                        if (!miningCoreResponse.ok) {
+                            console.error(`Error fetching mining core data from ${instanceUrl}: ${miningCoreResponse.status} ${miningCoreResponse.statusText}`);
+                            return {
+                                instanceName: instanceName,
+                                status: 'Error',
+                                message: `${miningCoreResponse.status} ${miningCoreResponse.statusText}`,
+                                pools: []
+                            };
+                        } else {
+                            const miningCoreJson = await miningCoreResponse.json();
+                            return {
+                                instanceName: instanceName,
+                                status: 'OK',
+                                pools: miningCoreJson.pools || []
+                            };
+                        }
+                    } catch (miningCoreError) {
+                        console.error(`Network or JSON parsing error for mining core ${instanceName} (${instanceUrl}):`, miningCoreError);
+                        return {
+                            instanceName: instanceName,
+                            status: 'Error',
+                            message: miningCoreError.message,
+                            pools: []
+                        };
+                    }
+                });
+
+                // Wait for all promises to resolve
+                embeddedData.miningCoreData = await Promise.all(miningCorePromises);
+            } catch (error) {
+                console.error('Error processing mining core instances:', error);
+                embeddedData.miningCoreData = [];
             }
         }
         // Conditionally fetch crypto node data

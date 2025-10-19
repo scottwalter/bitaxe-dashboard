@@ -100,8 +100,17 @@ async function createConfigFile(formData) {
     template.disable_authentication = formData.enableAuth !== 'true';
     template.mining_core_enabled = formData.enableMiningCore === 'true';
 
-    if (formData.enableMiningCore === 'true') {
-        template.mining_core_url = formData.miningCoreUrl || 'http://192.168.1.100:4000';
+    // Handle mining core instances - start with empty array and add user instances
+    template.mining_core_url = [];
+
+    if (formData.enableMiningCore === 'true' && formData.miningCoreInstances && Array.isArray(formData.miningCoreInstances)) {
+        formData.miningCoreInstances.forEach((instance) => {
+            if (instance.name && instance.url) {
+                const instanceObj = {};
+                instanceObj[instance.name] = instance.url;
+                template.mining_core_url.push(instanceObj);
+            }
+        });
     }
 
     // Add crypto node configuration if enabled
@@ -286,17 +295,34 @@ async function validateBitaxeDevices(bitaxeInstances) {
 }
 
 /**
- * Validates Mining Core URL
- * @param {string} miningCoreUrl - The mining core URL to validate
+ * Validates all Mining Core instance URLs
+ * @param {Array} miningCoreInstances - Array of mining core instance objects
  * @returns {Promise<object>} Validation result
  */
-async function validateMiningCoreUrl(miningCoreUrl) {
-    const validation = await validateUrl(miningCoreUrl, '/api/pools');
-    if (!validation.success) {
-        return {
-            success: false,
-            error: `Mining Core at ${miningCoreUrl} failed validation: ${validation.error}`
-        };
+async function validateMiningCoreInstances(miningCoreInstances) {
+    for (const instance of miningCoreInstances) {
+        let instanceName, instanceUrl;
+
+        // Handle both old format { "InstanceName": "url" } and new format { name: "name", url: "url" }
+        if (instance.name && instance.url) {
+            // New format from bootstrap form
+            instanceName = instance.name;
+            instanceUrl = instance.url;
+        } else {
+            // Old format for backwards compatibility
+            instanceName = Object.keys(instance)[0];
+            instanceUrl = instance[instanceName];
+        }
+
+        console.log(`Validating Mining Core instance: ${instanceName} at ${instanceUrl}`);
+
+        const validation = await validateUrl(instanceUrl, '/api/pools');
+        if (!validation.success) {
+            return {
+                success: false,
+                error: `Mining Core instance "${instanceName}" at ${instanceUrl} failed validation: ${validation.error}`
+            };
+        }
     }
     return { success: true };
 }
@@ -447,9 +473,9 @@ async function createConfigFiles(formData) {
             }
         }
 
-        // Validate Mining Core URL if enabled
-        if (formData.enableMiningCore === 'true' && formData.miningCoreUrl) {
-            const miningCoreValidation = await validateMiningCoreUrl(formData.miningCoreUrl);
+        // Validate Mining Core instances if enabled
+        if (formData.enableMiningCore === 'true' && formData.miningCoreInstances && formData.miningCoreInstances.length > 0) {
+            const miningCoreValidation = await validateMiningCoreInstances(formData.miningCoreInstances);
             if (!miningCoreValidation.success) {
                 return miningCoreValidation;
             }

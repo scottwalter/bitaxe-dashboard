@@ -55,7 +55,10 @@
         }
     ],
     "mining_core_enabled": true,
-    "mining_core_url": "[MININGCORE_URL:4000]",
+    "mining_core_url": [
+        {"InstanceName":"[MININGCORE_URL:4000]"},
+        {"InstanceName":"[MININGCORE_URL:4000]"}
+    ],
     "mining_core_display_fields": [
         {
             "Network Status": [
